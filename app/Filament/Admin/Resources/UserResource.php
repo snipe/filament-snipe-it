@@ -24,6 +24,7 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Filament\Forms\Components\TextInput;
+use Filament\Tables\Columns\ToggleColumn;
 
 class UserResource extends Resource
 {
@@ -45,14 +46,15 @@ class UserResource extends Resource
     {
         return $table
             ->columns([
-                TextColumn::make('id')->toggleable()->sortable(),
+                TextColumn::make('id')->toggleable(isToggledHiddenByDefault: true)->sortable(),
                 ImageColumn::make('avatar')->toggleable()->sortable(),
                 TextColumn::make('first_name')->toggleable()->sortable(),
                 TextColumn::make('last_name')->toggleable()->sortable(),
                 TextColumn::make('username')->sortable(),
                 ViewColumn::make('email')->toggleable()->sortable()->view('tables.columns.email-link'),
-                TextColumn::make('phone')->toggleable()->sortable()->icon('heroicon-m-phone'),
+                TextColumn::make('phone')->toggleable(isToggledHiddenByDefault: true)->sortable()->icon('heroicon-m-phone'),
                 IconColumn::make('activated')->toggleable()->boolean()->sortable(),
+                ToggleColumn::make('ldap_import')->toggleable(isToggledHiddenByDefault: true)->sortable(),
                 TextColumn::make('created_at')->toggleable()->dateTime($format = 'F j, Y H:i:s')->sortable(),
             ])
             ->actions([
