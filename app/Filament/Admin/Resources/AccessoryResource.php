@@ -24,7 +24,7 @@ class AccessoryResource extends Resource
 {
     protected static ?string $model = Accessory::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'far-keyboard';
 
     public static function form(Form $form): Form
     {
