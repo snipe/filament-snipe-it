@@ -9,6 +9,7 @@ use App\Models\Asset;
 
 class CheckoutsChart extends ChartWidget
 {
+    protected static ?int $sort = 2;
     protected static ?string $heading = 'Checkout Trends';
     public ?string $filter = 'today';
     protected function getData(): array

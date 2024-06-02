@@ -9,6 +9,7 @@ use App\Models\Asset;
 
 class PurchasesChart extends ChartWidget
 {
+    protected static ?int $sort = 2;
     protected static ?string $heading = 'Asset Purchases Trends';
     public ?string $filter = 'today';
     protected static string $color = 'info';
