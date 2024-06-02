@@ -23,7 +23,7 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 class AccessoryResource extends Resource
 {
     protected static ?string $model = Accessory::class;
-
+    protected static ?int $navigationSort = 3;
     protected static ?string $navigationIcon = 'far-keyboard';
 
     public static function form(Form $form): Form
@@ -72,4 +72,6 @@ class AccessoryResource extends Resource
             'edit' => Pages\EditAccessory::route('/{record}/edit'),
         ];
     }
+
+
 }
