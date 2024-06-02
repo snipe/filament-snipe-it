@@ -7,7 +7,7 @@ use App\Filament\Admin\Widgets\AssetListing;
 
 class Assets extends Page
 {
-    protected static ?string $navigationIcon = 'heroicon-o-document-text';
+    protected static ?string $navigationIcon = 'heroicon-o-computer-desktop';
 
     protected static string $view = 'filament.admin.pages.assets';
 
