@@ -29,15 +29,23 @@ use Filament\Tables\Columns\ToggleColumn;
 class UserResource extends Resource
 {
     protected static ?string $model = User::class;
-
+    protected static ?int $navigationSort = 3;
     protected static ?string $navigationIcon = 'heroicon-o-users';
 
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
-                TextInput::make('name')
+                TextInput::make('first_name')
                     ->required()
+                    ->maxLength(255),
+                TextInput::make('last_name')
+                    ->maxLength(255),
+                TextInput::make('email')
+                    ->maxLength(255),
+                TextInput::make('phone')
+                    ->maxLength(255),
+                TextInput::make('jobtitle')
                     ->maxLength(255)
             ]);
     }
@@ -89,13 +97,6 @@ class UserResource extends Resource
             'index' => Pages\ListUsers::route('/'),
             'create' => Pages\CreateUser::route('/create'),
             'edit' => Pages\EditUser::route('/{record}/edit'),
-        ];
-    }
-
-    protected function getFooterWidgets(): array
-    {
-        return [
-            UserListing::class
         ];
     }
 
