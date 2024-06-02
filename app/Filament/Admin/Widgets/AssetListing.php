@@ -25,8 +25,12 @@ class AssetListing extends BaseWidget
             ->query(Asset::query())
             ->columns([
                 TextColumn::make('asset_tag'),
+                TextColumn::make('name'),
                 TextColumn::make('serial'),
+                TextColumn::make('purchase_cost'),
                 IconColumn::make('requestable')->boolean(),
+                TextColumn::make('asset_tag'),
+                TextColumn::make('purchase_date'),
                 IconColumn::make('assigned_to')->boolean()->label('Checked Out'),
 
             ])
@@ -34,16 +38,6 @@ class AssetListing extends BaseWidget
                 TernaryFilter::make('Checked Out')
                     ->nullable()
                     ->attribute('assigned_to')
-
-
-                   // ->query(fn (Builder $query) => $query->where('assigned_to', true)),
-
-
-//                    SelectFilter::make('status')
-//                    ->options([
-//                        'assigned_to' => 'Available',
-//                        'assigned_to' => 'Checked Out',
-//                    ]),
             ])
 
             ->actions([
@@ -54,6 +48,7 @@ class AssetListing extends BaseWidget
                     DeleteBulkAction::make(),
                 ]),
             ])
+            ->deferLoading()
             ->striped();
     }
 }
