@@ -6,6 +6,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use App\Models\Asset;
 
 class User extends Authenticatable
 {
@@ -43,6 +44,18 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    /**
+     * Establishes the user -> assets relationship
+     *
+     * @author A. Gianotto <snipe@snipe.net>
+     * @since [v1.0]
+     * @return \Illuminate\Database\Eloquent\Relations\Relation
+     */
+    public function assets()
+    {
+        return $this->morphMany(Asset::class, 'assigned', 'assigned_type', 'assigned_to')->withTrashed()->orderBy('id');
     }
 
     public function getNameAttribute()
