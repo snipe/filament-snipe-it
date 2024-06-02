@@ -53,7 +53,7 @@ class UserResource extends Resource
                 TextColumn::make('username')->sortable(),
                 ViewColumn::make('email')->toggleable()->sortable()->view('tables.columns.email-link'),
                 TextColumn::make('phone')->toggleable(isToggledHiddenByDefault: true)->sortable()->icon('heroicon-m-phone'),
-                IconColumn::make('activated')->toggleable()->boolean()->sortable(),
+                ToggleColumn::make('activated')->toggleable(isToggledHiddenByDefault: true)->sortable(),
                 ToggleColumn::make('ldap_import')->toggleable(isToggledHiddenByDefault: true)->sortable(),
                 TextColumn::make('created_at')->toggleable()->dateTime($format = 'F j, Y H:i:s')->sortable(),
             ])
