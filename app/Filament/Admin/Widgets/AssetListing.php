@@ -27,13 +27,12 @@ class AssetListing extends BaseWidget
             ->columns([
                 TextColumn::make('id')->toggleable()->sortable(),
                 TextColumn::make('asset_tag')->sortable(),
-                TextColumn::make('name')->sortable(),
-                TextColumn::make('serial')->copyable()->sortable(),
-                TextColumn::make('purchase_cost')->money('EUR', locale: 'pt')->sortable(),
-                IconColumn::make('requestable')->boolean()->sortable(),
-                TextColumn::make('asset_tag')->sortable(),
-                TextColumn::make('purchase_date')->dateTime($format = 'F j, Y H:i:s')->sortable(),
-                IconColumn::make('assigned_to')->boolean()->label('Checked Out')->sortable(),
+                TextColumn::make('name')->toggleable()->sortable(),
+                TextColumn::make('serial')->toggleable()->copyable()->sortable(),
+                TextColumn::make('purchase_cost')->toggleable()->money('EUR', locale: 'pt')->sortable(),
+                IconColumn::make('requestable')->toggleable()->boolean()->sortable(),
+                TextColumn::make('purchase_date')->toggleable()->dateTime($format = 'F j, Y H:i:s')->sortable(),
+                IconColumn::make('assigned_to')->toggleable()->boolean()->label('Checked Out')->sortable(),
 
             ])
             ->filters([

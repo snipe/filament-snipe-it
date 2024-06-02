@@ -29,7 +29,7 @@ class UserListing extends BaseWidget
                 ImageColumn::make('avatar')->toggleable()->sortable(),
                 TextColumn::make('first_name')->toggleable()->sortable(),
                 TextColumn::make('last_name')->toggleable()->sortable(),
-                TextColumn::make('username')->toggleable()->sortable(),
+                TextColumn::make('username')->sortable(),
                 ViewColumn::make('email')->toggleable()->sortable()->view('tables.columns.email-link'),
                 TextColumn::make('phone')->toggleable()->sortable()->icon('heroicon-m-phone'),
                 IconColumn::make('activated')->toggleable()->boolean()->sortable(),

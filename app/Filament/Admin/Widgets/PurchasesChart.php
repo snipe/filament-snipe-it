@@ -45,7 +45,6 @@ class PurchasesChart extends ChartWidget
     protected function getFilters(): ?array
     {
         return [
-            'today' => 'Today',
             'week' => 'Last week',
             'month' => 'Last month',
             'year' => 'This year',

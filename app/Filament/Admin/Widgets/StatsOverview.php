@@ -21,10 +21,12 @@ class StatsOverview extends BaseWidget
             Stat::make('People', number_format(User::count()))
                 ->description('7% increase')
                 ->descriptionIcon('heroicon-m-arrow-trending-up')
-                ->color('danger'),
+                ->chart([7, 7, 10, 36, 15, 4, 50])
+                ->color('success'),
             Stat::make('Some other stat', '3:12')
                 ->description('3% decrease')
                 ->descriptionIcon('heroicon-m-arrow-trending-down')
+                ->chart([70, 7, 10, 36, 15, 4, 17])
                 ->color('danger'),
         ];
     }
