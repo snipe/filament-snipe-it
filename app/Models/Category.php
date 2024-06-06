@@ -35,15 +35,4 @@ class Category extends Model
         return $this->hasMany(\App\Models\License::class);
     }
 
-    /**
-     * Establishes the accessory -> category relationship
-     *
-     * @author [A. Gianotto] [<snipe@snipe.net>]
-     * @since [v3.0]
-     * @return \Illuminate\Database\Eloquent\Relations\Relation
-     */
-    public function category()
-    {
-        return $this->belongsTo(\App\Models\Category::class, 'category_id')->where('category_type', '=', 'accessory');
-    }
 }
