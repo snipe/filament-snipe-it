@@ -13,6 +13,7 @@ use Filament\Tables\Actions\BulkActionGroup;
 use Filament\Tables\Actions\DeleteAction;
 use Filament\Tables\Actions\DeleteBulkAction;
 use Filament\Tables\Actions\EditAction;
+use Filament\Tables\Actions\ViewAction;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
@@ -26,6 +27,7 @@ use Filament\Forms\Components\TextInput;
 use Filament\Tables\Columns\ToggleColumn;
 use Illuminate\Support\HtmlString;
 use Illuminate\Support\Facades\Blade;
+use Filament\Forms\Components\Tabs;
 
 class UserResource extends Resource
 {
@@ -35,6 +37,7 @@ class UserResource extends Resource
 
     public static function form(Form $form): Form
     {
+
         return $form
             ->schema([
                 TextInput::make('first_name')
@@ -59,6 +62,7 @@ class UserResource extends Resource
                     ->toggleable(isToggledHiddenByDefault: true)
                     ->sortable(),
                 ImageColumn::make('avatar')
+                    ->disk('public')
                     ->toggleable()
                     ->sortable(),
                 TextColumn::make('first_name')
@@ -119,6 +123,7 @@ class UserResource extends Resource
             ])
 
             ->actions([
+                ViewAction::make(),
                 EditAction::make(),
                 DeleteAction::make(),
             ])
@@ -134,6 +139,7 @@ class UserResource extends Resource
                     ->query(fn (Builder $query): Builder => $query->where('ldap_import', true))
             ])
             ->deferLoading()
+            ->searchable()
             ->striped();
     }
 
@@ -150,6 +156,7 @@ class UserResource extends Resource
             'index' => Pages\ListUsers::route('/'),
             'create' => Pages\CreateUser::route('/create'),
             'edit' => Pages\EditUser::route('/{record}/edit'),
+            'view' => Pages\ViewUser::route('/{record}'),
         ];
     }
 
