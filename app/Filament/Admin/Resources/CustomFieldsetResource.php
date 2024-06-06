@@ -2,11 +2,10 @@
 
 namespace App\Filament\Admin\Resources;
 
-use App\Filament\Admin\Resources\ConsumableResource\Pages;
-use App\Filament\Admin\Resources\ConsumableResource\RelationManagers;
-use App\Models\Consumable;
+use App\Filament\Admin\Resources\CustomFieldsetResource\Pages;
+use App\Filament\Admin\Resources\CustomFieldsetResource\RelationManagers;
+use App\Models\CustomFieldset;
 use Filament\Forms;
-use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
@@ -15,21 +14,19 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
-class ConsumableResource extends Resource
+class CustomFieldsetResource extends Resource
 {
-    protected static ?string $model = Consumable::class;
-    protected static ?int $navigationSort = 4;
+    protected static ?string $model = CustomFieldset::class;
 
-    protected static ?string $navigationIcon = 'fas-tint';
+    protected static bool $shouldRegisterNavigation = false;
+
+    protected static ?string $navigationIcon = null;
 
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
-                TextInput::make('name')
-                    ->required()
-                    ->autofocus()
-                    ->maxLength(255),
+                //
             ]);
     }
 
@@ -64,14 +61,9 @@ class ConsumableResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListConsumables::route('/'),
-            'create' => Pages\CreateConsumable::route('/create'),
-            'edit' => Pages\EditConsumable::route('/{record}/edit'),
+            'index' => Pages\ListCustomFieldsets::route('/'),
+            'create' => Pages\CreateCustomFieldset::route('/create'),
+            'edit' => Pages\EditCustomFieldset::route('/{record}/edit'),
         ];
-    }
-
-    public static function getNavigationBadge(): ?string
-    {
-        return static::getModel()::count();
     }
 }

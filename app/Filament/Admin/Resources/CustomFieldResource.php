@@ -2,9 +2,9 @@
 
 namespace App\Filament\Admin\Resources;
 
-use App\Filament\Admin\Resources\ConsumableResource\Pages;
-use App\Filament\Admin\Resources\ConsumableResource\RelationManagers;
-use App\Models\Consumable;
+use App\Filament\Admin\Resources\CustomFieldResource\Pages;
+use App\Filament\Admin\Resources\CustomFieldResource\RelationManagers;
+use App\Models\CustomField;
 use Filament\Forms;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
@@ -15,12 +15,12 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
-class ConsumableResource extends Resource
+class CustomFieldResource extends Resource
 {
-    protected static ?string $model = Consumable::class;
-    protected static ?int $navigationSort = 4;
+    protected static ?string $model = CustomField::class;
+    protected static ?string $navigationGroup = 'Settings';
 
-    protected static ?string $navigationIcon = 'fas-tint';
+    protected static ?string $navigationIcon = null;
 
     public static function form(Form $form): Form
     {
@@ -64,9 +64,9 @@ class ConsumableResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListConsumables::route('/'),
-            'create' => Pages\CreateConsumable::route('/create'),
-            'edit' => Pages\EditConsumable::route('/{record}/edit'),
+            'index' => Pages\ListCustomFields::route('/'),
+            'create' => Pages\CreateCustomField::route('/create'),
+            'edit' => Pages\EditCustomField::route('/{record}/edit'),
         ];
     }
 
