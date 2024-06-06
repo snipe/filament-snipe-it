@@ -106,6 +106,11 @@ class UserResource extends Resource
                 ToggleColumn::make('ldap_import')
                     ->toggleable(isToggledHiddenByDefault: true)
                     ->sortable(),
+                TextColumn::make('last_login')
+                    ->toggleable()
+                    ->toggleable(isToggledHiddenByDefault: true)
+                    ->dateTime($format = 'F j, Y H:i:s')
+                    ->sortable(),
                 TextColumn::make('created_at')
                     ->toggleable()
                     ->toggleable(isToggledHiddenByDefault: true)
@@ -153,5 +158,10 @@ class UserResource extends Resource
         $record->update($data);
 
         return $record;
+    }
+
+    public static function getNavigationBadge(): ?string
+    {
+        return static::getModel()::count();
     }
 }
