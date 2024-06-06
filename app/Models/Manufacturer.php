@@ -14,6 +14,11 @@ class Manufacturer extends Model
 
     protected $table = 'manufacturers';
 
+    public function admin() {
+        return $this->belongsTo(User::class, 'user_id');
+    }
+
+
 //    public function assets()
 //    {
 //        return $this->hasManyThrough(\App\Models\Asset::class, \App\Models\AssetModel::class, 'manufacturer_id', 'model_id');

@@ -11,6 +11,12 @@ class StatusLabel extends Model
 
     protected $table = 'status_labels';
 
+
+    public function admin() {
+        return $this->belongsTo(User::class, 'user_id');
+    }
+
+
     /**
      * Establishes the status label -> assets relationship
      *

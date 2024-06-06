@@ -4,6 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\Category;
+use App\Models\User;
 
 class Accessory extends Model
 {
@@ -20,6 +22,10 @@ class Accessory extends Model
      */
     public function category()
     {
-        return $this->belongsTo(\App\Models\Category::class, 'category_id')->where('category_type', '=', 'accessory');
+        return $this->belongsTo(Category::class, 'category_id')->where('category_type', '=', 'accessory');
+    }
+
+    public function admin() {
+        return $this->belongsTo(User::class, 'user_id');
     }
 }

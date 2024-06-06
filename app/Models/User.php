@@ -48,6 +48,11 @@ class User extends Authenticatable
         ];
     }
 
+    public function admin() {
+        return $this->belongsTo(User::class, 'user_id');
+    }
+
+
     /**
      * Establishes the user -> assets relationship
      *

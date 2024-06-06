@@ -51,6 +51,10 @@ class Asset extends Model
         return $this->belongsTo(\App\Models\Statuslabel::class, 'status_id');
     }
 
+    public function admin() {
+        return $this->belongsTo(User::class, 'user_id');
+    }
+
 
 
 

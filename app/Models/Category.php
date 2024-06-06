@@ -14,6 +14,11 @@ class Category extends Model
     use HasFactory;
     use SoftDeletes;
 
+
+    public function admin() {
+        return $this->belongsTo(User::class, 'user_id');
+    }
+
     /**
      * Establishes the category -> assets relationship
      *
