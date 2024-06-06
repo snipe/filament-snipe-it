@@ -36,6 +36,8 @@ use Filament\Tables\Columns\ImageColumn;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\TimePicker;
+use Filament\Forms\Components\Actions\Action;
+
 
 class AssetResource extends Resource
 {
@@ -123,6 +125,8 @@ class AssetResource extends Resource
                 IconColumn::make('requestable')->toggleable()->boolean()->sortable(),
                 TextColumn::make('purchase_date')->toggleable()->dateTime($format = 'F j, Y')->sortable(),
                 IconColumn::make('assigned_to')->toggleable()->boolean()->label('Checked Out')->sortable(),
+                TextColumn::make('last_audit_date')->toggleable()->dateTime($format = 'F j, Y H:i:s')->sortable(),
+                TextColumn::make('expected_checkin')->toggleable()->dateTime($format = 'F j, Y')->sortable(),
                 TextColumn::make('admin.username')->label('Created by')
                     ->toggleable()
                     ->sortable(),
@@ -153,7 +157,6 @@ class AssetResource extends Resource
                     ->options(Location::all()->pluck('name', 'id')),
                 TernaryFilter::make('Requestable')
                     ->attribute('requestable'),
-
             ])
 
             ->actions([
@@ -173,9 +176,7 @@ class AssetResource extends Resource
                 ]),
             ])
             ->checkIfRecordIsSelectableUsing(
-                //fn (Model $record): bool => $record->status === Status::Enabled,
-               // fn (Model $record): bool => $record->isDeployable() == false,
-                fn (Model $record): bool => $record->assigned_to == null,
+                fn (Model $record): bool => $record->assigned_to == null
             )
             ->deferLoading()
             ->striped();
