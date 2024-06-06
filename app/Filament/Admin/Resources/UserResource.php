@@ -6,6 +6,7 @@ use App\Filament\Admin\Resources\UserResource\Pages;
 use App\Filament\Admin\Widgets\UserListing;
 use App\Models\User;
 use Filament\Forms;
+use Filament\Forms\Components\Checkbox;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
@@ -41,16 +42,20 @@ class UserResource extends Resource
         return $form
             ->schema([
                 TextInput::make('first_name')
-                    ->required()
-                    ->maxLength(255),
+                    ->maxLength(255)
+                    ->required(),
                 TextInput::make('last_name')
                     ->maxLength(255),
+                TextInput::make('username')
+                    ->maxLength(255)
+                    ->required(),
                 TextInput::make('email')
                     ->maxLength(255),
                 TextInput::make('phone')
                     ->maxLength(255),
                 TextInput::make('jobtitle')
-                    ->maxLength(255)
+                    ->maxLength(255),
+                 Checkbox::make('vip')->inline()
             ]);
     }
 
