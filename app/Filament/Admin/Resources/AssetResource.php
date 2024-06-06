@@ -6,7 +6,11 @@ use App\Filament\Admin\Resources\AssetResource\Pages;
 use App\Filament\Admin\Resources\AssetResource\RelationManagers;
 use App\Models\Asset;
 use App\Models\AssetModel;
+use App\Models\StatusLabel;
+use App\Models\Category;
 use App\Models\Manufacturer;
+use App\Models\Supplier;
+use App\Models\Location;
 use Filament\Forms;
 use Filament\Forms\Components\Checkbox;
 use Filament\Forms\Components\FileUpload;
@@ -26,6 +30,8 @@ use Filament\Tables\Filters\TernaryFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Filament\Tables\Filters\SelectFilter;
+use Filament\Tables\Columns\ImageColumn;
 
 class AssetResource extends Resource
 {
@@ -76,10 +82,16 @@ class AssetResource extends Resource
         return $table
             ->columns([
                 TextColumn::make('id')->toggleable()->sortable(),
+                ImageColumn::make('image')->sortable(),
                 TextColumn::make('asset_tag')->sortable(),
                 TextColumn::make('name')->toggleable()->sortable(),
                 TextColumn::make('serial')->toggleable()->copyable()->sortable(),
+                TextColumn::make('assigned_to')->toggleable()->sortable(),
+                TextColumn::make('model.manufacturer.name')->toggleable()->sortable(),
+                TextColumn::make('model.model_number')->toggleable()->sortable(),
+                TextColumn::make('order_number')->toggleable()->sortable(),
                 TextColumn::make('model.category.name')->toggleable()->sortable(),
+                TextColumn::make('model.name')->toggleable()->sortable(),
                 TextColumn::make('purchase_cost')->toggleable()->money('EUR', locale: 'pt')->sortable(),
                 IconColumn::make('requestable')->toggleable()->boolean()->sortable(),
                 TextColumn::make('purchase_date')->toggleable()->dateTime($format = 'F j, Y H:i:s')->sortable(),
@@ -89,7 +101,20 @@ class AssetResource extends Resource
             ->filters([
                 TernaryFilter::make('Checked Out')
                     ->nullable()
-                    ->attribute('assigned_to')
+                    ->attribute('assigned_to'),
+                SelectFilter::make('status')
+                    ->options(StatusLabel::all()->pluck('name', 'id')),
+                SelectFilter::make('model_id')->label('Asset Model')
+                    ->options(AssetModel::all()->pluck('name', 'id')),
+                SelectFilter::make('manufacturer')
+                    ->options(Manufacturer::all()->pluck('name', 'id')),
+                SelectFilter::make('Supplier')
+                    ->options(Supplier::all()->pluck('name', 'id')),
+                SelectFilter::make('Location')
+                    ->options(Location::all()->pluck('name', 'id')),
+                TernaryFilter::make('Requestable')
+                    ->attribute('requestable'),
+
             ])
 
             ->actions([
