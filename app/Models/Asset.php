@@ -4,6 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\StatusLabel;
+use App\Models\AssetModel;
 
 class Asset extends Model
 {
@@ -41,7 +43,15 @@ class Asset extends Model
      */
     public function model()
     {
-        return $this->belongsTo(\App\Models\AssetModel::class, 'model_id');
+        return $this->belongsTo(AssetModel::class, 'model_id');
     }
+
+    public function statuslabel()
+    {
+        return $this->belongsTo(\App\Models\Statuslabel::class, 'status_id');
+    }
+
+
+
 
 }

@@ -9,6 +9,21 @@ class StatusLabel extends Model
 {
     use HasFactory;
 
+    protected $table = 'status_labels';
+
+    /**
+     * Establishes the status label -> assets relationship
+     *
+     * @author A. Gianotto <snipe@snipe.net>
+     * @since [v1.0]
+     * @return \Illuminate\Database\Eloquent\Relations\Relation
+     */
+    public function assets()
+    {
+        return $this->hasMany(\App\Models\Asset::class, 'status_id');
+    }
+
+
     /**
      * Query builder scope for deployable status types
      *
