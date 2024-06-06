@@ -73,7 +73,7 @@ class AccessoryResource extends Resource
                 TextColumn::make('id')->toggleable()->sortable(),
                 TextColumn::make('name')->toggleable()->sortable(),
                 TextColumn::make('model_number')->toggleable()->sortable(),
-                TextColumn::make('category')->toggleable()->sortable(),
+                TextColumn::make('category.name')->toggleable()->sortable(),
                 TextColumn::make('qty')->toggleable()->sortable(),
                 TextColumn::make('min_amt')->toggleable()->sortable(),
                 TextColumn::make('admin')->toggleable()->sortable(),
@@ -112,6 +112,10 @@ class AccessoryResource extends Resource
         ];
     }
 
+    public static function getNavigationBadge(): ?string
+    {
+        return static::getModel()::count();
+    }
 
 
 
