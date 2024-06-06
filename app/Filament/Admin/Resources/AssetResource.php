@@ -3,11 +3,11 @@
 namespace App\Filament\Admin\Resources;
 
 use App\Filament\Admin\Resources\AssetResource\Pages;
-use App\Filament\Admin\Resources\AssetResource\RelationManagers;
+use App\Tables\Columns\ModelLinkColumn;
+use Filament\Tables\Actions\ReplicateAction;
 use App\Models\Asset;
 use App\Models\AssetModel;
 use App\Models\StatusLabel;
-use App\Models\Category;
 use App\Models\Manufacturer;
 use App\Models\Supplier;
 use App\Models\Location;
@@ -29,6 +29,7 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\TernaryFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Columns\ImageColumn;
@@ -47,10 +48,12 @@ class AssetResource extends Resource
     {
         return $form
             ->schema([
-                TextInput::make('name')
+                TextInput::make('asset_tag')
                     ->autofocus()
                     ->maxLength(255)
                     ->required(),
+                TextInput::make('name')
+                    ->maxLength(255),
                 Select::make('model_id')
                     ->label('Asset Model')
                     ->options(AssetModel::select([
@@ -110,6 +113,7 @@ class AssetResource extends Resource
                 TextColumn::make('name')->toggleable()->sortable(),
                 TextColumn::make('serial')->toggleable()->copyable()->sortable(),
                 TextColumn::make('assigned_to')->toggleable()->sortable(),
+                // ModelLinkColumn::make('model.manufacturer.name')->label('Manufacturer'),
                 TextColumn::make('model.manufacturer.name')->toggleable()->sortable(),
                 TextColumn::make('model.model_number')->toggleable()->sortable(),
                 TextColumn::make('order_number')->toggleable()->sortable(),
@@ -141,14 +145,26 @@ class AssetResource extends Resource
             ])
 
             ->actions([
-                EditAction::make(),
-                DeleteAction::make(),
+                ReplicateAction::make()->label('')
+                    ->excludeAttributes(
+                        [
+                            'assign_to',
+                            'assigned_type',
+                            'asset_tag'
+                        ]),
+                EditAction::make()->label(''),
+                DeleteAction::make()->label(''),
             ])
             ->bulkActions([
                 BulkActionGroup::make([
                     DeleteBulkAction::make(),
                 ]),
             ])
+            ->checkIfRecordIsSelectableUsing(
+                //fn (Model $record): bool => $record->status === Status::Enabled,
+               // fn (Model $record): bool => $record->isDeployable() == false,
+                fn (Model $record): bool => $record->assigned_to == null,
+            )
             ->deferLoading()
             ->striped();
     }
