@@ -6,9 +6,9 @@ use Filament\Tables\Columns\Column;
 use Filament\Tables\Columns\TextColumn;
 use Illuminate\Support\Str;
 
-class UserLink extends TextColumn
+class EmailLink extends TextColumn
 {
-    protected string $view = 'tables.columns.user-link';
+    protected string $view = 'tables.columns.email-link';
 
     protected function setUp(): void
     {
