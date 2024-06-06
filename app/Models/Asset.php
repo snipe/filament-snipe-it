@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\StatusLabel;
 use App\Models\AssetModel;
+use App\Models\Company;
 
 class Asset extends Model
 {
@@ -53,6 +54,18 @@ class Asset extends Model
 
     public function admin() {
         return $this->belongsTo(User::class, 'user_id');
+    }
+
+    /**
+     * Establishes the asset -> company relationship
+     *
+     * @author [A. Gianotto] [<snipe@snipe.net>]
+     * @since [v3.0]
+     * @return \Illuminate\Database\Eloquent\Relations\Relation
+     */
+    public function company()
+    {
+        return $this->belongsTo(Company::class, 'company_id');
     }
 
 
