@@ -66,4 +66,12 @@ class CustomFieldsetResource extends Resource
             'edit' => Pages\EditCustomFieldset::route('/{record}/edit'),
         ];
     }
+
+//    public static function getRecordSubNavigation(Page $page): array
+//    {
+//        return $page->generateNavigationItems([
+//            // ...
+//            Pages\ViewCustomerContact::class,
+//        ]);
+//    }
 }
