@@ -6,6 +6,7 @@ use App\Models\Category;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\Asset;
+use App\Models\Manufacturer;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class AssetModel extends Model
@@ -49,5 +50,17 @@ class AssetModel extends Model
     public function assetCategories()
     {
         return $this->hasMany(Category::class, 'category_id')->where('category_type', 'asset');
+    }
+
+    /**
+     * Establishes the model -> manufacturer relationship
+     *
+     * @author [A. Gianotto] [<snipe@snipe.net>]
+     * @since [v1.0]
+     * @return \Illuminate\Database\Eloquent\Relations\Relation
+     */
+    public function manufacturer()
+    {
+        return $this->belongsTo(Manufacturer::class, 'manufacturer_id');
     }
 }
