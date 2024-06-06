@@ -30,6 +30,7 @@ use App\Models\Category;
 use App\Models\Manufacturer;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\Checkbox;
+use Illuminate\Support\HtmlString;
 
 class AccessoryResource extends Resource
 {
@@ -94,6 +95,33 @@ class AccessoryResource extends Resource
                     ->dateTime($format = 'F j, Y H:i:s')
                     ->sortable(),
             ])
+            ->filters([
+
+                // this creates the checkbox filter for the category
+                Tables\Filters\Filter::make('type')
+                    ->columnSpanFull()
+                    ->form([
+                        Forms\Components\CheckboxList::make('category')
+                            ->label('')
+                            ->columns(5)
+                            ->options(function (): array {
+                                return Category::where('category_type', 'accessory')
+                                    ->withCount('accessories as accessory_count')
+                                    ->get()
+                                    ->mapWithKeys(function (Category $category) {
+                                        return [
+                                            $category->id => new HtmlString($category->name . " <span class='text-gray-500'>({$category->accessory_count})</span>")
+                                        ];
+                                    })
+                                    ->all();
+                            }),
+                    ])
+                    // and this creates the callback to filter the results
+                    ->query(function (Builder $query, array $data): Builder {
+                        return $query
+                            ->when($data['category'], fn (Builder $query) => $query->whereIn('category_id', $data['category']));
+                    }),
+            ], Tables\Enums\FiltersLayout::AboveContent)
             ->actions([
                 ReplicateAction::make()->label(''),
                 EditAction::make()->label(''),
