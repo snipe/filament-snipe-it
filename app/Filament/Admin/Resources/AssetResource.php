@@ -43,6 +43,7 @@ class AssetResource extends Resource
                 TextColumn::make('asset_tag')->sortable(),
                 TextColumn::make('name')->toggleable()->sortable(),
                 TextColumn::make('serial')->toggleable()->copyable()->sortable(),
+                TextColumn::make('category.name')->toggleable()->sortable(),
                 TextColumn::make('purchase_cost')->toggleable()->money('EUR', locale: 'pt')->sortable(),
                 IconColumn::make('requestable')->toggleable()->boolean()->sortable(),
                 TextColumn::make('purchase_date')->toggleable()->dateTime($format = 'F j, Y H:i:s')->sortable(),
@@ -82,5 +83,10 @@ class AssetResource extends Resource
             'create' => Pages\CreateAsset::route('/create'),
             'edit' => Pages\EditAsset::route('/{record}/edit'),
         ];
+    }
+
+    public static function getNavigationBadge(): ?string
+    {
+        return static::getModel()::count();
     }
 }
