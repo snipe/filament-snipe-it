@@ -3,7 +3,6 @@
 namespace App\Filament\Admin\Resources;
 
 use App\Filament\Admin\Resources\UserResource\Pages;
-use App\Filament\Admin\Resources\UserResource\RelationManagers;
 use App\Filament\Admin\Widgets\UserListing;
 use App\Models\User;
 use Filament\Forms;
@@ -25,6 +24,8 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Filament\Forms\Components\TextInput;
 use Filament\Tables\Columns\ToggleColumn;
+use Illuminate\Support\HtmlString;
+use Illuminate\Support\Facades\Blade;
 
 class UserResource extends Resource
 {
@@ -54,17 +55,64 @@ class UserResource extends Resource
     {
         return $table
             ->columns([
-                TextColumn::make('id')->toggleable(isToggledHiddenByDefault: true)->sortable(),
-                ImageColumn::make('avatar')->toggleable()->sortable(),
-                TextColumn::make('first_name')->toggleable()->sortable(),
-                TextColumn::make('last_name')->toggleable()->sortable(),
-                TextColumn::make('username')->sortable(),
-                ViewColumn::make('email')->toggleable()->sortable()->view('tables.columns.email-link'),
-                TextColumn::make('phone')->toggleable(isToggledHiddenByDefault: true)->sortable()->icon('heroicon-m-phone'),
-                ToggleColumn::make('activated')->toggleable(isToggledHiddenByDefault: true)->sortable(),
-                ToggleColumn::make('ldap_import')->toggleable(isToggledHiddenByDefault: true)->sortable(),
-                TextColumn::make('created_at')->toggleable()->dateTime($format = 'F j, Y H:i:s')->sortable(),
+                TextColumn::make('id')
+                    ->toggleable(isToggledHiddenByDefault: true)
+                    ->sortable(),
+                ImageColumn::make('avatar')
+                    ->toggleable()
+                    ->sortable(),
+                TextColumn::make('first_name')
+                    ->toggleable()
+                    ->sortable(),
+                TextColumn::make('last_name')
+                    ->toggleable()
+                    ->sortable(),
+                TextColumn::make('username')
+                    ->sortable(),
+                TextColumn::make('email')
+                    ->toggleable()
+                    ->url(fn ($record) => 'mailto:'.$record->email, true)
+                    ->sortable()
+                    ->icon('heroicon-m-envelope'),
+                TextColumn::make('phone')
+                    ->toggleable(isToggledHiddenByDefault: true)
+                    ->url(fn ($record) => 'tel:'.$record->phone, true)
+                    ->sortable()
+                    ->icon('heroicon-m-phone'),
+                TextColumn::make('website')
+                    ->toggleable(isToggledHiddenByDefault: true)
+                    ->url(fn ($record) => $record->website, true)
+                    ->sortable()
+                    ->icon('heroicon-m-arrow-up-right'),
+                TextColumn::make('assets_count')->counts('assets')
+                    ->toggleable()
+                    ->sortable()
+                    ->label(new HtmlString(Blade::render('<x-fas-barcode class="w-5 h-5" />'))),
+                TextColumn::make('accessories_count')->counts('accessories')
+                    ->toggleable()
+                    ->sortable()
+                    ->label(new HtmlString(Blade::render('<x-far-keyboard class="w-6 h-6" />'))),
+                TextColumn::make('licenses_count')->counts('licenses')
+                    ->toggleable()
+                    ->sortable()
+                    ->label(new HtmlString(Blade::render('<x-far-save class="w-5 h-5" />'))),
+                TextColumn::make('consumables_count')->counts('consumables')
+                    ->toggleable()
+                    ->sortable()
+                    ->label(new HtmlString(Blade::render('<x-fas-tint class="w-5 h-5" />'))),
+                ToggleColumn::make('activated')
+                    ->toggleable()
+                    ->sortable(),
+                ToggleColumn::make('ldap_import')
+                    ->toggleable(isToggledHiddenByDefault: true)
+                    ->sortable(),
+                TextColumn::make('created_at')
+                    ->toggleable()
+                    ->toggleable(isToggledHiddenByDefault: true)
+                    ->dateTime($format = 'F j, Y H:i:s')
+                    ->sortable(),
             ])
+
             ->actions([
                 EditAction::make(),
                 DeleteAction::make(),
