@@ -11,6 +11,7 @@ use App\Models\StatusLabel;
 use App\Models\Manufacturer;
 use App\Models\Supplier;
 use App\Models\Location;
+use App\Models\Company;
 use Filament\Forms;
 use Filament\Forms\Components\Checkbox;
 use Filament\Forms\Components\FileUpload;
@@ -114,13 +115,14 @@ class AssetResource extends Resource
                 TextColumn::make('asset_tag')->sortable(),
                 TextColumn::make('name')->toggleable()->sortable(),
                 TextColumn::make('serial')->toggleable()->copyable()->sortable(),
+                TextColumn::make('company.name')->toggleable()->sortable(),
                 TextColumn::make('assigned_to')->toggleable()->sortable(),
                 // ModelLinkColumn::make('model.manufacturer.name')->label('Manufacturer'),
+                TextColumn::make('model.name')->label('Model Name')->toggleable()->sortable(),
+                TextColumn::make('model.model_number')->label('Model No.')->toggleable()->sortable(),
                 TextColumn::make('model.manufacturer.name')->toggleable()->sortable(),
-                TextColumn::make('model.model_number')->toggleable()->sortable(),
                 TextColumn::make('order_number')->toggleable()->sortable(),
                 TextColumn::make('model.category.name')->toggleable()->sortable(),
-                TextColumn::make('model.name')->toggleable()->sortable(),
                 TextColumn::make('purchase_cost')->toggleable()->money('EUR', locale: 'pt')->sortable(),
                 IconColumn::make('requestable')->toggleable()->boolean()->sortable(),
                 TextColumn::make('purchase_date')->toggleable()->dateTime($format = 'F j, Y')->sortable(),
@@ -149,12 +151,17 @@ class AssetResource extends Resource
                     ->options(StatusLabel::all()->pluck('name', 'id')),
                 SelectFilter::make('model_id')->label('Asset Model')
                     ->options(AssetModel::all()->pluck('name', 'id')),
-                SelectFilter::make('manufacturer')
+                SelectFilter::make('manufacturer_id')
+                    ->label('Manufacturer')
                     ->options(Manufacturer::all()->pluck('name', 'id')),
-                SelectFilter::make('Supplier')
+                SelectFilter::make('supplier_id')
+                    ->label('Supplier')
                     ->options(Supplier::all()->pluck('name', 'id')),
-                SelectFilter::make('Location')
+                SelectFilter::make('Location_id')
                     ->options(Location::all()->pluck('name', 'id')),
+                SelectFilter::make('company_id')
+                    ->label('Company')
+                    ->options(Company::all()->pluck('name', 'id')),
                 TernaryFilter::make('Requestable')
                     ->attribute('requestable'),
             ])
