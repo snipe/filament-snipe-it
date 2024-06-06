@@ -10,6 +10,9 @@ use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Tables\Actions\DeleteAction;
+use Filament\Tables\Actions\EditAction;
+use Filament\Tables\Actions\ReplicateAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Columns\ToggleColumn;
 use Filament\Tables\Table;
@@ -44,13 +47,26 @@ class AssetModelResource extends Resource
                 TextColumn::make('category.name')->toggleable()->sortable(),
                 TextColumn::make('min_amt')->toggleable()->sortable(),
                 ToggleColumn::make('requestable')->toggleable(isToggledHiddenByDefault: true)->sortable(),
-                TextColumn::make('updated_at')->toggleable()->dateTime($format = 'F j, Y H:i:s')->sortable(),
+                TextColumn::make('admin.username')->label('Created by')
+                    ->toggleable()
+                    ->sortable(),
+                TextColumn::make('created_at')
+                    ->toggleable()
+                    ->toggleable(isToggledHiddenByDefault: true)
+                    ->dateTime($format = 'F j, Y H:i:s')
+                    ->sortable(),
+                TextColumn::make('updated_at')
+                    ->toggleable()
+                    ->dateTime($format = 'F j, Y H:i:s')
+                    ->sortable(),
             ])
             ->filters([
                 //
             ])
             ->actions([
-                Tables\Actions\EditAction::make(),
+                ReplicateAction::make()->label(''),
+                EditAction::make()->label(''),
+                DeleteAction::make()->label(''),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

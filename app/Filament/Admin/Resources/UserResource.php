@@ -14,6 +14,7 @@ use Filament\Tables\Actions\BulkActionGroup;
 use Filament\Tables\Actions\DeleteAction;
 use Filament\Tables\Actions\DeleteBulkAction;
 use Filament\Tables\Actions\EditAction;
+use Filament\Tables\Actions\ReplicateAction;
 use Filament\Tables\Actions\ViewAction;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\ImageColumn;
@@ -120,17 +121,35 @@ class UserResource extends Resource
                     ->toggleable(isToggledHiddenByDefault: true)
                     ->dateTime($format = 'F j, Y H:i:s')
                     ->sortable(),
+                TextColumn::make('admin.username')->label('Created by')
+                    ->toggleable()
+                    ->sortable(),
                 TextColumn::make('created_at')
                     ->toggleable()
                     ->toggleable(isToggledHiddenByDefault: true)
                     ->dateTime($format = 'F j, Y H:i:s')
                     ->sortable(),
+                TextColumn::make('updated_at')
+                    ->toggleable()
+                    ->dateTime($format = 'F j, Y H:i:s')
+                    ->sortable(),
             ])
 
             ->actions([
-                ViewAction::make(),
-                EditAction::make(),
-                DeleteAction::make(),
+                ViewAction::make()->label(''),
+                ReplicateAction::make()->label('')
+                    ->excludeAttributes(
+                        [
+                            'password',
+                            'username',
+                            'remember_token',
+                            'avatar',
+                            'scim_externalid',
+                            'two_factor_secret',
+                        ]),
+                EditAction::make()->label(''),
+                DeleteAction::make()->label(''),
+
             ])
             ->bulkActions([
                 BulkActionGroup::make([

@@ -121,8 +121,20 @@ class AssetResource extends Resource
                 TextColumn::make('model.name')->toggleable()->sortable(),
                 TextColumn::make('purchase_cost')->toggleable()->money('EUR', locale: 'pt')->sortable(),
                 IconColumn::make('requestable')->toggleable()->boolean()->sortable(),
-                TextColumn::make('purchase_date')->toggleable()->dateTime($format = 'F j, Y H:i:s')->sortable(),
+                TextColumn::make('purchase_date')->toggleable()->dateTime($format = 'F j, Y')->sortable(),
                 IconColumn::make('assigned_to')->toggleable()->boolean()->label('Checked Out')->sortable(),
+                TextColumn::make('admin.username')->label('Created by')
+                    ->toggleable()
+                    ->sortable(),
+                TextColumn::make('created_at')
+                    ->toggleable()
+                    ->toggleable(isToggledHiddenByDefault: true)
+                    ->dateTime($format = 'F j, Y H:i:s')
+                    ->sortable(),
+                TextColumn::make('updated_at')
+                    ->toggleable()
+                    ->dateTime($format = 'F j, Y H:i:s')
+                    ->sortable(),
 
             ])
             ->filters([
