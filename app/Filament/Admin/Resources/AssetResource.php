@@ -32,6 +32,9 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Columns\ImageColumn;
+use Filament\Forms\Components\DatePicker;
+use Filament\Forms\Components\DateTimePicker;
+use Filament\Forms\Components\TimePicker;
 
 class AssetResource extends Resource
 {
@@ -45,9 +48,9 @@ class AssetResource extends Resource
         return $form
             ->schema([
                 TextInput::make('name')
-                    ->required()
                     ->autofocus()
-                    ->maxLength(255),
+                    ->maxLength(255)
+                    ->required(),
                 Select::make('model_id')
                     ->label('Asset Model')
                     ->options(AssetModel::select([
@@ -59,21 +62,41 @@ class AssetResource extends Resource
                         'models.category_id',
                     ])->with('manufacturer', 'category')->pluck('name', 'id'))
                     ->searchable()
-                    ->native(false),
-                Select::make('manufacturer_id')
-                    ->label('Manufacturer')
-                    ->options(Manufacturer::all()->pluck('name', 'id'))
+                    ->native(false)
+                    ->required(),
+                Select::make('status_id')
+                    ->label('Status')
+                    ->options(StatusLabel::all()->pluck('name', 'id'))
+                    ->searchable()
+                    ->native(false)
+                    ->required(),
+                Select::make('supplier_id')
+                    ->label('Supplier')
+                    ->options(Supplier::all()->pluck('name', 'id'))
                     ->searchable()
                     ->native(false),
-                TextInput::make('email')
-                    ->maxLength(255),
-                TextInput::make('phone')
-                    ->maxLength(255),
-                TextInput::make('jobtitle')
-                    ->maxLength(255),
+                Select::make('location_id')
+                    ->label('Location')
+                    ->options(Location::all()->pluck('name', 'id'))
+                    ->searchable()
+                    ->native(false),
+                Select::make('rtd_location_id')
+                    ->label('Default Location')
+                    ->options(Location::all()->pluck('name', 'id'))
+                    ->searchable()
+                    ->native(false),
+                DatePicker::make('purchase_date')
+                    ->format('Y-m-d'),
+                DatePicker::make('expected_checkin')
+                    ->format('Y-m-d'),
+                DatePicker::make('eol_date')
+                    ->format('Y-m-d'),
                 FileUpload::make('image'),
+                TextInput::make('purchase_cost'),
+                TextInput::make('order_number'),
                 Textarea::make('notes'),
-                Checkbox::make('requestable')->inline()
+                Checkbox::make('requestable')->inline(),
+                Checkbox::make('byod')->inline()
             ]);
     }
 
