@@ -171,4 +171,11 @@ class UserResource extends Resource
     {
         return static::getModel()::count();
     }
+
+    // This currently throws a missing parameter error on the user view
+//    public static function getEloquentQuery(): Builder
+//    {
+//        return parent::getEloquentQuery()
+//            ->select(['username', 'email']);
+//    }
 }
