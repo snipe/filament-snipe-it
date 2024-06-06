@@ -12,6 +12,27 @@ class Asset extends Model
     protected $table = 'assets';
 
     /**
+     * The attributes that are mass assignable.
+     *
+     * @var array
+     */
+    protected $fillable = [
+        'category_id',
+        'depreciation_id',
+        'eol',
+        'fieldset_id',
+        'image',
+        'manufacturer_id',
+        'min_amt',
+        'model_number',
+        'name',
+        'notes',
+        'user_id',
+    ];
+
+
+
+    /**
      * Establishes the asset -> model relationship
      *
      * @author [A. Gianotto] [<snipe@snipe.net>]
