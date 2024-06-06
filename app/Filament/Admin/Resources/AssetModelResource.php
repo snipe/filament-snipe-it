@@ -21,7 +21,7 @@ class AssetModelResource extends Resource
     protected static ?string $model = AssetModel::class;
     protected static ?string $navigationGroup = 'Settings';
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = null;
 
     public static function form(Form $form): Form
     {
@@ -73,5 +73,10 @@ class AssetModelResource extends Resource
             'create' => Pages\CreateAssetModel::route('/create'),
             'edit' => Pages\EditAssetModel::route('/{record}/edit'),
         ];
+    }
+
+    public static function getNavigationBadge(): ?string
+    {
+        return static::getModel()::count();
     }
 }

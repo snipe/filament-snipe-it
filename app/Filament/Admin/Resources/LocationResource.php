@@ -20,7 +20,7 @@ class LocationResource extends Resource
     protected static ?string $model = Location::class;
     protected static ?string $navigationGroup = 'Settings';
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = null;
 
     public static function form(Form $form): Form
     {
@@ -68,5 +68,10 @@ class LocationResource extends Resource
             'create' => Pages\CreateLocation::route('/create'),
             'edit' => Pages\EditLocation::route('/{record}/edit'),
         ];
+    }
+
+    public static function getNavigationBadge(): ?string
+    {
+        return static::getModel()::count();
     }
 }

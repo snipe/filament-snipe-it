@@ -2,34 +2,29 @@
 
 namespace App\Filament\Admin\Resources;
 
-use App\Filament\Admin\Resources\SupplierResource\Pages;
-use App\Filament\Admin\Resources\SupplierResource\RelationManagers;
-use App\Models\Supplier;
+use App\Filament\Admin\Resources\ComponentResource\Pages;
+use App\Filament\Admin\Resources\ComponentResource\RelationManagers;
+use App\Models\Component;
 use Filament\Forms;
-use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
-use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
-class SupplierResource extends Resource
+class ComponentResource extends Resource
 {
-    protected static ?string $model = Supplier::class;
-    protected static ?string $navigationGroup = 'Settings';
+    protected static ?string $model = Component::class;
+    protected static ?int $navigationSort = 4;
 
-    protected static ?string $navigationIcon = null;
+    protected static ?string $navigationIcon = 'far-hdd';
 
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
-                TextInput::make('name')
-                    ->required()
-                    ->autofocus()
-                    ->maxLength(255),
+                //
             ]);
     }
 
@@ -37,9 +32,7 @@ class SupplierResource extends Resource
     {
         return $table
             ->columns([
-                TextColumn::make('id')->toggleable()->sortable(),
-                TextColumn::make('name')->toggleable()->sortable(),
-                TextColumn::make('updated_at')->toggleable()->dateTime($format = 'F j, Y H:i:s')->sortable(),
+                //
             ])
             ->filters([
                 //
@@ -64,9 +57,9 @@ class SupplierResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListSuppliers::route('/'),
-            'create' => Pages\CreateSupplier::route('/create'),
-            'edit' => Pages\EditSupplier::route('/{record}/edit'),
+            'index' => Pages\ListComponents::route('/'),
+            'create' => Pages\CreateComponent::route('/create'),
+            'edit' => Pages\EditComponent::route('/{record}/edit'),
         ];
     }
 

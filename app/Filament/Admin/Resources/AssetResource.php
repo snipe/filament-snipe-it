@@ -30,7 +30,7 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 class AssetResource extends Resource
 {
     protected static ?string $model = Asset::class;
-    protected static ?int $navigationSort = 2;
+    protected static ?int $navigationSort = 1;
 
     protected static ?string $navigationIcon = 'fas-barcode';
 

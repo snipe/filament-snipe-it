@@ -21,7 +21,7 @@ class StatusLabelResource extends Resource
     protected static ?string $model = StatusLabel::class;
     protected static ?string $navigationGroup = 'Settings';
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = null;
 
     public static function form(Form $form): Form
     {
@@ -69,5 +69,10 @@ class StatusLabelResource extends Resource
             'create' => Pages\CreateStatusLabel::route('/create'),
             'edit' => Pages\EditStatusLabel::route('/{record}/edit'),
         ];
+    }
+
+    public static function getNavigationBadge(): ?string
+    {
+        return static::getModel()::count();
     }
 }

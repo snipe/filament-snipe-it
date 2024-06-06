@@ -20,7 +20,7 @@ class ManufacturerResource extends Resource
     protected static ?string $model = Manufacturer::class;
     protected static ?string $navigationGroup = 'Settings';
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = null;
 
     public static function form(Form $form): Form
     {
@@ -68,5 +68,10 @@ class ManufacturerResource extends Resource
             'create' => Pages\CreateManufacturer::route('/create'),
             'edit' => Pages\EditManufacturer::route('/{record}/edit'),
         ];
+    }
+
+    public static function getNavigationBadge(): ?string
+    {
+        return static::getModel()::count();
     }
 }
