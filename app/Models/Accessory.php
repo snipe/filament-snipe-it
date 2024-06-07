@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use App\Models\Category;
 use App\Models\User;
 
@@ -20,12 +21,17 @@ class Accessory extends Model
      * @since [v3.0]
      * @return \Illuminate\Database\Eloquent\Relations\Relation
      */
-    public function category()
+    public function category(): BelongsTo
     {
         return $this->belongsTo(Category::class, 'category_id')->where('category_type', '=', 'accessory');
     }
 
-    public function admin() {
-        return $this->belongsTo(User::class, 'user_id');
+    /**
+     * Determine which user created this resource
+     * @return BelongsTo
+     */
+    public function admin(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'user_id')->withTrashed();
     }
 }
