@@ -9,6 +9,7 @@ use Illuminate\Notifications\Notifiable;
 use App\Models\Asset;
 use App\Models\Accessory;
 use App\Models\Consumable;
+use Illuminate\Support\Facades\Gate;
 
 class User extends Authenticatable
 {
@@ -20,9 +21,36 @@ class User extends Authenticatable
      * @var array<int, string>
      */
     protected $fillable = [
-        'name',
+        'activated',
+        'address',
+        'city',
+        'company_id',
+        'country',
+        'department_id',
         'email',
+        'employee_num',
+        'first_name',
+        'jobtitle',
+        'last_name',
+        'ldap_import',
+        'locale',
+        'location_id',
+        'manager_id',
         'password',
+        'phone',
+        'notes',
+        'state',
+        'username',
+        'zip',
+        'remote',
+        'start_date',
+        'end_date',
+        'scim_externalid',
+        'avatar',
+        'gravatar',
+        'vip',
+        'autoassign_licenses',
+        'website',
     ];
 
     /**
@@ -48,6 +76,24 @@ class User extends Authenticatable
         ];
     }
 
+    /**
+     * Checks if the user is deletable
+     *
+     * @author A. Gianotto <snipe@snipe.net>
+     * @since [v6.3.4]
+     * @return bool
+     */
+    public function isDeletable()
+    {
+        return Gate::allows('delete', $this)
+            && ($this->assets->count() === 0)
+            && ($this->licenses->count() === 0)
+            && ($this->consumables->count() === 0)
+            && ($this->accessories->count() === 0)
+            && ($this->managedLocations->count() === 0)
+            && ($this->managesUsers->count() === 0)
+            && ($this->deleted_at == '');
+    }
     public function admin() {
         return $this->belongsTo(User::class, 'user_id');
     }
@@ -102,8 +148,35 @@ class User extends Authenticatable
         return $this->belongsToMany(License::class, 'license_seats', 'assigned_to', 'license_id')->withPivot('id', 'created_at', 'updated_at');
     }
 
+    /**
+     * Establishes the user -> managed users relationship
+     *
+     * @author A. Gianotto <snipe@snipe.net>
+     * @since [v6.4.1]
+     * @return \Illuminate\Database\Eloquent\Relations\Relation
+     */
+    public function managesUsers()
+    {
+        return $this->hasMany(\App\Models\User::class, 'manager_id');
+    }
+
+
+    /**
+     * Establishes the user -> managed locations relationship
+     *
+     * @author A. Gianotto <snipe@snipe.net>
+     * @since [v4.0]
+     * @return \Illuminate\Database\Eloquent\Relations\Relation
+     */
+    public function managedLocations()
+    {
+        return $this->hasMany(\App\Models\Location::class, 'manager_id');
+    }
+
     public function getNameAttribute()
     {
         return $this->first_name.' '.$this->last_name;
     }
+
+
 }
