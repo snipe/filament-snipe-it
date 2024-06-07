@@ -40,6 +40,8 @@ use Filament\Tables\Actions\ActionGroup;
 use App\Filament\Imports\UserImporter;
 use Filament\Tables\Actions\ImportAction;
 use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Fieldset;
+use Filament\Forms\Components\Section;
 
 class UserResource extends Resource
 {
@@ -52,63 +54,80 @@ class UserResource extends Resource
 
         return $form
             ->schema([
-                TextInput::make('first_name')
-                    ->maxLength(255)
-                    ->required()
-                    ->autofocus(),
-                TextInput::make('last_name')
-                    ->maxLength(255),
-                TextInput::make('username')
-                    ->maxLength(255)
-                    ->unique()
-                    ->required(),
-                TextInput::make('password')
-                    ->password()
-                    ->dehydrateStateUsing(fn ($state) => Hash::make($state))
-                    ->dehydrated(fn ($state) => filled($state))
-                    ->required(fn (string $context): bool => $context === 'create'),
-                TextInput::make('email')
-                    ->email()
-                    ->maxLength(255),
-                Select::make('location_id')
-                    ->relationship(name: 'location', titleAttribute: 'name')
-                    ->searchable()
-                    ->preload()
-                    ->native(false)
-                    ->createOptionForm([
-                        TextInput::make('name')
-                            ->required()
-                    ]),
-                Select::make('department_id')
-                    ->relationship(name: 'department', titleAttribute: 'name')
-                    ->searchable()
-                    ->preload()
-                    ->native(false)->createOptionForm([
-                        TextInput::make('name')
-                            ->required()
-                    ]),
-                TextInput::make('address')
-                    ->maxLength(255),
-                TextInput::make('address2')->label('Address Line 2')
-                    ->maxLength(255),
-                TextInput::make('city')
-                    ->maxLength(255),
-                TextInput::make('state')
-                    ->maxLength(255),
-                TextInput::make('zip')
-                    ->maxLength(255),
-                TextInput::make('country')
-                    ->maxLength(255),
-                TextInput::make('phone')
-                    ->maxLength(255),
+
+                Section::make('Name and Login')->schema([
+                    TextInput::make('first_name')
+                        ->maxLength(255)
+                        ->required()
+                        ->autofocus(),
+                    TextInput::make('last_name')
+                        ->maxLength(255),
+                    TextInput::make('username')
+                        ->maxLength(255)
+                        ->unique()
+                        ->required(),
+                    TextInput::make('password')
+                        ->password()
+                        ->dehydrateStateUsing(fn ($state) => Hash::make($state))
+                        ->dehydrated(fn ($state) => filled($state))
+                        ->required(fn (string $context): bool => $context === 'create'),
+                    Checkbox::make('activated')->label('This user can login')->inline()
+                ])
+                ->columns(2),
+
+                Section::make('Work Information')->schema([
+                    TextInput::make('jobtitle')
+                        ->maxLength(255),
+                    TextInput::make('email')
+                        ->email()
+                        ->maxLength(255),
+                    Select::make('location_id')
+                        ->relationship(name: 'location', titleAttribute: 'name')
+                        ->searchable()
+                        ->preload()
+                        ->native(false)
+                        ->createOptionForm([
+                            TextInput::make('name')
+                                ->required()
+                        ]),
+                    Select::make('department_id')
+                        ->relationship(name: 'department', titleAttribute: 'name')
+                        ->searchable()
+                        ->preload()
+                        ->native(false)
+                        ->createOptionForm(fn(Form $form) => DepartmentResource::form($form))
+                        ->createOptionAction(fn ($action) => $action->mutateFormDataUsing(function ($data) {
+                            $data['user_id'] = auth()->user()->id;
+                            return $data;
+                        })),
+                    ])
+                    ->collapsible()
+                    ->persistCollapsed()
+                    ->id('user-workinfo')
+                    ->columns(2),
+                Section::make('Address')
+                    //->description('Settings for publishing this post.')
+                    ->schema([
+                    TextInput::make('address')
+                        ->maxLength(255),
+                    TextInput::make('address2')->label('Address Line 2')
+                        ->maxLength(255),
+                    TextInput::make('city')
+                        ->maxLength(255),
+                    TextInput::make('state')
+                        ->maxLength(255),
+                    TextInput::make('zip')
+                        ->maxLength(14),
+                    TextInput::make('country')
+                        ->maxLength(255),
+                    TextInput::make('phone')
+                        ->maxLength(255)
+                    ])
+                    ->collapsed()
+                    ->persistCollapsed()
+                    ->id('user-address')
+                    ->columns(2),
                     //->suffixIcon('heroicon-m-globe-alt'),
-                TextInput::make('jobtitle')
-                    ->maxLength(255),
-                Checkbox::make('vip')->inline(),
-                Checkbox::make('activated')->label('This user can login')->inline()
-
-
-
             ]);
     }
 
