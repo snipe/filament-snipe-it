@@ -1,53 +1,73 @@
 <?php
-
 namespace App\Filament\Admin\Widgets;
 
-use Filament\Widgets\ChartWidget;
-use Flowframe\Trend\Trend;
-use Flowframe\Trend\TrendValue;
 use App\Models\Asset;
+use Flowframe\Trend\Trend;
+use Illuminate\Support\Carbon;
+use Flowframe\Trend\TrendValue;
+use Filament\Forms\Components\DatePicker;
+use Leandrocfe\FilamentApexCharts\Widgets\ApexChartWidget;
 
-class PurchasesChart extends ChartWidget
+class PurchasesChart extends ApexChartWidget
 {
-    protected static ?int $sort = 2;
-    protected static ?string $heading = 'Asset Purchases Trends';
-    public ?string $filter = 'today';
-    protected static string $color = 'info';
-    protected function getData(): array
-    {
-        $activeFilter = $this->filter;
+    protected int | string | array $columnSpan = 'full';
 
+    protected static ?string $chartId = 'assetsChart';
+
+    protected static ?string $heading = 'Purchase Trends';
+
+    protected function getOptions(): array
+    {
         $data = Trend::model(Asset::class)
             ->between(
-                start: now()->startOfYear(),
-                end: now()->endOfYear(),
+                start: Carbon::parse($this->filterFormData['date_start']),
+                end: Carbon::parse($this->filterFormData['date_end']),
             )
-            ->dateColumn('purchase_date')
-            ->perMonth()
+            ->perDay()
             ->count();
 
         return [
-            'datasets' => [
+            'chart' => [
+                'type' => 'line',
+                'height' => 300,
+            ],
+            'series' => [
                 [
-                    'label' => 'Asset Purchases',
+                    'name' => 'Purchases Chart',
                     'data' => $data->map(fn (TrendValue $value) => $value->aggregate),
                 ],
             ],
-            'labels' => $data->map(fn (TrendValue $value) => $value->date),
+            'xaxis' => [
+                'categories' => $data->map(fn (TrendValue $value) => $value->date),
+                'labels' => [
+                    'style' => [
+                        'colors' => '#9ca3af',
+                        'fontWeight' => 600,
+                    ],
+                ],
+            ],
+            'yaxis' => [
+                'labels' => [
+                    'style' => [
+                        'colors' => '#9ca3af',
+                        'fontWeight' => 600,
+                    ],
+                ],
+            ],
+            'colors' => ['#6366f1'],
+            'stroke' => [
+                'curve' => 'smooth',
+            ],
         ];
     }
 
-    protected function getType(): string
-    {
-        return 'bar';
-    }
-
-    protected function getFilters(): ?array
+    protected function getFormSchema(): array
     {
         return [
-            'week' => 'Last week',
-            'month' => 'Last month',
-            'year' => 'This year',
+            DatePicker::make('date_start')
+                ->default(now()->subMonth()),
+            DatePicker::make('date_end')
+                ->default(now()),
         ];
     }
 }

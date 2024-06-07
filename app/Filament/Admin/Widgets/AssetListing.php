@@ -13,12 +13,20 @@ use Filament\Tables\Filters\Filter;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Filters\TernaryFilter;
 use App\Models\Asset;
+use Illuminate\Database\Eloquent\Builder;
 use Filament\Widgets\TableWidget as BaseWidget;
 
 class AssetListing extends BaseWidget
 {
     protected static ?int $sort = 15;
+    protected static string $chartId = 'assetsChart';
     protected int | string | array $columnSpan = 'full';
+
+    protected function getTableQuery(): Builder
+    {
+        return Asset::query()->latest();
+    }
+
 
     public function table(Table $table): Table
     {
@@ -35,22 +43,30 @@ class AssetListing extends BaseWidget
                 IconColumn::make('assigned_to')->toggleable()->boolean()->label('Checked Out')->sortable(),
 
             ])
-            ->filters([
-                TernaryFilter::make('Checked Out')
-                    ->nullable()
-                    ->attribute('assigned_to')
-            ])
-
-            ->actions([
-                EditAction::make(),
-                DeleteAction::make(),
-            ])
-            ->bulkActions([
-                BulkActionGroup::make([
-                    DeleteBulkAction::make(),
-                ]),
-            ])
             ->deferLoading()
             ->striped();
+    }
+
+
+    protected function getTableFilters(): array
+    {
+        return [
+            Filter::make('created_at')
+                ->form([
+                    DatePicker::make('created_from'),
+                    DatePicker::make('created_until'),
+                ])
+                ->query(function (Builder $query, array $data): Builder {
+                    return $query
+                        ->when(
+                            $data['created_from'],
+                            fn(Builder $query, $date): Builder => $query->whereDate('created_at', '>=', $date),
+                        )
+                        ->when(
+                            $data['created_until'],
+                            fn(Builder $query, $date): Builder => $query->whereDate('created_at', '<=', $date),
+                        );
+                })
+        ];
     }
 }

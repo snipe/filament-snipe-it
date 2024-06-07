@@ -21,6 +21,7 @@ use Illuminate\View\Middleware\ShareErrorsFromSession;
 use Filament\Navigation\MenuItem;
 use Filament\Facades\Filament;
 use Filament\Navigation\NavigationItem;
+use Leandrocfe\FilamentApexCharts\FilamentApexChartsPlugin;
 
 class AdminPanelProvider extends PanelProvider
 {
@@ -65,6 +66,9 @@ class AdminPanelProvider extends PanelProvider
                 // ...
             ])
             ->path('')
+            ->plugins([
+                FilamentApexChartsPlugin::make()
+            ])
             ->navigationItems([
                 NavigationItem::make('Analytics')
                     ->url('https://filament.pirsch.io', shouldOpenInNewTab: true)
