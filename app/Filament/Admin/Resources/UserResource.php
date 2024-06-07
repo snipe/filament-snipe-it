@@ -81,9 +81,9 @@ class UserResource extends Resource
                     ->toggleable(isToggledHiddenByDefault: true)
                     ->sortable(),
                 ImageColumn::make('avatar')
-                    ->disk('public')
                     ->toggleable()
-                    ->sortable(),
+                    ->sortable()
+                    ->defaultImageUrl(url('/img/default-sm.png')),
                 TextColumn::make('first_name')
                     ->toggleable()
                     ->sortable(),
@@ -132,20 +132,18 @@ class UserResource extends Resource
                     ->toggleable(isToggledHiddenByDefault: true)
                     ->sortable(),
                 TextColumn::make('last_login')
-                    ->toggleable()
                     ->toggleable(isToggledHiddenByDefault: true)
                     ->dateTime($format = 'F j, Y H:i:s')
                     ->sortable(),
                 TextColumn::make('admin.username')->label('Created by')
-                    ->toggleable()
-                    ->sortable(),
+                    ->toggleable(isToggledHiddenByDefault: true),
+                    //->searchable(isIndividual: true),
                 TextColumn::make('created_at')
-                    ->toggleable()
                     ->toggleable(isToggledHiddenByDefault: true)
                     ->dateTime($format = 'F j, Y H:i:s')
                     ->sortable(),
                 TextColumn::make('updated_at')
-                    ->toggleable()
+                    ->toggleable(isToggledHiddenByDefault: true)
                     ->dateTime($format = 'F j, Y H:i:s')
                     ->sortable(),
             ])
