@@ -57,6 +57,7 @@ class AdminPanelProvider extends PanelProvider
                 SubstituteBindings::class,
                 DisableBladeIconComponents::class,
                 DispatchServingFilamentEvent::class,
+                \Hasnayeen\Themes\Http\Middleware\SetTheme::class
             ])
             ->authMiddleware([
                 Authenticate::class,
@@ -67,7 +68,8 @@ class AdminPanelProvider extends PanelProvider
             ])
             ->path('')
             ->plugins([
-                FilamentApexChartsPlugin::make()
+                FilamentApexChartsPlugin::make(),
+                \Hasnayeen\Themes\ThemesPlugin::make()
             ])
             ->navigationItems([
                 NavigationItem::make('Analytics')
