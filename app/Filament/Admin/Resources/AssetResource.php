@@ -3,8 +3,10 @@
 namespace App\Filament\Admin\Resources;
 
 use App\Filament\Admin\Resources\AssetResource\Pages;
-use App\Filament\Exports\UserExporter;
-use App\Tables\Columns\ModelLinkColumn;
+use App\Filament\Exports\AssetExporter;
+use App\Filament\Imports\AssetImporter;
+//use App\Tables\Columns\ModelLinkColumn;
+use Filament\Tables\Actions\ImportAction;
 use Filament\Tables\Actions\ReplicateAction;
 use App\Models\Asset;
 use App\Models\AssetModel;
@@ -36,12 +38,9 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Columns\ImageColumn;
 use Filament\Forms\Components\DatePicker;
-use Filament\Forms\Components\DateTimePicker;
-use Filament\Forms\Components\TimePicker;
 use Filament\Forms\Components\Actions\Action;
 use Filament\Tables\Actions\ExportBulkAction;
 use Filament\Tables\Actions\ExportAction;
-use App\Filament\Exports\AssetExporter;
 use Filament\Actions\Exports\Models\Export;
 
 class AssetResource extends Resource
@@ -178,6 +177,8 @@ class AssetResource extends Resource
                     ->attribute('requestable'),
             ])
             ->headerActions([
+                ImportAction::make()
+                    ->importer(AssetImporter::class)->maxRows(10000),
                 ExportAction::make()
                     ->exporter(AssetExporter::class)
                     ->fileName(fn (Export $export): string => "assets-{$export->getKey()}.csv")

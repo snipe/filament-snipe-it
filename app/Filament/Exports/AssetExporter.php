@@ -27,7 +27,6 @@ class AssetExporter extends Exporter
             ExportColumn::make('assigned_to'),
             ExportColumn::make('notes'),
             ExportColumn::make('image'),
-            ExportColumn::make('user_id'),
             ExportColumn::make('created_at'),
             ExportColumn::make('admin.username')->label('Created By'),
             ExportColumn::make('updated_at'),

@@ -4,7 +4,10 @@ namespace App\Filament\Admin\Resources;
 
 use App\Filament\Admin\Resources\CategoryResource\Pages;
 use App\Filament\Admin\Resources\CategoryResource\RelationManagers;
+use App\Filament\Exports\CategoryExporter;
+use App\Filament\Imports\CategoryImporter;
 use App\Models\Category;
+use Filament\Actions\Exports\Models\Export;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -12,6 +15,8 @@ use Filament\Tables\Actions\BulkActionGroup;
 use Filament\Tables\Actions\DeleteAction;
 use Filament\Tables\Actions\DeleteBulkAction;
 use Filament\Tables\Actions\EditAction;
+use Filament\Tables\Actions\ExportAction;
+use Filament\Tables\Actions\ImportAction;
 use Filament\Tables\Actions\ReplicateAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
@@ -52,6 +57,13 @@ class CategoryResource extends Resource
                     ->toggleable()
                     ->dateTime($format = 'F j, Y H:i:s')
                     ->sortable(),
+            ])
+            ->headerActions([
+                ImportAction::make()
+                    ->importer(CategoryImporter::class)->maxRows(10000),
+                ExportAction::make()
+                    ->exporter(CategoryExporter::class)
+                    ->fileName(fn (Export $export): string => "categories-{$export->getKey()}.csv")
             ])
             ->actions([
                 ReplicateAction::make()->label(''),

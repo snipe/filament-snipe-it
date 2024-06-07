@@ -4,7 +4,10 @@ namespace App\Filament\Admin\Resources;
 
 use App\Filament\Admin\Resources\AssetModelResource\Pages;
 use App\Filament\Admin\Resources\AssetModelResource\RelationManagers;
+use App\Filament\Exports\AssetModelExporter;
+use App\Filament\Imports\AssetModelImporter;
 use App\Models\AssetModel;
+use Filament\Actions\Exports\Models\Export;
 use Filament\Forms;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
@@ -12,6 +15,8 @@ use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Actions\DeleteAction;
 use Filament\Tables\Actions\EditAction;
+use Filament\Tables\Actions\ExportAction;
+use Filament\Tables\Actions\ImportAction;
 use Filament\Tables\Actions\ReplicateAction;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
@@ -72,6 +77,13 @@ class AssetModelResource extends Resource
             ])
             ->filters([
                 //
+            ])
+            ->headerActions([
+                ImportAction::make()
+                    ->importer(AssetModelImporter::class)->maxRows(10000),
+                ExportAction::make()
+                    ->exporter(AssetModelExporter::class)
+                    ->fileName(fn (Export $export): string => "assetmodels-{$export->getKey()}.csv")
             ])
             ->actions([
                 ReplicateAction::make()->label(''),

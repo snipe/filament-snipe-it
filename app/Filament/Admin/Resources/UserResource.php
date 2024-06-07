@@ -35,6 +35,8 @@ use App\Filament\Exports\UserExporter;
 use Filament\Actions\Exports\Models\Export;
 use Filament\Tables\Actions\ExportBulkAction;
 use Filament\Tables\Actions\ActionGroup;
+use App\Filament\Imports\UserImporter;
+use Filament\Tables\Actions\ImportAction;
 
 class UserResource extends Resource
 {
@@ -61,7 +63,7 @@ class UserResource extends Resource
                     ->maxLength(255),
                 TextInput::make('jobtitle')
                     ->maxLength(255),
-                 Checkbox::make('vip')->inline(),
+                Checkbox::make('vip')->inline(),
                 Checkbox::make('activated')->label('This user can login')->inline(),
                 TextInput::make('password')
                     ->password()
@@ -146,6 +148,8 @@ class UserResource extends Resource
                     ->sortable(),
             ])
             ->headerActions([
+                ImportAction::make()
+                    ->importer(UserImporter::class)->maxRows(100000),
                 ExportAction::make()
                     ->exporter(UserExporter::class)
                     ->fileName(fn (Export $export): string => "users-{$export->getKey()}.csv")

@@ -3,7 +3,6 @@
 namespace App\Filament\Admin\Resources;
 
 use App\Filament\Admin\Resources\SupplierResource\Pages;
-use App\Filament\Admin\Resources\SupplierResource\RelationManagers;
 use App\Models\Supplier;
 use Filament\Forms;
 use Filament\Forms\Components\TextInput;
@@ -17,6 +16,11 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use App\Filament\Exports\SupplierExporter;
+use App\Filament\Imports\SupplierImporter;
+use Filament\Actions\Exports\Models\Export;
+use Filament\Tables\Actions\ExportAction;
+use Filament\Tables\Actions\ImportAction;
 
 class SupplierResource extends Resource
 {
@@ -57,6 +61,13 @@ class SupplierResource extends Resource
             ])
             ->filters([
                 //
+            ])
+            ->headerActions([
+                ImportAction::make()
+                    ->importer(SupplierImporter::class)->maxRows(10000),
+                ExportAction::make()
+                    ->exporter(SupplierExporter::class)
+                    ->fileName(fn (Export $export): string => "suppliers-{$export->getKey()}.csv")
             ])
             ->actions([
                 ReplicateAction::make()->label(''),
