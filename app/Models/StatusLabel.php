@@ -11,6 +11,14 @@ class StatusLabel extends Model
 
     protected $table = 'status_labels';
 
+    protected $fillable = [
+        'archived',
+        'deployable',
+        'name',
+        'notes',
+        'pending',
+    ];
+
 
     public function admin() {
         return $this->belongsTo(User::class, 'user_id');
