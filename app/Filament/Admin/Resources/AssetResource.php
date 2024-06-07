@@ -42,6 +42,9 @@ use Filament\Forms\Components\Actions\Action;
 use Filament\Tables\Actions\ExportBulkAction;
 use Filament\Tables\Actions\ExportAction;
 use Filament\Actions\Exports\Models\Export;
+use Filament\Forms\Components\Radio;
+use Filament\Forms\Components\ColorPicker;
+use Filament\Forms\Components\ToggleButtons;
 
 class AssetResource extends Resource
 {
@@ -75,9 +78,37 @@ class AssetResource extends Resource
                     ->required(),
                 Select::make('status_id')
                     ->label('Status')
-                    ->options(StatusLabel::all()->pluck('name', 'id'))
+                    ->relationship(name: 'statuslabel', titleAttribute: 'name')
                     ->searchable()
+                    ->preload()
                     ->native(false)
+                    ->createOptionForm([
+                        TextInput::make('name')
+                            ->required(),
+                        ToggleButtons::make('status_type')
+                            ->options([
+                                'deployable' => 'Deployable',
+                                'pending' => 'Pending',
+                                'undeployable' => 'Undeployable',
+                                'archived' => 'Archived'
+                            ])
+                            ->colors([
+                                'deployable' => 'success',
+                                'pending' => 'primary',
+                                'undeployable' => 'primary',
+                                'archived' => 'danger'
+                            ])
+                            ->icons([
+                                'deployable' => 'fas-check',
+                                'pending' => 'heroicon-o-clock',
+                                'undeployable' => 'fas-times',
+                                'archived' => 'fas-times',
+                            ])
+                            ->required()
+                            ->grouped()
+                            ->inline(),
+                        ColorPicker::make('color')
+                    ])
                     ->required(),
                 Select::make('supplier_id')
                     ->label('Supplier')
@@ -88,11 +119,19 @@ class AssetResource extends Resource
                     ->label('Location')
                     ->options(Location::all()->pluck('name', 'id'))
                     ->searchable()
-                    ->native(false),
+                    ->native(false)
+                    ->createOptionForm([
+                        TextInput::make('name')
+                            ->required()
+                    ]),
                 Select::make('rtd_location_id')
                     ->label('Default Location')
                     ->options(Location::all()->pluck('name', 'id'))
                     ->searchable()
+                    ->createOptionForm([
+                        TextInput::make('name')
+                            ->required(),
+                    ])
                     ->native(false),
                 DatePicker::make('purchase_date')
                     ->format('Y-m-d'),
