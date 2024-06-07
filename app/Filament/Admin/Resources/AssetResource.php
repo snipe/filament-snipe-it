@@ -85,6 +85,7 @@ class AssetResource extends Resource
                     ->createOptionForm([
                         TextInput::make('name')
                             ->required(),
+                        ColorPicker::make('color'),
                         ToggleButtons::make('status_type')
                             ->options([
                                 'deployable' => 'Deployable',
@@ -107,9 +108,12 @@ class AssetResource extends Resource
                             ->required()
                             ->grouped()
                             ->inline(),
-                        ColorPicker::make('color')
-                    ])
-                    ->required(),
+                        Textarea::make('notes')
+                            ->columnSpan(2),
+                        Checkbox::make('default_label')
+                            ->inline()->columnSpan(2)
+                    ])->columns(2),
+
                 Select::make('supplier_id')
                     ->label('Supplier')
                     ->options(Supplier::all()->pluck('name', 'id'))
@@ -139,7 +143,10 @@ class AssetResource extends Resource
                     ->format('Y-m-d'),
                 DatePicker::make('eol_date')
                     ->format('Y-m-d'),
-                FileUpload::make('image'),
+                FileUpload::make('image')
+                    ->acceptedFileTypes(['application/pdf'])
+                    ->imageEditor()
+                    ->image(),
                 TextInput::make('purchase_cost'),
                 TextInput::make('order_number'),
                 Textarea::make('notes'),
