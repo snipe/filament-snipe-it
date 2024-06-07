@@ -13,6 +13,7 @@ use Filament\Tables;
 use Filament\Tables\Actions\DeleteAction;
 use Filament\Tables\Actions\EditAction;
 use Filament\Tables\Actions\ReplicateAction;
+use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Columns\ToggleColumn;
 use Filament\Tables\Table;
@@ -46,7 +47,16 @@ class AssetModelResource extends Resource
                 TextColumn::make('model_number')->toggleable()->sortable(),
                 TextColumn::make('category.name')->toggleable()->sortable(),
                 TextColumn::make('min_amt')->toggleable()->sortable(),
-                ToggleColumn::make('requestable')->toggleable(isToggledHiddenByDefault: true)->sortable(),
+                IconColumn::make('requestable')
+                    ->toggleable()
+                    ->boolean()
+                    ->toggleable(isToggledHiddenByDefault: true)
+                    ->icon(fn (string $state): string => match ($state) {
+                        '0' => 'fas-times',
+                        '1' => 'fas-check',
+                    })
+                    ->size(IconColumn\IconColumnSize::Small)
+                    ->sortable(),
                 TextColumn::make('admin.username')->label('Created by')
                     ->toggleable()
                     ->sortable(),

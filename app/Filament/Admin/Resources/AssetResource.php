@@ -124,7 +124,15 @@ class AssetResource extends Resource
                 TextColumn::make('order_number')->toggleable()->sortable(),
                 TextColumn::make('model.category.name')->toggleable()->sortable(),
                 TextColumn::make('purchase_cost')->toggleable()->money('EUR', locale: 'pt')->sortable(),
-                IconColumn::make('requestable')->toggleable()->boolean()->sortable(),
+                IconColumn::make('requestable')
+                    ->toggleable()
+                    ->boolean()
+                    ->icon(fn (string $state): string => match ($state) {
+                        '0' => 'fas-times',
+                        '1' => 'fas-check',
+                    })
+                    ->size(IconColumn\IconColumnSize::Small)
+                    ->sortable(),
                 TextColumn::make('purchase_date')->toggleable()->dateTime($format = 'F j, Y')->sortable(),
                 IconColumn::make('assigned_to')->toggleable()->boolean()->label('Checked Out')->sortable(),
                 TextColumn::make('last_audit_date')->toggleable()->dateTime($format = 'F j, Y H:i:s')->sortable(),
