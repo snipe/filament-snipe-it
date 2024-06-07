@@ -24,12 +24,15 @@ use Filament\Tables\Filters\TernaryFilter;
 use Filament\Tables\Filters\Filter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Filament\Forms\Components\TextInput;
 use Filament\Tables\Columns\ToggleColumn;
 use Illuminate\Support\HtmlString;
 use Illuminate\Support\Facades\Blade;
 use Filament\Forms\Components\Tabs;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 
 class UserResource extends Resource
 {
@@ -56,7 +59,13 @@ class UserResource extends Resource
                     ->maxLength(255),
                 TextInput::make('jobtitle')
                     ->maxLength(255),
-                 Checkbox::make('vip')->inline()
+                 Checkbox::make('vip')->inline(),
+                Checkbox::make('activated')->label('This user can login')->inline(),
+                TextInput::make('password')
+                    ->password()
+                    ->dehydrateStateUsing(fn ($state) => Hash::make($state))
+                    ->dehydrated(fn ($state) => filled($state))
+                    ->required(fn (string $context): bool => $context === 'create')
             ]);
     }
 
@@ -150,7 +159,11 @@ class UserResource extends Resource
                 EditAction::make()->label(''),
                 DeleteAction::make()->label(''),
 
-            ])
+            ])->checkIfRecordIsSelectableUsing(
+                fn (Model $record): bool =>
+                ($record->id != Auth::user()->id && ($record->isDeletable()))
+
+            )
             ->bulkActions([
                 BulkActionGroup::make([
                     DeleteBulkAction::make(),
