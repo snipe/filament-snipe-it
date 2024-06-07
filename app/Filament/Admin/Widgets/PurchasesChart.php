@@ -11,7 +11,7 @@ use Leandrocfe\FilamentApexCharts\Widgets\ApexChartWidget;
 class PurchasesChart extends ApexChartWidget
 {
     protected int | string | array $columnSpan = 'full';
-
+    protected static ?int $sort = 3;
     protected static ?string $chartId = 'assetsChart';
 
     protected static ?string $heading = 'Purchase Trends';
@@ -23,6 +23,7 @@ class PurchasesChart extends ApexChartWidget
                 start: Carbon::parse($this->filterFormData['date_start']),
                 end: Carbon::parse($this->filterFormData['date_end']),
             )
+            ->dateColumn('purchase_date')
             ->perDay()
             ->count();
 

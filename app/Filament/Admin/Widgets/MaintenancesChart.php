@@ -5,24 +5,23 @@ namespace App\Filament\Admin\Widgets;
 use Filament\Widgets\ChartWidget;
 use Flowframe\Trend\Trend;
 use Flowframe\Trend\TrendValue;
-use App\Models\User;
+use App\Models\AssetMaintenance;
 
 class MaintenancesChart extends ChartWidget
 {
     protected static ?int $sort = 2;
     protected static ?string $heading = 'Maintenances Trends';
     public ?string $filter = 'today';
-    protected static bool $isDiscovered = false;
     protected function getData(): array
     {
         $activeFilter = $this->filter;
 
-        $data = Trend::model(User::class)
+        $data = Trend::model(AssetMaintenance::class)
             ->between(
                 start: now()->startOfYear(),
                 end: now()->endOfYear(),
             )
-            ->dateColumn('created_at')
+            ->dateColumn('start_date')
             ->perMonth()
             ->count();
 
