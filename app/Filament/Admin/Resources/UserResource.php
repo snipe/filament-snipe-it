@@ -4,6 +4,8 @@ namespace App\Filament\Admin\Resources;
 
 use App\Filament\Admin\Resources\UserResource\Pages;
 use App\Models\User;
+use App\Models\Location;
+use App\Models\Department;
 use Filament\Forms\Components\Checkbox;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -37,6 +39,7 @@ use Filament\Tables\Actions\ExportBulkAction;
 use Filament\Tables\Actions\ActionGroup;
 use App\Filament\Imports\UserImporter;
 use Filament\Tables\Actions\ImportAction;
+use Filament\Forms\Components\Select;
 
 class UserResource extends Resource
 {
@@ -51,25 +54,61 @@ class UserResource extends Resource
             ->schema([
                 TextInput::make('first_name')
                     ->maxLength(255)
-                    ->required(),
+                    ->required()
+                    ->autofocus(),
                 TextInput::make('last_name')
                     ->maxLength(255),
                 TextInput::make('username')
                     ->maxLength(255)
+                    ->unique()
                     ->required(),
-                TextInput::make('email')
-                    ->maxLength(255),
-                TextInput::make('phone')
-                    ->maxLength(255),
-                TextInput::make('jobtitle')
-                    ->maxLength(255),
-                Checkbox::make('vip')->inline(),
-                Checkbox::make('activated')->label('This user can login')->inline(),
                 TextInput::make('password')
                     ->password()
                     ->dehydrateStateUsing(fn ($state) => Hash::make($state))
                     ->dehydrated(fn ($state) => filled($state))
-                    ->required(fn (string $context): bool => $context === 'create')
+                    ->required(fn (string $context): bool => $context === 'create'),
+                TextInput::make('email')
+                    ->email()
+                    ->maxLength(255),
+                Select::make('location_id')
+                    ->relationship(name: 'location', titleAttribute: 'name')
+                    ->searchable()
+                    ->preload()
+                    ->native(false)
+                    ->createOptionForm([
+                        TextInput::make('name')
+                            ->required()
+                    ]),
+                Select::make('department_id')
+                    ->relationship(name: 'department', titleAttribute: 'name')
+                    ->searchable()
+                    ->preload()
+                    ->native(false)->createOptionForm([
+                        TextInput::make('name')
+                            ->required()
+                    ]),
+                TextInput::make('address')
+                    ->maxLength(255),
+                TextInput::make('address2')->label('Address Line 2')
+                    ->maxLength(255),
+                TextInput::make('city')
+                    ->maxLength(255),
+                TextInput::make('state')
+                    ->maxLength(255),
+                TextInput::make('zip')
+                    ->maxLength(255),
+                TextInput::make('country')
+                    ->maxLength(255),
+                TextInput::make('phone')
+                    ->maxLength(255),
+                    //->suffixIcon('heroicon-m-globe-alt'),
+                TextInput::make('jobtitle')
+                    ->maxLength(255),
+                Checkbox::make('vip')->inline(),
+                Checkbox::make('activated')->label('This user can login')->inline()
+
+
+
             ]);
     }
 
@@ -136,8 +175,8 @@ class UserResource extends Resource
                     ->dateTime($format = 'F j, Y H:i:s')
                     ->sortable(),
                 TextColumn::make('admin.username')->label('Created by')
-                    ->toggleable(isToggledHiddenByDefault: true),
-                    //->searchable(isIndividual: true),
+                    ->toggleable(isToggledHiddenByDefault: true)
+                    ->sortable(),
                 TextColumn::make('created_at')
                     ->toggleable(isToggledHiddenByDefault: true)
                     ->dateTime($format = 'F j, Y H:i:s')
