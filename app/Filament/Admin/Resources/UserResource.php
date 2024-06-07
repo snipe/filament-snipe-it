@@ -34,6 +34,7 @@ use Filament\Tables\Actions\ExportAction;
 use App\Filament\Exports\UserExporter;
 use Filament\Actions\Exports\Models\Export;
 use Filament\Tables\Actions\ExportBulkAction;
+use Filament\Tables\Actions\ActionGroup;
 
 class UserResource extends Resource
 {
@@ -149,22 +150,26 @@ class UserResource extends Resource
                     ->exporter(UserExporter::class)
                     ->fileName(fn (Export $export): string => "users-{$export->getKey()}.csv")
             ])
-            ->actions([
-                ViewAction::make()->label(''),
-                ReplicateAction::make()->label('')
-                    ->excludeAttributes(
-                        [
-                            'password',
-                            'username',
-                            'remember_token',
-                            'avatar',
-                            'scim_externalid',
-                            'two_factor_secret',
-                        ]),
-                EditAction::make()->label(''),
-                DeleteAction::make()->label(''),
 
-            ])->checkIfRecordIsSelectableUsing(
+            ->actions([
+                ActionGroup::make([
+                    ViewAction::make(),
+                    ReplicateAction::make()
+                        ->excludeAttributes(
+                            [
+                                'password',
+                                'username',
+                                'remember_token',
+                                'avatar',
+                                'scim_externalid',
+                                'two_factor_secret',
+                            ]),
+                    EditAction::make(),
+                    DeleteAction::make(),
+                ]),
+                // ...
+            ])
+            ->checkIfRecordIsSelectableUsing(
                 fn (Model $record): bool =>
                 ($record->id != Auth::user()->id && ($record->isDeletable()))
 
