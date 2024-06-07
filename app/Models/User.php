@@ -248,7 +248,29 @@ class User extends Authenticatable
         return $this->first_name.' '.$this->last_name;
     }
 
+    /**
+     * Establishes the user -> department relationship
+     *
+     * @author A. Gianotto <snipe@snipe.net>
+     * @since [v4.0]
+     * @return \Illuminate\Database\Eloquent\Relations\Relation
+     */
+    public function department()
+    {
+        return $this->belongsTo(\App\Models\Department::class, 'department_id');
+    }
 
+    /**
+     * Establishes the user -> location relationship
+     *
+     * @author A. Gianotto <snipe@snipe.net>
+     * @since [v3.0]
+     * @return \Illuminate\Database\Eloquent\Relations\Relation
+     */
+    public function location()
+    {
+        return $this->belongsTo(\App\Models\Location::class, 'location_id');
+    }
 
     /**
      * Query builder scope to order on admin user
