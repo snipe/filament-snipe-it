@@ -3,6 +3,7 @@
 namespace App\Filament\Admin\Resources;
 
 use App\Filament\Admin\Resources\AssetResource\Pages;
+use App\Filament\Exports\UserExporter;
 use App\Tables\Columns\ModelLinkColumn;
 use Filament\Tables\Actions\ReplicateAction;
 use App\Models\Asset;
@@ -38,7 +39,10 @@ use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\TimePicker;
 use Filament\Forms\Components\Actions\Action;
-
+use Filament\Tables\Actions\ExportBulkAction;
+use Filament\Tables\Actions\ExportAction;
+use App\Filament\Exports\AssetExporter;
+use Filament\Actions\Exports\Models\Export;
 
 class AssetResource extends Resource
 {
@@ -173,7 +177,11 @@ class AssetResource extends Resource
                 TernaryFilter::make('Requestable')
                     ->attribute('requestable'),
             ])
-
+            ->headerActions([
+                ExportAction::make()
+                    ->exporter(AssetExporter::class)
+                    ->fileName(fn (Export $export): string => "assets-{$export->getKey()}.csv")
+            ])
             ->actions([
                 ReplicateAction::make()->label('')
                     ->excludeAttributes(
@@ -188,6 +196,7 @@ class AssetResource extends Resource
             ->bulkActions([
                 BulkActionGroup::make([
                     DeleteBulkAction::make(),
+                    ExportBulkAction::make()->exporter(AssetExporter::class)
                 ]),
             ])
             ->checkIfRecordIsSelectableUsing(

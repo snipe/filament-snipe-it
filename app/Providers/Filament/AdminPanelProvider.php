@@ -18,11 +18,12 @@ use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\AuthenticateSession;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
-// use App\Filament\Pages\Auth\EditProfile;
+//use App\Filament\Pages\Auth\EditProfile;
 use Filament\Navigation\MenuItem;
 use Filament\Facades\Filament;
 use Filament\Navigation\NavigationItem;
 use Leandrocfe\FilamentApexCharts\FilamentApexChartsPlugin;
+use Filament\Navigation\NavigationGroup;
 
 class AdminPanelProvider extends PanelProvider
 {
@@ -48,6 +49,7 @@ class AdminPanelProvider extends PanelProvider
                // Widgets\AccountWidget::class,
                // Widgets\FilamentInfoWidget::class,
             ])
+            ->discoverClusters(in: app_path('Filament/Clusters'), for: 'App\\Filament\\Clusters')
             ->middleware([
                 EncryptCookies::class,
                 AddQueuedCookiesToResponse::class,
@@ -65,7 +67,7 @@ class AdminPanelProvider extends PanelProvider
                 Authenticate::class,
             ])
             ->userMenuItems([
-                'profile' => MenuItem::make()->label('Edit profile'),
+                'profile' => MenuItem::make()->label('Edit Profile'),
                 // ...
             ])
             ->path('')
@@ -81,7 +83,23 @@ class AdminPanelProvider extends PanelProvider
                     ->sort(3),
 
             ])
-            ->brandLogo(asset('img/logo.png'));;
+            ->navigationGroups([
+                NavigationGroup::make()
+                    ->label('Shop')
+                    ->icon('heroicon-o-shopping-cart'),
+                NavigationGroup::make()
+                    ->label('Blog')
+                    ->icon('heroicon-o-pencil'),
+                NavigationGroup::make()
+                    ->label(fn (): string => __('navigation.settings'))
+                    ->icon('heroicon-o-cog-6-tooth')
+                    ->collapsed(),
+            ])
+            ->profile(isSimple: false)
+            ->login()
+            ->databaseNotifications()
+            ->databaseNotificationsPolling('5s')
+            ->brandLogo(asset('img/logo.png'));
     }
 
 

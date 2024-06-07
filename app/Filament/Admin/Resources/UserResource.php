@@ -3,13 +3,10 @@
 namespace App\Filament\Admin\Resources;
 
 use App\Filament\Admin\Resources\UserResource\Pages;
-use App\Filament\Admin\Widgets\UserListing;
 use App\Models\User;
-use Filament\Forms;
 use Filament\Forms\Components\Checkbox;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
-use Filament\Tables;
 use Filament\Tables\Actions\BulkActionGroup;
 use Filament\Tables\Actions\DeleteAction;
 use Filament\Tables\Actions\DeleteBulkAction;
@@ -33,6 +30,10 @@ use Illuminate\Support\Facades\Blade;
 use Filament\Forms\Components\Tabs;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Filament\Tables\Actions\ExportAction;
+use App\Filament\Exports\UserExporter;
+use Filament\Actions\Exports\Models\Export;
+use Filament\Tables\Actions\ExportBulkAction;
 
 class UserResource extends Resource
 {
@@ -143,7 +144,11 @@ class UserResource extends Resource
                     ->dateTime($format = 'F j, Y H:i:s')
                     ->sortable(),
             ])
-
+            ->headerActions([
+                ExportAction::make()
+                    ->exporter(UserExporter::class)
+                    ->fileName(fn (Export $export): string => "users-{$export->getKey()}.csv")
+            ])
             ->actions([
                 ViewAction::make()->label(''),
                 ReplicateAction::make()->label('')
@@ -167,6 +172,7 @@ class UserResource extends Resource
             ->bulkActions([
                 BulkActionGroup::make([
                     DeleteBulkAction::make(),
+                    ExportBulkAction::make()->exporter(UserExporter::class)
                 ]),
             ])
             ->filters([
