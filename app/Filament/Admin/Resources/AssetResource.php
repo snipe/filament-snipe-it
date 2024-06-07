@@ -32,6 +32,7 @@ use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\TernaryFilter;
 use Filament\Tables\Table;
+use Filament\Widgets\StatsOverviewWidget\Stat;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
@@ -45,6 +46,8 @@ use Filament\Actions\Exports\Models\Export;
 use Filament\Forms\Components\Radio;
 use Filament\Forms\Components\ColorPicker;
 use Filament\Forms\Components\ToggleButtons;
+use Filament\Forms\Components\Section;
+use Filament\Forms\Components\Repeater;
 
 class AssetResource extends Resource
 {
@@ -57,102 +60,123 @@ class AssetResource extends Resource
     {
         return $form
             ->schema([
-                TextInput::make('asset_tag')
-                    ->autofocus()
-                    ->maxLength(255)
-                    ->required(),
-                TextInput::make('name')
-                    ->maxLength(255),
-                Select::make('model_id')
-                    ->label('Asset Model')
-                    ->options(AssetModel::select([
-                        'models.id',
-                        'models.name',
-                        'models.image',
-                        'models.model_number',
-                        'models.manufacturer_id',
-                        'models.category_id',
-                    ])->with('manufacturer', 'category')->pluck('name', 'id'))
-                    ->searchable()
-                    ->native(false)
-                    ->required(),
-                Select::make('status_id')
-                    ->label('Status')
-                    ->relationship(name: 'statuslabel', titleAttribute: 'name')
-                    ->searchable()
-                    ->preload()
-                    ->native(false)
-                    ->createOptionForm([
-                        TextInput::make('name')
-                            ->required(),
-                        ColorPicker::make('color'),
-                        ToggleButtons::make('status_type')
-                            ->options([
-                                'deployable' => 'Deployable',
-                                'pending' => 'Pending',
-                                'undeployable' => 'Undeployable',
-                                'archived' => 'Archived'
-                            ])
-                            ->colors([
-                                'deployable' => 'success',
-                                'pending' => 'primary',
-                                'undeployable' => 'primary',
-                                'archived' => 'danger'
-                            ])
-                            ->icons([
-                                'deployable' => 'fas-check',
-                                'pending' => 'heroicon-o-clock',
-                                'undeployable' => 'fas-times',
-                                'archived' => 'fas-times',
-                            ])
-                            ->required()
-                            ->grouped()
-                            ->inline(),
-                        Textarea::make('notes')
-                            ->columnSpan(2),
-                        Checkbox::make('default_label')
-                            ->inline()->columnSpan(2)
-                    ])->columns(2),
+                Section::make('Asset Details')->schema([
 
-                Select::make('supplier_id')
-                    ->label('Supplier')
-                    ->options(Supplier::all()->pluck('name', 'id'))
-                    ->searchable()
-                    ->native(false),
-                Select::make('location_id')
-                    ->label('Location')
-                    ->options(Location::all()->pluck('name', 'id'))
-                    ->searchable()
-                    ->native(false)
-                    ->createOptionForm([
-                        TextInput::make('name')
-                            ->required()
-                    ]),
-                Select::make('rtd_location_id')
-                    ->label('Default Location')
-                    ->options(Location::all()->pluck('name', 'id'))
-                    ->searchable()
-                    ->createOptionForm([
-                        TextInput::make('name')
-                            ->required(),
-                    ])
-                    ->native(false),
-                DatePicker::make('purchase_date')
-                    ->format('Y-m-d'),
-                DatePicker::make('expected_checkin')
-                    ->format('Y-m-d'),
-                DatePicker::make('eol_date')
-                    ->format('Y-m-d'),
-                FileUpload::make('image')
-                    ->acceptedFileTypes(['application/pdf'])
-                    ->imageEditor()
-                    ->image(),
-                TextInput::make('purchase_cost'),
-                TextInput::make('order_number'),
-                Textarea::make('notes'),
-                Checkbox::make('requestable')->inline(),
-                Checkbox::make('byod')->inline()
+                    Select::make('model_id')
+                        ->label('Asset Model')
+                        ->relationship(name: 'assetmodel', titleAttribute: 'name')
+                        ->searchable()
+                        ->preload()
+                        ->native(false)
+                        ->createOptionForm(fn(Form $form) => AssetModelResource::form($form))
+                        ->createOptionAction(fn ($action) => $action->mutateFormDataUsing(function ($data) {
+                            $data['user_id'] = auth()->user()->id;
+                            return $data;
+                        }))
+                        ->required(),
+
+                    Select::make('status_id')
+                        ->label('Status')
+                        ->relationship(name: 'statuslabel', titleAttribute: 'name')
+                        ->searchable()
+                        ->preload()
+                        ->native(false)
+                        ->createOptionForm(fn(Form $form) => StatusLabelResource::form($form))
+                        ->createOptionAction(fn ($action) => $action->mutateFormDataUsing(function ($data) {
+                            $data['user_id'] = auth()->user()->id;
+                            return $data;
+                        }))
+                        ->required(),
+
+                    FileUpload::make('image')
+                        ->acceptedFileTypes(['application/pdf'])
+                        ->imageEditor()
+                        ->image(),
+                    Textarea::make('notes'),
+                    Checkbox::make('requestable')->inline(),
+                    Checkbox::make('byod')->inline()
+                ])
+                ->id('asset-baseinfo')
+                ->columns(2),
+
+                Section::make('Optional Details')->schema([
+
+                    TextInput::make('name')
+                        ->maxLength(255),
+
+                    Select::make('company_id')
+                        ->label('Company')
+                        ->relationship(name: 'company', titleAttribute: 'name')
+                        ->searchable()
+                        ->preload()
+                        ->native(false)
+                        ->createOptionForm(fn(Form $form) => CompanyResource::form($form))
+                        ->createOptionAction(fn ($action) => $action->mutateFormDataUsing(function ($data) {
+                            $data['user_id'] = auth()->user()->id;
+                            return $data;
+                        })),
+
+                    Select::make('location_id')
+                        ->relationship(name: 'location', titleAttribute: 'name')
+                        ->searchable()
+                        ->preload()
+                        ->native(false)
+                        ->createOptionForm(fn(Form $form) => LocationResource::form($form))
+                        ->createOptionAction(fn ($action) => $action->mutateFormDataUsing(function ($data) {
+                            $data['user_id'] = auth()->user()->id;
+                            return $data;
+                        })),
+
+                    Select::make('rtd_location_id')
+                        ->label('Default Location')
+                        ->relationship(name: 'location', titleAttribute: 'name')
+                        ->searchable()
+                        ->preload()
+                        ->native(false)
+                        ->createOptionForm(fn(Form $form) => LocationResource::form($form))
+                        ->createOptionAction(fn ($action) => $action->mutateFormDataUsing(function ($data) {
+                            $data['user_id'] = auth()->user()->id;
+                            return $data;
+                        })),
+
+                    DatePicker::make('expected_checkin')
+                        ->suffixIcon('fas-calendar')
+                        ->native(false)
+                        ->displayFormat('Y-m-d'),
+                    DatePicker::make('eol_date')
+                        ->suffixIcon('fas-calendar')
+                        ->native(false)
+                        ->displayFormat('Y-m-d'),
+                ])
+                    ->collapsible()
+                    ->persistCollapsed()
+                    ->id('asset-optional')
+                    ->columns(2),
+
+                Section::make('Order Details')->schema([
+                    TextInput::make('purchase_cost'),
+                    TextInput::make('order_number'),
+                    DatePicker::make('purchase_date')
+                        ->suffixIcon('fas-calendar')
+                        ->native(false)
+                        ->displayFormat('Y-m-d'),
+                    Select::make('location_id')
+                        ->relationship(name: 'supplier', titleAttribute: 'name')
+                        ->searchable()
+                        ->preload()
+                        ->native(false)
+                        ->createOptionForm(fn(Form $form) => SupplierResource::form($form))
+                        ->createOptionAction(fn ($action) => $action->mutateFormDataUsing(function ($data) {
+                            $data['user_id'] = auth()->user()->id;
+                            return $data;
+                        })),
+                ])
+                    ->collapsed()
+                    ->persistCollapsed()
+                    ->id('order-details')
+                    ->columns(2)
             ]);
+
     }
 
     public static function table(Table $table): Table
@@ -167,11 +191,11 @@ class AssetResource extends Resource
                 TextColumn::make('company.name')->toggleable()->sortable(),
                 TextColumn::make('assigned_to')->toggleable()->sortable(),
                 // ModelLinkColumn::make('model.manufacturer.name')->label('Manufacturer'),
-                TextColumn::make('model.name')->label('Model Name')->toggleable()->sortable(),
-                TextColumn::make('model.model_number')->label('Model No.')->toggleable()->sortable(),
-                TextColumn::make('model.manufacturer.name')->toggleable()->sortable(),
+                TextColumn::make('assetmodel.name')->label('Model Name')->toggleable()->sortable(),
+                TextColumn::make('assetmodel.model_number')->label('Model No.')->toggleable()->sortable(),
+                TextColumn::make('assetmodel.manufacturer.name')->toggleable()->sortable(),
                 TextColumn::make('order_number')->toggleable()->sortable(),
-                TextColumn::make('model.category.name')->toggleable()->sortable(),
+                TextColumn::make('assetmodel.category.name')->toggleable()->sortable(),
                 TextColumn::make('purchase_cost')->toggleable()->money('EUR', locale: 'pt')->sortable(),
                 IconColumn::make('requestable')
                     ->toggleable()
@@ -250,6 +274,7 @@ class AssetResource extends Resource
                 fn (Model $record): bool => $record->assigned_to == null
             )
             ->deferLoading()
+            ->persistSortInSession()
             ->striped();
     }
 

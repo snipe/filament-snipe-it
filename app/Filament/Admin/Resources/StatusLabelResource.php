@@ -6,7 +6,11 @@ use App\Filament\Admin\Resources\StatusLabelResource\Pages;
 use App\Filament\Admin\Resources\StatusLabelResource\RelationManagers;
 use App\Models\StatusLabel;
 use Filament\Forms;
+use Filament\Forms\Components\Checkbox;
+use Filament\Forms\Components\ColorPicker;
+use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\ToggleButtons;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
@@ -18,6 +22,7 @@ use Filament\Tables\Columns\ToggleColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Filament\Tables\Columns\ColorColumn;
 
 class StatusLabelResource extends Resource
 {
@@ -31,10 +36,35 @@ class StatusLabelResource extends Resource
         return $form
             ->schema([
                 TextInput::make('name')
+                    ->required(),
+                ColorPicker::make('color'),
+                ToggleButtons::make('status_type')
+                    ->options([
+                        'deployable' => 'Deployable',
+                        'pending' => 'Pending',
+                        'undeployable' => 'Undeployable',
+                        'archived' => 'Archived'
+                    ])
+                    ->colors([
+                        'deployable' => 'success',
+                        'pending' => 'primary',
+                        'undeployable' => 'primary',
+                        'archived' => 'danger'
+                    ])
+                    ->icons([
+                        'deployable' => 'fas-check',
+                        'pending' => 'heroicon-o-clock',
+                        'undeployable' => 'fas-times',
+                        'archived' => 'fas-times',
+                    ])
                     ->required()
-                    ->autofocus()
-                    ->maxLength(255),
-            ]);
+                    ->grouped()
+                    ->inline(),
+                Textarea::make('notes')
+                    ->columnSpan(2),
+                Checkbox::make('default_label')
+                    ->inline()->columnSpan(2)
+            ])->columns(2);
     }
 
     public static function table(Table $table): Table
@@ -43,9 +73,7 @@ class StatusLabelResource extends Resource
             ->columns([
                 TextColumn::make('id')->toggleable()->sortable(),
                 TextColumn::make('name')->toggleable()->sortable(),
-                TextColumn::make('admin.username')->label('Created by')
-                    ->toggleable()
-                    ->sortable(),
+                TextColumn::make('notes')->toggleable()->sortable(),
                 TextColumn::make('created_at')
                     ->toggleable()
                     ->toggleable(isToggledHiddenByDefault: true)
@@ -54,6 +82,10 @@ class StatusLabelResource extends Resource
                 TextColumn::make('updated_at')
                     ->toggleable()
                     ->dateTime($format = 'F j, Y H:i:s')
+                    ->sortable(),
+                ColorColumn::make('color'),
+                TextColumn::make('admin.username')->label('Created by')
+                    ->toggleable()
                     ->sortable(),
             ])
             ->filters([

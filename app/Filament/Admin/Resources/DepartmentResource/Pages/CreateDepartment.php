@@ -9,4 +9,10 @@ use Filament\Resources\Pages\CreateRecord;
 class CreateDepartment extends CreateRecord
 {
     protected static string $resource = DepartmentResource::class;
+
+    protected function mutateFormDataBeforeSave(array $data): array
+    {
+        $data['user_id'] = auth()->id();
+        return $data;
+    }
 }
