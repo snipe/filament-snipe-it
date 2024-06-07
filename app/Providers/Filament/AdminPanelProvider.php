@@ -2,6 +2,7 @@
 
 namespace App\Providers\Filament;
 
+use App\Http\Middleware\loadSettings;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\DisableBladeIconComponents;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
@@ -57,7 +58,8 @@ class AdminPanelProvider extends PanelProvider
                 SubstituteBindings::class,
                 DisableBladeIconComponents::class,
                 DispatchServingFilamentEvent::class,
-                \Hasnayeen\Themes\Http\Middleware\SetTheme::class
+                \Hasnayeen\Themes\Http\Middleware\SetTheme::class,
+                loadSettings::class,
             ])
             ->authMiddleware([
                 Authenticate::class,
@@ -78,8 +80,11 @@ class AdminPanelProvider extends PanelProvider
                     ->group('Reports')
                     ->sort(3),
 
-            ]);
+            ])
+            ->brandLogo(asset('img/logo.png'));;
     }
+
+
 
 
 
