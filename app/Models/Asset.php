@@ -42,7 +42,7 @@ class Asset extends Model
      * @since [v1.0]
      * @return \Illuminate\Database\Eloquent\Relations\Relation
      */
-    public function model()
+    public function assetmodel()
     {
         return $this->belongsTo(AssetModel::class, 'model_id');
     }
@@ -68,7 +68,29 @@ class Asset extends Model
         return $this->belongsTo(Company::class, 'company_id');
     }
 
+    /**
+     * Establishes the asset -> location relationship
+     *
+     * @author [A. Gianotto] [<snipe@snipe.net>]
+     * @since [v2.0]
+     * @return \Illuminate\Database\Eloquent\Relations\Relation
+     */
+    public function location()
+    {
+        return $this->belongsTo(\App\Models\Location::class, 'location_id');
+    }
 
+    /**
+     * Establishes the asset -> aupplier relationship
+     *
+     * @author [A. Gianotto] [<snipe@snipe.net>]
+     * @since [v2.0]
+     * @return \Illuminate\Database\Eloquent\Relations\Relation
+     */
+    public function supplier()
+    {
+        return $this->belongsTo(\App\Models\Supplier::class, 'supplier_id');
+    }
 
 
 }
