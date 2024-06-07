@@ -86,7 +86,7 @@ class User extends Authenticatable
      * @since [v6.3.4]
      * @return bool
      */
-    public function isDeletable()
+    public function isDeletable() : Bool
     {
         return Gate::allows('delete', $this)
             && ($this->assets->count() === 0)
@@ -97,8 +97,75 @@ class User extends Authenticatable
             && ($this->managesUsers->count() === 0)
             && ($this->deleted_at == '');
     }
+
+    /**
+     * Checks if the user is a SuperUser
+     *
+     * @author A. Gianotto <snipe@snipe.net>
+     * @since [v1.0]
+     * @return bool
+     */
+    public function isSuperUser() : Bool
+    {
+        return $this->checkPermissionSection('superuser');
+    }
+
+    /**
+     * Establishes the user -> groups relationship
+     *
+     * @author A. Gianotto <snipe@snipe.net>
+     * @since [v1.0]
+     * @return \Illuminate\Database\Eloquent\Relations\Relation
+     */
+    public function groups()
+    {
+        return $this->belongsToMany(\App\Models\Group::class, 'users_groups');
+    }
+
+
+    /**
+     * Internally check the user permission for the given section
+     *
+     * @return bool
+     */
+    protected function checkPermissionSection($section)
+    {
+        $user_groups = $this->groups;
+        if (($this->permissions == '') && (count($user_groups) == 0)) {
+
+            return false;
+        }
+
+        $user_permissions = json_decode($this->permissions, true);
+
+        $is_user_section_permissions_set = ($user_permissions != '') && array_key_exists($section, $user_permissions);
+        //If the user is explicitly granted, return true
+        if ($is_user_section_permissions_set && ($user_permissions[$section] == '1')) {
+            return true;
+        }
+        // If the user is explicitly denied, return false
+        if ($is_user_section_permissions_set && ($user_permissions[$section] == '-1')) {
+            return false;
+        }
+
+        // Loop through the groups to see if any of them grant this permission
+        foreach ($user_groups as $user_group) {
+            $group_permissions = (array) json_decode($user_group->permissions, true);
+            if (((array_key_exists($section, $group_permissions)) && ($group_permissions[$section] == '1'))) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     public function admin() {
         return $this->belongsTo(User::class, 'user_id');
+    }
+
+    public function decodePermissions()
+    {
+        return json_decode($this->permissions, true);
     }
 
 
@@ -160,7 +227,7 @@ class User extends Authenticatable
      */
     public function managesUsers()
     {
-        return $this->hasMany(\App\Models\User::class, 'manager_id');
+        return $this->hasMany(User::class, 'manager_id');
     }
 
 
@@ -171,14 +238,32 @@ class User extends Authenticatable
      * @since [v4.0]
      * @return \Illuminate\Database\Eloquent\Relations\Relation
      */
-    public function managedLocations()
+    public function managesLocations()
     {
-        return $this->hasMany(\App\Models\Location::class, 'manager_id');
+        return $this->hasMany(Location::class, 'manager_id');
     }
 
     public function getNameAttribute()
     {
         return $this->first_name.' '.$this->last_name;
+    }
+
+
+
+    /**
+     * Query builder scope to order on admin user
+     *
+     * @param  \Illuminate\Database\Query\Builder  $query  Query builder instance
+     * @param string                              $order         Order
+     *
+     * @return \Illuminate\Database\Query\Builder          Modified query builder
+     */
+    public function scopeOrderByCreatedBy($query, $order)
+    {
+        // Left join here, or it will only return results with parents
+        return $query->leftJoin('users as admin_user', 'users.created_by', '=', 'admin_user.id')
+            ->orderBy('admin_user.first_name', $order)
+            ->orderBy('admin_user.last_name', $order);
     }
 
 
