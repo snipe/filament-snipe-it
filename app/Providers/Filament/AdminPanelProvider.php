@@ -98,7 +98,7 @@ class AdminPanelProvider extends PanelProvider
             ->profile(isSimple: false)
             ->login()
             ->databaseNotifications()
-            ->databaseNotificationsPolling('5s')
+            ->databaseNotificationsPolling('30s')
             ->brandLogo(asset('img/logo.png'));
     }
 
