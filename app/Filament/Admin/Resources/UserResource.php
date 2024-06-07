@@ -91,7 +91,9 @@ class UserResource extends Resource
                     ->toggleable()
                     ->sortable(),
                 TextColumn::make('username')
-                    ->sortable(),
+                    ->sortable()
+                    ->icon(fn ($record) => $record->isSuperUser()=='1' ? 'fas-crown' : '')
+                    ->iconColor(fn ($record) => $record->isSuperUser()=='1' ? 'warning' : ''),
                 TextColumn::make('email')
                     ->toggleable()
                     ->url(fn ($record) => 'mailto:'.$record->email, true)
