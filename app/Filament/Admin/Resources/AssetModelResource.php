@@ -23,7 +23,9 @@ use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Columns\ToggleColumn;
 use Filament\Tables\Table;
+use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class AssetModelResource extends Resource
@@ -32,6 +34,7 @@ class AssetModelResource extends Resource
     protected static ?string $cluster = Settings::class;
 
     protected static ?string $navigationIcon = null;
+    protected static int $globalSearchResultsLimit = 10;
 
     public static function form(Form $form): Form
     {
@@ -117,5 +120,33 @@ class AssetModelResource extends Resource
     public static function getNavigationBadge(): ?string
     {
         return static::getModel()::count();
+    }
+
+    /**
+     * This is used by the global top search to determine what fields on this model we should be
+     * searching on.
+     *
+     * @return string[]
+     */
+    public static function getGloballySearchableAttributes(): array
+    {
+        return ['name', 'model_number', 'category.name'];
+    }
+
+    public static function getGlobalSearchResultTitle(Model $record): string | Htmlable
+    {
+        return $record->name.' ('.$record->model_number.')';
+    }
+
+    public static function getGlobalSearchResultDetails(Model $record): array
+    {
+        return [
+            'Category' => $record->category->name,
+        ];
+    }
+
+    public static function getGlobalSearchEloquentQuery(): Builder
+    {
+        return parent::getGlobalSearchEloquentQuery()->with(['category']);
     }
 }

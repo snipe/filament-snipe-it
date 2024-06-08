@@ -23,6 +23,9 @@ class ConsumableResource extends Resource
     protected static ?string $model = Consumable::class;
     protected static ?int $navigationSort = 4;
 
+    protected static ?string $recordTitleAttribute = 'name';
+    protected static int $globalSearchResultsLimit = 10;
+
     protected static ?string $navigationIcon = 'fas-tint';
 
     public static function form(Form $form): Form
@@ -90,4 +93,11 @@ class ConsumableResource extends Resource
     {
         return static::getModel()::count();
     }
+
+
+    public static function getGloballySearchableAttributes(): array
+    {
+        return ['name'];
+    }
+
 }

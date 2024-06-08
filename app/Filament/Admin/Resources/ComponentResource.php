@@ -6,6 +6,7 @@ use App\Filament\Admin\Resources\ComponentResource\Pages;
 use App\Filament\Admin\Resources\ComponentResource\RelationManagers;
 use App\Models\Component;
 use Filament\Forms;
+use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
@@ -22,13 +23,19 @@ class ComponentResource extends Resource
     protected static ?string $model = Component::class;
     protected static ?int $navigationSort = 4;
 
+    protected static ?string $recordTitleAttribute = 'name';
+    protected static int $globalSearchResultsLimit = 10;
+
     protected static ?string $navigationIcon = 'far-hdd';
 
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
-                //
+                TextInput::make('name')
+                    ->required()
+                    ->autofocus()
+                    ->maxLength(255),
             ]);
     }
 
@@ -85,5 +92,16 @@ class ComponentResource extends Resource
     public static function getNavigationBadge(): ?string
     {
         return static::getModel()::count();
+    }
+
+    /**
+     * This is used by the global top search to determine what fields on this model we should be
+     * searching on.
+     *
+     * @return string[]
+     */
+    public static function getGloballySearchableAttributes(): array
+    {
+        return ['name', 'admin.username'];
     }
 }

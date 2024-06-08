@@ -51,12 +51,15 @@ use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Repeater;
 use Filament\Tables\Columns\Summarizers\Sum;
 use App\Filament\Admin\Resources\AssetResource\RelationManagers;
+use Illuminate\Contracts\Support\Htmlable;
 
 class AssetResource extends Resource
 {
     protected static ?string $model = Asset::class;
     protected static ?string $cluster = Assets::class;
     //protected static ?string $navigationGroup = 'Assets';
+    protected static ?string $recordTitleAttribute = 'asset_tag';
+    protected static int $globalSearchResultsLimit = 10;
     protected static ?int $navigationSort = 1;
     protected static ?string $navigationIcon = null;
 
@@ -312,4 +315,43 @@ class AssetResource extends Resource
     {
         return static::getModel()::count();
     }
+
+
+    /**
+     * This is used by the global top search to determine what fields on this model we should be
+     * searching on.
+     *
+     * @return string[]
+     */
+    public static function getGloballySearchableAttributes(): array
+    {
+        return ['name', 'assetmodel.model_number', 'serial', 'assetmodel.category.name'];
+    }
+
+    public static function getGlobalSearchResultDetails(Model $record): array
+    {
+        return [
+            'Serial' => $record->serial,
+            'Category' => $record->assetmodel->category->name,
+        ];
+    }
+
+    public static function getGlobalSearchEloquentQuery(): Builder
+    {
+        return parent::getGlobalSearchEloquentQuery()->with(['assetmodel', 'assetmodel.category']);
+    }
+
+    public static function getGlobalSearchResultTitle(Model $record): string | Htmlable
+    {
+        return 'Tag #'.$record->asset_tag;
+    }
+
+
+//    public static function getGlobalSearchResultActions(Model $record): array
+//    {
+//        return [
+//            Action::make('edit')
+//                ->url(static::getUrl('edit', ['record' => $record])),
+//        ];
+//    }
 }
