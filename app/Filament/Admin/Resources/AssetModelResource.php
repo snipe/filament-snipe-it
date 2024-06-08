@@ -77,7 +77,6 @@ class AssetModelResource extends Resource
                         return $data;
                     })),
 
-                ImageColumn::make('image'),
                 Textarea::make('notes')
                     ->string(),
                 FileUpload::make('image')
