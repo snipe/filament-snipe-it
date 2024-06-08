@@ -243,12 +243,20 @@ class UserResource extends Resource
                 ]),
             ])
             ->filters([
-                Filter::make('Can Login')
+                Filter::make('can_login')
+                    ->label('User can login')
                     ->query(fn (Builder $query): Builder => $query->where('activated', true)),
-                Filter::make('LDAP Login')
+                Filter::make('ldap_login')
+                    ->label('User is managed via LDAP')
                     ->query(fn (Builder $query): Builder => $query->where('ldap_import', true))
+//                Filter::make('has_assets')
+//                    ->label('User has at least one asset')
+//                    ->query(fn (Builder $query): Builder => $query->withCount('assets as assets_count')
+//                        ->where('assets', '>', 0)),
+
             ])
             ->deferLoading()
+            ->persistSortInSession()
             ->searchable()
             ->striped();
     }
