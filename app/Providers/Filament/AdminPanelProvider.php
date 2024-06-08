@@ -35,7 +35,7 @@ class AdminPanelProvider extends PanelProvider
             ->sidebarCollapsibleOnDesktop()
             ->breadcrumbs(true)
             ->id('admin')
-            ->path('admin')
+            ->path('')
             ->colors([
                 'primary' => Color::Green,
             ])
@@ -70,7 +70,6 @@ class AdminPanelProvider extends PanelProvider
                 'profile' => MenuItem::make()->label('Edit Profile'),
                 // ...
             ])
-            ->path('')
             ->plugins([
                 FilamentApexChartsPlugin::make(),
                 \Hasnayeen\Themes\ThemesPlugin::make()
