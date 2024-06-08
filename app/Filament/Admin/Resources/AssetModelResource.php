@@ -3,7 +3,6 @@
 namespace App\Filament\Admin\Resources;
 
 use App\Filament\Admin\Resources\AssetModelResource\Pages;
-use App\Filament\Admin\Resources\AssetModelResource\RelationManagers;
 use App\Filament\Clusters\Settings;
 use App\Filament\Exports\AssetModelExporter;
 use App\Filament\Imports\AssetModelImporter;
@@ -31,6 +30,7 @@ use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use App\Forms\Components\ViewImage;
 
 class AssetModelResource extends Resource
 {
@@ -83,6 +83,8 @@ class AssetModelResource extends Resource
                     ->directory('categories')
                     ->imageEditor()
                     ->image(),
+                ViewImage::make('image')
+
             ]);
     }
 
