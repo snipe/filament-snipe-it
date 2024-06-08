@@ -111,6 +111,7 @@ class AdminPanelProvider extends PanelProvider
             ->login()
             ->databaseNotifications()
             ->databaseNotificationsPolling('30s')
+            //->topNavigation()
             ->brandLogo(asset('img/logo.png'));
     }
 
