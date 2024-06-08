@@ -19,6 +19,7 @@ use Filament\Tables\Actions\EditAction;
 use Filament\Tables\Actions\ExportAction;
 use Filament\Tables\Actions\ImportAction;
 use Filament\Tables\Actions\ReplicateAction;
+use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
@@ -52,7 +53,7 @@ class LocationResource extends Resource
                         ->maxLength(255)
                         ->unique(ignoreRecord: true),
                     Select::make('parent_id')
-                        ->relationship(name: 'parent', titleAttribute: 'name')
+                        ->relationship(name: 'parent', titleAttribute: 'name', ignoreRecord: true)
                         ->searchable()
                         ->preload()
                         ->native(false)
@@ -89,8 +90,9 @@ class LocationResource extends Resource
                     PhoneInput::make('phone')->showSelectedDialCode(true),
                     PhoneInput::make('fax')->showSelectedDialCode(true),
                     FileUpload::make('image')
+                        ->directory('locations')
                         ->imageEditor()
-                        ->image()
+                        ->image(),
                 ])->columns(2)
             ]);
     }
@@ -100,6 +102,9 @@ class LocationResource extends Resource
         return $table
             ->columns([
                 TextColumn::make('id')
+                    ->toggleable(isToggledHiddenByDefault: true)
+                    ->sortable(),
+                ImageColumn::make('image')
                     ->toggleable()
                     ->sortable(),
                 TextColumn::make('name')

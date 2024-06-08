@@ -10,6 +10,9 @@ use App\Filament\Imports\AssetModelImporter;
 use App\Models\AssetModel;
 use Filament\Actions\Exports\Models\Export;
 use Filament\Forms;
+use Filament\Forms\Components\FileUpload;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -20,6 +23,7 @@ use Filament\Tables\Actions\ExportAction;
 use Filament\Tables\Actions\ImportAction;
 use Filament\Tables\Actions\ReplicateAction;
 use Filament\Tables\Columns\IconColumn;
+use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Columns\ToggleColumn;
 use Filament\Tables\Table;
@@ -46,6 +50,40 @@ class AssetModelResource extends Resource
                     ->autofocus()
                     ->maxLength(255)
                     ->unique(ignoreRecord: true),
+                TextInput::make('model_number')
+                    ->string()
+                    ->maxLength(255),
+                Select::make('category_id')
+                    ->label('Category')
+                    ->required()
+                    ->relationship(name: 'category', titleAttribute: 'name')
+                    ->searchable()
+                    ->preload()
+                    ->native(false)
+                    ->createOptionForm(fn(Form $form) => CategoryResource::form($form))
+                    ->createOptionAction(fn ($action) => $action->mutateFormDataUsing(function ($data) {
+                        $data['user_id'] = auth()->user()->id;
+                        return $data;
+                    })),
+                Select::make('manufacturer_id')
+                    ->label('Manufacturer')
+                    ->relationship(name: 'manufacturer', titleAttribute: 'name')
+                    ->searchable()
+                    ->preload()
+                    ->native(false)
+                    ->createOptionForm(fn(Form $form) => ManufacturerResource::form($form))
+                    ->createOptionAction(fn ($action) => $action->mutateFormDataUsing(function ($data) {
+                        $data['user_id'] = auth()->user()->id;
+                        return $data;
+                    })),
+
+                ImageColumn::make('image'),
+                Textarea::make('notes')
+                    ->string(),
+                FileUpload::make('image')
+                    ->directory('categories')
+                    ->imageEditor()
+                    ->image(),
             ]);
     }
 
@@ -54,6 +92,9 @@ class AssetModelResource extends Resource
         return $table
             ->columns([
                 TextColumn::make('id')->toggleable()->sortable(),
+                ImageColumn::make('image')
+                    ->toggleable()
+                    ->sortable(),
                 TextColumn::make('name')->toggleable()->sortable(),
                 TextColumn::make('model_number')->toggleable()->sortable(),
                 TextColumn::make('category.name')->toggleable()->sortable(),

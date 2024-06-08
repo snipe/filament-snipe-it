@@ -12,9 +12,12 @@ use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Actions\ReplicateAction;
+use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Ysfkaya\FilamentPhoneInput\PhoneInputNumberType;
+use Ysfkaya\FilamentPhoneInput\Tables\PhoneColumn;
 
 class CompanyResource extends Resource
 {
@@ -42,7 +45,31 @@ class CompanyResource extends Resource
     {
         return $table
             ->columns([
-                //
+                TextColumn::make('id')
+                    ->toggleable()
+                    ->sortable(),
+                TextColumn::make('name')
+                    ->toggleable()
+                    ->sortable(),
+                PhoneColumn::make('phone')->displayFormat(PhoneInputNumberType::NATIONAL)
+                    ->toggleable()
+                    ->sortable(),
+                PhoneColumn::make('fax')
+                    ->toggleable()
+                    ->sortable(),
+                TextColumn::make('admin.username')
+                    ->label('Created by')
+                    ->toggleable()
+                    ->sortable(),
+                TextColumn::make('created_at')
+                    ->toggleable()
+                    ->toggleable(isToggledHiddenByDefault: true)
+                    ->dateTime($format = 'F j, Y H:i:s')
+                    ->sortable(),
+                TextColumn::make('updated_at')
+                    ->toggleable()
+                    ->dateTime($format = 'F j, Y H:i:s')
+                    ->sortable(),
             ])
             ->filters([
                 //

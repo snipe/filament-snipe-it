@@ -10,6 +10,7 @@ use App\Filament\Imports\ManufacturerImporter;
 use App\Models\Manufacturer;
 use Filament\Actions\Exports\Models\Export;
 use Filament\Forms;
+use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -19,6 +20,7 @@ use Filament\Tables\Actions\EditAction;
 use Filament\Tables\Actions\ExportAction;
 use Filament\Tables\Actions\ImportAction;
 use Filament\Tables\Actions\ReplicateAction;
+use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
@@ -41,6 +43,10 @@ class ManufacturerResource extends Resource
                     ->autofocus()
                     ->maxLength(255)
                     ->unique(ignoreRecord: true),
+                FileUpload::make('image')
+                    ->directory('manufacturers')
+                    ->imageEditor()
+                    ->image(),
             ]);
     }
 
@@ -49,6 +55,9 @@ class ManufacturerResource extends Resource
         return $table
             ->columns([
                 TextColumn::make('id')->toggleable()->sortable(),
+                ImageColumn::make('image')
+                    ->toggleable()
+                    ->sortable(),
                 TextColumn::make('name')->toggleable()->sortable(),
                 TextColumn::make('admin.username')->label('Created by')
                     ->toggleable()

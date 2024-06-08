@@ -6,6 +6,7 @@ use App\Filament\Admin\Resources\ComponentResource\Pages;
 use App\Filament\Admin\Resources\ComponentResource\RelationManagers;
 use App\Models\Component;
 use Filament\Forms;
+use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -13,6 +14,7 @@ use Filament\Tables;
 use Filament\Tables\Actions\DeleteAction;
 use Filament\Tables\Actions\EditAction;
 use Filament\Tables\Actions\ReplicateAction;
+use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
@@ -38,6 +40,10 @@ class ComponentResource extends Resource
                     ->autofocus()
                     ->string()
                     ->maxLength(255),
+                FileUpload::make('image')
+                    ->directory('components')
+                    ->imageEditor()
+                    ->image(),
             ]);
     }
 
@@ -46,6 +52,9 @@ class ComponentResource extends Resource
         return $table
             ->columns([
                 TextColumn::make('id')->toggleable()->sortable(),
+                ImageColumn::make('image')
+                    ->toggleable()
+                    ->sortable(),
                 TextColumn::make('name')->toggleable()->sortable(),
                 TextColumn::make('admin.username')->label('Created by')
                     ->toggleable()

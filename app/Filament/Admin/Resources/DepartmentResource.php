@@ -8,6 +8,7 @@ use App\Filament\Clusters\Settings;
 use App\Models\Department;
 use Filament\Actions\Exports\Models\Export;
 use Filament\Forms;
+use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
@@ -18,6 +19,7 @@ use Filament\Tables\Actions\EditAction;
 use Filament\Tables\Actions\ExportAction;
 use Filament\Tables\Actions\ImportAction;
 use Filament\Tables\Actions\ReplicateAction;
+use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
@@ -52,6 +54,10 @@ class DepartmentResource extends Resource
                         $data['user_id'] = auth()->user()->id;
                         return $data;
                     })),
+                FileUpload::make('image')
+                    ->directory('departments')
+                    ->imageEditor()
+                    ->image(),
 
             ]);
     }
@@ -61,6 +67,9 @@ class DepartmentResource extends Resource
         return $table
             ->columns([
                 TextColumn::make('id')->toggleable()->sortable(),
+                ImageColumn::make('image')
+                    ->toggleable(isToggledHiddenByDefault: true)
+                    ->sortable(),
                 TextColumn::make('name')->toggleable()->sortable(),
                 TextColumn::make('admin.username')->label('Created by')
                     ->toggleable()

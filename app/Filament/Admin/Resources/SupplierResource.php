@@ -15,6 +15,7 @@ use Filament\Tables;
 use Filament\Tables\Actions\DeleteAction;
 use Filament\Tables\Actions\EditAction;
 use Filament\Tables\Actions\ReplicateAction;
+use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
@@ -75,8 +76,9 @@ class SupplierResource extends Resource
                 Textarea::make('notes')
                     ->rows(3),
                 FileUpload::make('image')
+                    ->directory('suppliers')
                     ->imageEditor()
-                    ->image()
+                    ->image(),
             ])->columns(2);
     }
 
@@ -85,6 +87,9 @@ class SupplierResource extends Resource
         return $table
             ->columns([
                 TextColumn::make('id')->toggleable()->sortable(),
+                ImageColumn::make('image')
+                    ->toggleable()
+                    ->sortable(),
                 TextColumn::make('name')->toggleable()->sortable(),
                 TextColumn::make('admin.username')->label('Created by')
                     ->toggleable()

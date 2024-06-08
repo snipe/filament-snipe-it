@@ -108,6 +108,7 @@ class AssetResource extends Resource
                         ->maxLength(255),
 
                     FileUpload::make('image')
+                        ->directory('assets')
                         ->imageEditor()
                         ->image(),
                     Textarea::make('notes')
@@ -175,7 +176,8 @@ class AssetResource extends Resource
 
                 Section::make('Order Details')->schema([
                     TextInput::make('purchase_cost'),
-                    TextInput::make('order_number'),
+                    TextInput::make('order_number')
+                        ->string(),
                     DatePicker::make('purchase_date')
                         ->suffixIcon('fas-calendar')
                         ->native(false)

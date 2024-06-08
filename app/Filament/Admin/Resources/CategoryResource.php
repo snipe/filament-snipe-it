@@ -9,6 +9,7 @@ use App\Filament\Exports\CategoryExporter;
 use App\Filament\Imports\CategoryImporter;
 use App\Models\Category;
 use Filament\Actions\Exports\Models\Export;
+use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
@@ -22,6 +23,7 @@ use Filament\Tables\Actions\ExportAction;
 use Filament\Tables\Actions\ImportAction;
 use Filament\Tables\Actions\ReplicateAction;
 use Filament\Tables\Columns\IconColumn;
+use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Columns\ToggleColumn;
 use Filament\Tables\Table;
@@ -82,7 +84,11 @@ class CategoryResource extends Resource
                         ->onIcon('fas-envelope-circle-check')
                         ->offIcon('fas-envelope')
                         ->onColor('success')
-                        ->offColor('gray')
+                        ->offColor('gray'),
+                    FileUpload::make('image')
+                        ->directory('categories')
+                        ->imageEditor()
+                        ->image(),
                 ])
             ]);
     }
@@ -92,6 +98,9 @@ class CategoryResource extends Resource
         return $table
             ->columns([
                 TextColumn::make('id')
+                    ->toggleable()
+                    ->sortable(),
+                ImageColumn::make('image')
                     ->toggleable()
                     ->sortable(),
                 TextColumn::make('name')
