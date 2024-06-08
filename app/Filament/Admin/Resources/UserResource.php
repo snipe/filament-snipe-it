@@ -230,7 +230,7 @@ class UserResource extends Resource
                     EditAction::make(),
                     DeleteAction::make(),
                     RestoreAction::make(),
-                ]),
+                ])->tooltip('Actions'),
                 // ...
             ])
             ->checkIfRecordIsSelectableUsing(
