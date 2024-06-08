@@ -8,10 +8,12 @@ use App\Models\StatusLabel;
 use App\Models\AssetModel;
 use App\Models\Company;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Watson\Validating\ValidatingTrait;
 
 class Asset extends Model
 {
     use HasFactory;
+    use ValidatingTrait;
     use SoftDeletes;
 
     protected $table = 'assets';
@@ -121,5 +123,6 @@ class Asset extends Model
         return $this->hasMany(\App\Models\AssetMaintenance::class, 'asset_id')
             ->orderBy('created_at', 'desc');
     }
+
 
 }

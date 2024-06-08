@@ -8,10 +8,12 @@ use Illuminate\Database\Eloquent\Model;
 use App\Models\Asset;
 use App\Models\Manufacturer;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Watson\Validating\ValidatingTrait;
 
 class AssetModel extends Model
 {
     use HasFactory;
+    use ValidatingTrait;
     use SoftDeletes;
 
     protected $table = 'models';

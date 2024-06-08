@@ -8,11 +8,28 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Models\AssetModel;
 use App\Models\Accessory;
 use App\Models\License;
+use Watson\Validating\ValidatingTrait;
 
 class Category extends Model
 {
     use HasFactory;
+    use ValidatingTrait;
     use SoftDeletes;
+
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array
+     */
+    protected $fillable = [
+        'category_type',
+        'checkin_email',
+        'eula_text',
+        'name',
+        'require_acceptance',
+        'use_default_eula',
+        'user_id',
+    ];
 
 
     public function admin() {

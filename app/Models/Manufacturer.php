@@ -14,6 +14,22 @@ class Manufacturer extends Model
 
     protected $table = 'manufacturers';
 
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array
+     */
+    protected $fillable = [
+        'name',
+        'image',
+        'support_email',
+        'support_phone',
+        'support_url',
+        'url',
+        'warranty_lookup_url',
+    ];
+
+
     public function admin() {
         return $this->belongsTo(User::class, 'user_id');
     }

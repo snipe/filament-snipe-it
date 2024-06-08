@@ -4,10 +4,12 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Watson\Validating\ValidatingTrait;
 
 class Group extends Model
 {
     use HasFactory;
+    use ValidatingTrait;
 
     protected $table = 'permission_groups';
 

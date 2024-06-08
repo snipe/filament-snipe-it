@@ -7,10 +7,14 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use App\Models\Category;
 use App\Models\User;
+use Illuminate\Database\Eloquent\SoftDeletes;
+use Watson\Validating\ValidatingTrait;
 
 class Accessory extends Model
 {
     use HasFactory;
+    use ValidatingTrait;
+    use SoftDeletes;
 
     protected $table = 'accessories';
 
