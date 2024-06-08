@@ -42,9 +42,11 @@ class AccessoryResource extends Resource
         return $form
             ->schema([
                 TextInput::make('name')
+                    ->string()
                     ->required()
                     ->autofocus()
-                    ->maxLength(255),
+                    ->maxLength(255)
+                    ->unique(ignoreRecord: true),
                 Select::make('category_id')
                     ->label('Category')
                     ->options(Category::where('category_type','accessory')->pluck('name', 'id'))
@@ -122,7 +124,6 @@ class AccessoryResource extends Resource
                     }),
             ], Tables\Enums\FiltersLayout::AboveContent)
             ->actions([
-                ReplicateAction::make()->label(''),
                 EditAction::make()->label(''),
                 DeleteAction::make()->label(''),
             ])

@@ -31,6 +31,7 @@ use Filament\Tables\Actions\DeleteBulkAction;
 use Filament\Tables\Actions\EditAction;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Filters\Filter;
 use Filament\Tables\Filters\TernaryFilter;
 use Filament\Tables\Table;
 use Filament\Widgets\StatsOverviewWidget\Stat;
@@ -70,9 +71,11 @@ class AssetResource extends Resource
                 Section::make('Asset Details')->schema([
 
                     TextInput::make('asset_tag')
+                        ->string()
+                        ->required()
                         ->autofocus()
                         ->maxLength(255)
-                        ->required(),
+                        ->unique(ignoreRecord: true),
 
                     Select::make('model_id')
                         ->label('Asset Model')
@@ -101,13 +104,14 @@ class AssetResource extends Resource
                         ->required(),
 
                     TextInput::make('serial')
+                        ->string()
                         ->maxLength(255),
 
                     FileUpload::make('image')
-                        ->acceptedFileTypes(['application/pdf'])
                         ->imageEditor()
                         ->image(),
-                    Textarea::make('notes'),
+                    Textarea::make('notes')
+                        ->string(),
                     Checkbox::make('requestable')->inline(),
                     Checkbox::make('byod')->inline()
                 ])
@@ -132,6 +136,7 @@ class AssetResource extends Resource
                         })),
 
                     Select::make('location_id')
+                        ->label('Location')
                         ->relationship(name: 'location', titleAttribute: 'name')
                         ->searchable()
                         ->preload()
@@ -176,6 +181,7 @@ class AssetResource extends Resource
                         ->native(false)
                         ->displayFormat('Y-m-d'),
                     Select::make('supplier_id')
+                        ->label('Supplier')
                         ->relationship(name: 'supplier', titleAttribute: 'name')
                         ->searchable()
                         ->preload()
@@ -221,10 +227,22 @@ class AssetResource extends Resource
                     })
                     ->size(IconColumn\IconColumnSize::Small)
                     ->sortable(),
-                TextColumn::make('purchase_date')->toggleable()->dateTime($format = 'F j, Y')->sortable(),
-                IconColumn::make('assigned_to')->toggleable()->boolean()->label('Checked Out')->sortable(),
-                TextColumn::make('last_audit_date')->toggleable()->dateTime($format = 'F j, Y H:i:s')->sortable(),
-                TextColumn::make('expected_checkin')->toggleable()->dateTime($format = 'F j, Y')->sortable(),
+                TextColumn::make('purchase_date')
+                    ->toggleable()
+                    ->dateTime($format = 'F j, Y')
+                    ->sortable(),
+                IconColumn::make('assigned_to')
+                    ->toggleable()
+                    ->boolean()
+                    ->label('Checked Out')->sortable(),
+                TextColumn::make('last_audit_date')
+                    ->toggleable()
+                    ->dateTime($format = 'F j, Y H:i:s')
+                    ->sortable(),
+                TextColumn::make('expected_checkin')
+                    ->toggleable()
+                    ->dateTime($format = 'F j, Y')
+                    ->sortable(),
                 TextColumn::make('admin.username')->label('Created by')
                     ->toggleable()
                     ->sortable(),
@@ -242,12 +260,15 @@ class AssetResource extends Resource
 
             ])
             ->filters([
-                TernaryFilter::make('Checked Out')
-                    ->nullable()
-                    ->attribute('assigned_to'),
+                Filter::make('assigned_to')
+                    ->label('Checked Out')
+                    ->query(fn (Builder $query): Builder => $query->whereNull('assigned_to'))
+                    ->toggle(),
                 SelectFilter::make('status')
+                    ->label('Status')
                     ->options(StatusLabel::all()->pluck('name', 'id')),
-                SelectFilter::make('model_id')->label('Asset Model')
+                SelectFilter::make('model_id')
+                    ->label('Asset Model')
                     ->options(AssetModel::all()->pluck('name', 'id')),
                 SelectFilter::make('manufacturer_id')
                     ->label('Manufacturer')
@@ -255,13 +276,16 @@ class AssetResource extends Resource
                 SelectFilter::make('supplier_id')
                     ->label('Supplier')
                     ->options(Supplier::all()->pluck('name', 'id')),
-                SelectFilter::make('Location_id')
+                SelectFilter::make('location_id')
+                    ->label('Location')
                     ->options(Location::all()->pluck('name', 'id')),
                 SelectFilter::make('company_id')
                     ->label('Company')
                     ->options(Company::all()->pluck('name', 'id')),
-                TernaryFilter::make('Requestable')
-                    ->attribute('requestable'),
+                Filter::make('requestable')
+                    ->label('Requestable')
+                    ->query(fn (Builder $query): Builder => $query->where('requestable', true))
+                    ->toggle(),
             ])
             ->headerActions([
                 ImportAction::make()

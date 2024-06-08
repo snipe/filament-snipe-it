@@ -35,6 +35,7 @@ class ConsumableResource extends Resource
                 TextInput::make('name')
                     ->required()
                     ->autofocus()
+                    ->string()
                     ->maxLength(255),
             ]);
     }

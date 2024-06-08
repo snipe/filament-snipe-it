@@ -37,7 +37,11 @@ class StatusLabelResource extends Resource
         return $form
             ->schema([
                 TextInput::make('name')
-                    ->required(),
+                    ->string()
+                    ->required()
+                    ->autofocus()
+                    ->maxLength(255)
+                    ->unique(ignoreRecord: true),
                 ColorPicker::make('color'),
                 ToggleButtons::make('status_type')
                     ->options([
@@ -93,7 +97,10 @@ class StatusLabelResource extends Resource
                 //
             ])
             ->actions([
-                ReplicateAction::make()->label(''),
+                ReplicateAction::make()
+                    ->label('')
+                    ->excludeAttributes(
+                        ['name']),
                 EditAction::make()->label(''),
                 DeleteAction::make()->label(''),
             ])

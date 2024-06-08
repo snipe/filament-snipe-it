@@ -33,8 +33,10 @@ class ComponentResource extends Resource
         return $form
             ->schema([
                 TextInput::make('name')
+                    ->unique()
                     ->required()
                     ->autofocus()
+                    ->string()
                     ->maxLength(255),
             ]);
     }

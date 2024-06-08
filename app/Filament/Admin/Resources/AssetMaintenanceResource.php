@@ -39,6 +39,7 @@ class AssetMaintenanceResource extends Resource
             ->schema([
                 Forms\Components\TextInput::make('title')
                     ->required()
+                    ->string()
                     ->maxLength(255),
                 Select::make('supplier_id')
                     ->relationship(name: 'supplier', titleAttribute: 'name')

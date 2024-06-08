@@ -31,9 +31,11 @@ class CustomFieldResource extends Resource
         return $form
             ->schema([
                 TextInput::make('name')
+                    ->string()
                     ->required()
                     ->autofocus()
-                    ->maxLength(255),
+                    ->maxLength(255)
+                    ->unique(ignoreRecord: true),
             ]);
     }
 

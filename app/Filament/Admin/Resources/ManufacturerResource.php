@@ -36,9 +36,11 @@ class ManufacturerResource extends Resource
         return $form
             ->schema([
                 TextInput::make('name')
+                    ->string()
                     ->required()
                     ->autofocus()
-                    ->maxLength(255),
+                    ->maxLength(255)
+                    ->unique(ignoreRecord: true),
             ]);
     }
 
@@ -72,7 +74,12 @@ class ManufacturerResource extends Resource
                     ->fileName(fn (Export $export): string => "manufacturers-{$export->getKey()}.csv")
             ])
             ->actions([
-                ReplicateAction::make()->label(''),
+                ReplicateAction::make()
+                    ->label('')
+                    ->excludeAttributes(
+                        [
+                            'name',
+                        ]),
                 EditAction::make()->label(''),
                 DeleteAction::make()->label(''),
             ])

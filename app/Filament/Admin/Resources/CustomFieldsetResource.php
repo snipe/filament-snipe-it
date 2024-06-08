@@ -6,6 +6,7 @@ use App\Filament\Admin\Resources\CustomFieldsetResource\Pages;
 use App\Filament\Admin\Resources\CustomFieldsetResource\RelationManagers;
 use App\Models\CustomFieldset;
 use Filament\Forms;
+use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
@@ -29,7 +30,12 @@ class CustomFieldsetResource extends Resource
     {
         return $form
             ->schema([
-                //
+                TextInput::make('name')
+                    ->string()
+                    ->required()
+                    ->autofocus()
+                    ->maxLength(255)
+                    ->unique(ignoreRecord: true),
             ]);
     }
 

@@ -70,9 +70,11 @@ class UserResource extends Resource
                     TextInput::make('last_name')
                         ->maxLength(255),
                     TextInput::make('username')
+                        ->string()
+                        ->required()
+                        ->autofocus()
                         ->maxLength(255)
-                        ->unique()
-                        ->required(),
+                        ->unique(ignoreRecord: true),
                     TextInput::make('password')
                         ->password()
                         ->dehydrateStateUsing(fn ($state) => Hash::make($state))

@@ -11,6 +11,7 @@ use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Tables\Actions\ReplicateAction;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
@@ -29,9 +30,11 @@ class CompanyResource extends Resource
         return $form
             ->schema([
                 TextInput::make('name')
+                    ->string()
                     ->required()
                     ->autofocus()
-                    ->maxLength(255),
+                    ->maxLength(255)
+                    ->unique(ignoreRecord: true),
             ]);
     }
 
@@ -45,6 +48,12 @@ class CompanyResource extends Resource
                 //
             ])
             ->actions([
+                ReplicateAction::make()
+                    ->label('')
+                    ->excludeAttributes(
+                        [
+                            'name',
+                        ]),
                 Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make(),
             ])

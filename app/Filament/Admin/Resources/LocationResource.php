@@ -7,6 +7,9 @@ use App\Filament\Admin\Resources\LocationResource\RelationManagers;
 use App\Models\Location;
 use Filament\Actions\Exports\Models\Export;
 use Filament\Forms;
+use Filament\Forms\Components\FileUpload;
+use Filament\Forms\Components\Section;
+use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -23,6 +26,11 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 use App\Filament\Exports\LocationExporter;
 use App\Filament\Imports\LocationImporter;
 use App\Filament\Clusters\Settings;
+use Ysfkaya\FilamentPhoneInput\Forms\PhoneInput;
+use Ysfkaya\FilamentPhoneInput\Tables\PhoneColumn;
+use Ysfkaya\FilamentPhoneInput\Infolists\PhoneEntry;
+use Ysfkaya\FilamentPhoneInput\PhoneInputNumberType;
+
 
 class LocationResource extends Resource
 {
@@ -36,10 +44,54 @@ class LocationResource extends Resource
     {
         return $form
             ->schema([
-                TextInput::make('name')
-                    ->required()
-                    ->autofocus()
-                    ->maxLength(255),
+                Section::make('')->schema([
+                    TextInput::make('name')
+                        ->string()
+                        ->required()
+                        ->autofocus()
+                        ->maxLength(255)
+                        ->unique(ignoreRecord: true),
+                    Select::make('parent_id')
+                        ->relationship(name: 'parent', titleAttribute: 'name')
+                        ->searchable()
+                        ->preload()
+                        ->native(false)
+                        ->createOptionForm(fn(Form $form) => LocationResource::form($form))
+                        ->createOptionAction(fn ($action) => $action->mutateFormDataUsing(function ($data) {
+                            $data['user_id'] = auth()->user()->id;
+                            return $data;
+                        })),
+                    Select::make('manager_id')
+                        ->relationship(name: 'manager', titleAttribute: 'first_name')
+                        ->searchable()
+                        ->preload()
+                        ->native(false)
+                        ->createOptionForm(fn(Form $form) => UserResource::form($form))
+                        ->createOptionAction(fn ($action) => $action->mutateFormDataUsing(function ($data) {
+                            $data['user_id'] = auth()->user()->id;
+                            return $data;
+                        })),
+
+                    TextInput::make('ldap_ou')
+                        ->maxLength(255),
+                    TextInput::make('address')
+                        ->maxLength(255),
+                    TextInput::make('address2')
+                        ->maxLength(255),
+                    TextInput::make('city')
+                        ->maxLength(255),
+                    TextInput::make('state')
+                        ->maxLength(255),
+                    TextInput::make('country')
+                        ->maxLength(2),
+                    TextInput::make('zip')
+                        ->maxLength(14),
+                    PhoneInput::make('phone')->showSelectedDialCode(true),
+                    PhoneInput::make('fax')->showSelectedDialCode(true),
+                    FileUpload::make('image')
+                        ->imageEditor()
+                        ->image()
+                ])->columns(2)
             ]);
     }
 
@@ -47,9 +99,20 @@ class LocationResource extends Resource
     {
         return $table
             ->columns([
-                TextColumn::make('id')->toggleable()->sortable(),
-                TextColumn::make('name')->toggleable()->sortable(),
-                TextColumn::make('admin.username')->label('Created by')
+                TextColumn::make('id')
+                    ->toggleable()
+                    ->sortable(),
+                TextColumn::make('name')
+                    ->toggleable()
+                    ->sortable(),
+                PhoneColumn::make('phone')->displayFormat(PhoneInputNumberType::NATIONAL)
+                    ->toggleable()
+                    ->sortable(),
+                PhoneColumn::make('fax')
+                    ->toggleable()
+                    ->sortable(),
+                TextColumn::make('admin.username')
+                    ->label('Created by')
                     ->toggleable()
                     ->sortable(),
                 TextColumn::make('created_at')
@@ -73,7 +136,12 @@ class LocationResource extends Resource
                     ->fileName(fn (Export $export): string => "locations-{$export->getKey()}.csv")
             ])
             ->actions([
-                ReplicateAction::make()->label(''),
+                ReplicateAction::make()
+                    ->label('')
+                    ->excludeAttributes(
+                        [
+                            'name',
+                        ]),
                 EditAction::make()->label(''),
                 DeleteAction::make()->label(''),
             ])

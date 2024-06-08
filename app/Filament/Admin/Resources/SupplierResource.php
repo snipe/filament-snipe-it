@@ -6,6 +6,8 @@ use App\Filament\Admin\Resources\SupplierResource\Pages;
 use App\Filament\Clusters\Settings;
 use App\Models\Supplier;
 use Filament\Forms;
+use Filament\Forms\Components\FileUpload;
+use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -22,6 +24,7 @@ use App\Filament\Imports\SupplierImporter;
 use Filament\Actions\Exports\Models\Export;
 use Filament\Tables\Actions\ExportAction;
 use Filament\Tables\Actions\ImportAction;
+use Ysfkaya\FilamentPhoneInput\Forms\PhoneInput;
 
 class SupplierResource extends Resource
 {
@@ -35,10 +38,46 @@ class SupplierResource extends Resource
         return $form
             ->schema([
                 TextInput::make('name')
+                    ->string()
                     ->required()
                     ->autofocus()
+                    ->maxLength(255)
+                    ->unique(ignoreRecord: true),
+                TextInput::make('url')
+                    ->url()
+                    ->suffixIcon('heroicon-m-globe-alt')
                     ->maxLength(255),
-            ]);
+                TextInput::make('email')
+                    ->email()
+                    ->suffixIcon('fas-envelope')
+                    ->maxLength(255),
+                TextInput::make('contact')
+                    ->label('Contact Name')
+                    ->maxLength(255),
+                PhoneInput::make('phone')
+                    ->initialCountry('us')
+                    ->showSelectedDialCode(true),
+                PhoneInput::make('fax')
+                    ->initialCountry('us')
+                    ->showSelectedDialCode(true),
+                TextInput::make('address')
+                    ->maxLength(255),
+                TextInput::make('address2')
+                    ->maxLength(255),
+                TextInput::make('city')
+                    ->maxLength(255),
+                TextInput::make('state')
+                    ->maxLength(255),
+                TextInput::make('country')
+                    ->maxLength(2),
+                TextInput::make('zip')
+                    ->maxLength(14),
+                Textarea::make('notes')
+                    ->rows(3),
+                FileUpload::make('image')
+                    ->imageEditor()
+                    ->image()
+            ])->columns(2);
     }
 
     public static function table(Table $table): Table
@@ -71,7 +110,12 @@ class SupplierResource extends Resource
                     ->fileName(fn (Export $export): string => "suppliers-{$export->getKey()}.csv")
             ])
             ->actions([
-                ReplicateAction::make()->label(''),
+                ReplicateAction::make()
+                    ->label('')
+                    ->form(fn(Form $form) => SupplierResource::form($form->model(Supplier::class)))
+                    ->fillForm(fn(Supplier $record) => [$record->toArray()])
+                    ->excludeAttributes(
+                        ['name']),
                 EditAction::make()->label(''),
                 DeleteAction::make()->label(''),
             ])
