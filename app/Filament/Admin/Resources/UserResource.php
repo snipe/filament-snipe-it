@@ -23,6 +23,7 @@ use Filament\Tables\Columns\ViewColumn;
 use Filament\Tables\Filters\TernaryFilter;
 use Filament\Tables\Filters\Filter;
 use Filament\Tables\Table;
+use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
@@ -52,6 +53,8 @@ class UserResource extends Resource
     protected static ?string $model = User::class;
     protected static ?int $navigationSort = 10;
     protected static ?string $navigationIcon = 'heroicon-o-users';
+    protected static ?string $recordTitleAttribute = 'first_name';
+    protected static int $globalSearchResultsLimit = 10;
 
     public static function form(Form $form): Form
     {
@@ -341,6 +344,23 @@ class UserResource extends Resource
             ->withoutGlobalScopes([
                 SoftDeletingScope::class,
             ]);
+    }
+
+    public static function getGloballySearchableAttributes(): array
+    {
+        return ['first_name', 'last_name', 'email', 'username'];
+    }
+
+    public static function getGlobalSearchResultDetails(Model $record): array
+    {
+        return [
+            'Username' => $record->username,
+            'Email' => $record->email,
+        ];
+    }
+    public static function getGlobalSearchResultTitle(Model $record): string | Htmlable
+    {
+        return $record->first_name.' '.$record->last_name;
     }
 
 }
