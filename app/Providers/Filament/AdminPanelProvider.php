@@ -85,10 +85,7 @@ class AdminPanelProvider extends PanelProvider
             ])
             ->navigationGroups([
                 NavigationGroup::make()
-                    ->label('Shop')
-                    ->icon('heroicon-o-shopping-cart'),
-                NavigationGroup::make()
-                    ->label('Blog')
+                    ->label('Settings')
                     ->icon('heroicon-o-pencil'),
                 NavigationGroup::make()
                     ->label(fn (): string => __('navigation.settings'))
