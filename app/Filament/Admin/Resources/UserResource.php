@@ -43,6 +43,9 @@ use Filament\Tables\Actions\ImportAction;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Fieldset;
 use Filament\Forms\Components\Section;
+use Filament\Forms\Components\DatePicker;
+use Filament\Support\Enums\MaxWidth;
+use Filament\Tables\Enums\FiltersLayout;
 
 class UserResource extends Resource
 {
@@ -107,7 +110,6 @@ class UserResource extends Resource
                     ->id('user-workinfo')
                     ->columns(2),
                 Section::make('Address')
-                    //->description('Settings for publishing this post.')
                     ->schema([
                     TextInput::make('address')
                         ->maxLength(255),
@@ -246,17 +248,57 @@ class UserResource extends Resource
             ])
             ->filters([
                 Filter::make('can_login')
-                    ->label('User can login')
-                    ->query(fn (Builder $query): Builder => $query->where('activated', true)),
+                    ->label('Can login')
+                    ->query(fn (Builder $query): Builder => $query->where('activated', true))
+                    ->toggle(),
                 Filter::make('ldap_login')
-                    ->label('User is managed via LDAP')
+                    ->label('Managed via LDAP')
                     ->query(fn (Builder $query): Builder => $query->where('ldap_import', true))
-//                Filter::make('has_assets')
-//                    ->label('User has at least one asset')
-//                    ->query(fn (Builder $query): Builder => $query->withCount('assets as assets_count')
-//                        ->where('assets', '>', 0)),
+                    ->toggle(),
 
-            ])
+                Filter::make('one_asset')
+                    ->label('Has at least one asset')
+                    ->query(fn (Builder $query):
+                        Builder => $query
+                            ->has('assets','>', 0)
+                        )
+                    ->toggle(),
+                Filter::make('one_accessory')
+                    ->label('Has at least one accessory')
+                    ->query(fn (Builder $query):
+                    Builder => $query
+                        ->has('accessories','>', 0)
+                    )
+                    ->toggle(),
+                Filter::make('one_license')
+                    ->label('Has at least one license')
+                    ->query(fn (Builder $query):
+                    Builder => $query
+                        ->has('licenses','>', 0)
+                    )
+                    ->toggle(),
+
+                Filter::make('created_at')
+                    ->form([
+                        DatePicker::make('created_from'),
+                        DatePicker::make('created_until')->default(now())
+                    ])
+                    ->query(function (Builder $query, array $data): Builder {
+                        return $query
+                            ->when(
+                                $data['created_from'],
+                                fn (Builder $query, $date): Builder => $query->whereDate('created_at', '>=', $date),
+                            )
+                            ->when(
+                                $data['created_until'],
+                                fn (Builder $query, $date): Builder => $query->whereDate('created_at', '<=', $date),
+                            );
+                    })
+
+            ], layout: FiltersLayout::AboveContentCollapsible)
+            ->filtersFormWidth(MaxWidth::FourExtraLarge)
+            ->persistFiltersInSession()
+            ->filtersFormColumns(4)
             ->deferLoading()
             ->persistSortInSession()
             ->searchable()
@@ -301,11 +343,4 @@ class UserResource extends Resource
             ]);
     }
 
-
-    // This currently throws a missing parameter error on the user view
-//    public static function getEloquentQuery(): Builder
-//    {
-//        return parent::getEloquentQuery()
-//            ->select(['username', 'email']);
-//    }
 }
