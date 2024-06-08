@@ -48,6 +48,8 @@ use Filament\Forms\Components\ColorPicker;
 use Filament\Forms\Components\ToggleButtons;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Repeater;
+use Filament\Tables\Columns\Summarizers\Sum;
+use App\Filament\Admin\Resources\AssetResource\RelationManagers;
 
 class AssetResource extends Resource
 {
@@ -61,6 +63,11 @@ class AssetResource extends Resource
         return $form
             ->schema([
                 Section::make('Asset Details')->schema([
+
+                    TextInput::make('asset_tag')
+                        ->autofocus()
+                        ->maxLength(255)
+                        ->required(),
 
                     Select::make('model_id')
                         ->label('Asset Model')
@@ -87,6 +94,9 @@ class AssetResource extends Resource
                             return $data;
                         }))
                         ->required(),
+
+                    TextInput::make('serial')
+                        ->maxLength(255),
 
                     FileUpload::make('image')
                         ->acceptedFileTypes(['application/pdf'])
@@ -160,7 +170,7 @@ class AssetResource extends Resource
                         ->suffixIcon('fas-calendar')
                         ->native(false)
                         ->displayFormat('Y-m-d'),
-                    Select::make('location_id')
+                    Select::make('supplier_id')
                         ->relationship(name: 'supplier', titleAttribute: 'name')
                         ->searchable()
                         ->preload()
@@ -222,6 +232,8 @@ class AssetResource extends Resource
                     ->toggleable()
                     ->dateTime($format = 'F j, Y H:i:s')
                     ->sortable(),
+                TextColumn::make('purchase_cost')
+                    ->summarize(Sum::make()->label('Total'))
 
             ])
             ->filters([
@@ -281,7 +293,7 @@ class AssetResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
+            RelationManagers\MaintenancesRelationManager::class,
         ];
     }
 
