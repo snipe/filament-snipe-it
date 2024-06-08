@@ -20,17 +20,32 @@ class Asset extends Model
      * @var array
      */
     protected $fillable = [
-        'category_id',
-        'depreciation_id',
-        'eol',
-        'fieldset_id',
+        'asset_tag',
+        'assigned_to',
+        'assigned_type',
+        'company_id',
         'image',
-        'manufacturer_id',
-        'min_amt',
-        'model_number',
+        'location_id',
+        'model_id',
         'name',
         'notes',
-        'user_id',
+        'order_number',
+        'purchase_cost',
+        'purchase_date',
+        'rtd_location_id',
+        'serial',
+        'status_id',
+        'supplier_id',
+        'warranty_months',
+        'requestable',
+        'last_checkout',
+        'expected_checkin',
+        'byod',
+        'asset_eol_date',
+        'eol_explicit',
+        'last_audit_date',
+        'next_audit_date',
+        'asset_eol_date',
     ];
 
 
@@ -92,5 +107,17 @@ class Asset extends Model
         return $this->belongsTo(\App\Models\Supplier::class, 'supplier_id');
     }
 
+    /**
+     * Get maintenances for this asset
+     *
+     * @author  Vincent Sposato <vincent.sposato@gmail.com>
+     * @since 1.0
+     * @return \Illuminate\Database\Eloquent\Relations\Relation
+     */
+    public function maintenances()
+    {
+        return $this->hasMany(\App\Models\AssetMaintenance::class, 'asset_id')
+            ->orderBy('created_at', 'desc');
+    }
 
 }
