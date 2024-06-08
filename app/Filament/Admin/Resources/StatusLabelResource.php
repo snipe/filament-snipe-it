@@ -4,6 +4,7 @@ namespace App\Filament\Admin\Resources;
 
 use App\Filament\Admin\Resources\StatusLabelResource\Pages;
 use App\Filament\Admin\Resources\StatusLabelResource\RelationManagers;
+use App\Filament\Clusters\Settings;
 use App\Models\StatusLabel;
 use Filament\Forms;
 use Filament\Forms\Components\Checkbox;
@@ -27,7 +28,7 @@ use Filament\Tables\Columns\ColorColumn;
 class StatusLabelResource extends Resource
 {
     protected static ?string $model = StatusLabel::class;
-    protected static ?string $navigationGroup = 'Settings';
+    protected static ?string $cluster = Settings::class;
 
     protected static ?string $navigationIcon = null;
 

@@ -75,22 +75,37 @@ class AdminPanelProvider extends PanelProvider
                 FilamentApexChartsPlugin::make(),
                 \Hasnayeen\Themes\ThemesPlugin::make()
             ])
+//            ->navigationGroups([
+//                NavigationGroup::make()
+//                    ->label('Assets')
+//                    ->icon('fas-barcode'),
+//                NavigationGroup::make()
+//                    ->label('Accessories')
+//                    ->icon('heroicon-o-cog-6-tooth')
+//                    ->collapsed(),
+//                NavigationGroup::make()
+//                    ->label('Licenses')
+//                    ->icon('heroicon-o-cog-6-tooth')
+//                    ->collapsed(),
+//                NavigationGroup::make()
+//                    ->label('Components')
+//                    ->icon('heroicon-o-cog-6-tooth')
+//                    ->collapsed(),
+//                NavigationGroup::make()
+//                    ->label('Consumables')
+//                    ->icon('heroicon-o-cog-6-tooth')
+//                    ->collapsed(),
+//                NavigationGroup::make()
+//                    ->label('Settings')
+//                    ->icon('heroicon-o-cog-6-tooth')
+//                    ->collapsed(),
+//            ])
             ->navigationItems([
                 NavigationItem::make('Analytics')
                     ->url('https://filament.pirsch.io', shouldOpenInNewTab: true)
                     ->icon('heroicon-o-presentation-chart-line')
                     ->group('Reports')
                     ->sort(3),
-
-            ])
-            ->navigationGroups([
-                NavigationGroup::make()
-                    ->label('Settings')
-                    ->icon('heroicon-o-pencil'),
-                NavigationGroup::make()
-                    ->label(fn (): string => __('navigation.settings'))
-                    ->icon('heroicon-o-cog-6-tooth')
-                    ->collapsed(),
             ])
             ->profile(isSimple: false)
             ->login()

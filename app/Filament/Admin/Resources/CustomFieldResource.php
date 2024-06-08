@@ -4,6 +4,7 @@ namespace App\Filament\Admin\Resources;
 
 use App\Filament\Admin\Resources\CustomFieldResource\Pages;
 use App\Filament\Admin\Resources\CustomFieldResource\RelationManagers;
+use App\Filament\Clusters\Settings;
 use App\Models\CustomField;
 use Filament\Forms;
 use Filament\Forms\Components\TextInput;
@@ -21,7 +22,7 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 class CustomFieldResource extends Resource
 {
     protected static ?string $model = CustomField::class;
-    protected static ?string $navigationGroup = 'Settings';
+    protected static ?string $cluster = Settings::class;
 
     protected static ?string $navigationIcon = null;
 

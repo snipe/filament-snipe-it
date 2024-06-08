@@ -10,6 +10,7 @@ use Filament\Support\Enums\IconPosition;
 use Filament\Resources\Concerns\HasTabs;
 use App\Models\User;
 use App\Filament\Clusters\Users;
+use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class ViewUser extends ViewRecord
 {
@@ -25,30 +26,8 @@ class ViewUser extends ViewRecord
             Actions\CreateAction::make(),
             Actions\EditAction::make(),
             Actions\DeleteAction::make(),
+            Actions\RestoreAction::make(),
         ];
     }
 
-
-    public function getTabs(): array
-    {
-        $tabs = ['all' => Tabs::make('All')->badge($this->getModel()::count())];
-
-        $users = User::orderBy('id', 'asc')
-            ->withCount('assets')
-            ->withCount('accessories')
-            ->get();
-
-        foreach ($users as $user) {
-            $name = $user->name;
-            $slug = str($name)->slug()->toString();
-
-            $tabs[$slug] = Tabs::make($name)
-                ->badge($user->assets)
-                ->modifyQueryUsing(function ($query) use ($user) {
-                    return $query->where('id', $user->id);
-                });
-        }
-
-        return $tabs;
-    }
 }

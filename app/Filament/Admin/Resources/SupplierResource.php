@@ -3,6 +3,7 @@
 namespace App\Filament\Admin\Resources;
 
 use App\Filament\Admin\Resources\SupplierResource\Pages;
+use App\Filament\Clusters\Settings;
 use App\Models\Supplier;
 use Filament\Forms;
 use Filament\Forms\Components\TextInput;
@@ -25,7 +26,7 @@ use Filament\Tables\Actions\ImportAction;
 class SupplierResource extends Resource
 {
     protected static ?string $model = Supplier::class;
-    protected static ?string $navigationGroup = 'Settings';
+    protected static ?string $cluster = Settings::class;
 
     protected static ?string $navigationIcon = null;
 

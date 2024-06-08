@@ -11,6 +11,7 @@ use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables\Actions\BulkActionGroup;
 use Filament\Tables\Actions\DeleteAction;
+use Filament\Tables\Actions\RestoreAction;
 use Filament\Tables\Actions\DeleteBulkAction;
 use Filament\Tables\Actions\EditAction;
 use Filament\Tables\Actions\ReplicateAction;
@@ -228,6 +229,7 @@ class UserResource extends Resource
                             ]),
                     EditAction::make(),
                     DeleteAction::make(),
+                    RestoreAction::make(),
                 ]),
                 // ...
             ])
@@ -278,6 +280,7 @@ class UserResource extends Resource
         ];
     }
 
+
     protected function handleRecordUpdate(Model $record, array $data): Model
     {
         $record->update($data);
@@ -289,6 +292,15 @@ class UserResource extends Resource
     {
         return static::getModel()::count();
     }
+
+    public static function getEloquentQuery(): Builder
+    {
+        return parent::getEloquentQuery()
+            ->withoutGlobalScopes([
+                SoftDeletingScope::class,
+            ]);
+    }
+
 
     // This currently throws a missing parameter error on the user view
 //    public static function getEloquentQuery(): Builder

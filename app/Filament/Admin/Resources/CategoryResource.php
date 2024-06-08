@@ -4,6 +4,7 @@ namespace App\Filament\Admin\Resources;
 
 use App\Filament\Admin\Resources\CategoryResource\Pages;
 use App\Filament\Admin\Resources\CategoryResource\RelationManagers;
+use App\Filament\Clusters\Settings;
 use App\Filament\Exports\CategoryExporter;
 use App\Filament\Imports\CategoryImporter;
 use App\Models\Category;
@@ -24,7 +25,7 @@ use Filament\Tables\Table;
 class CategoryResource extends Resource
 {
     protected static ?string $model = Category::class;
-    protected static ?string $navigationGroup = 'Settings';
+    protected static ?string $cluster = Settings::class;
 
     protected static ?string $navigationIcon = null;
 

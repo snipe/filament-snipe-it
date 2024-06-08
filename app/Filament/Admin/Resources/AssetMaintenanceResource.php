@@ -3,8 +3,9 @@
 namespace App\Filament\Admin\Resources;
 
 use App\Filament\Admin\Resources\AssetMaintenanceResource\Pages;
-use App\Filament\Admin\Resources\AssetMaintenanceResource\RelationManagers;
+use App\Filament\Clusters\Settings;
 use App\Models\AssetMaintenance;
+use App\Models\Location;
 use Filament\Forms;
 use Filament\Forms\Components\Checkbox;
 use Filament\Forms\Components\DatePicker;
@@ -18,16 +19,19 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use App\Filament\Clusters\Assets;
 
 class AssetMaintenanceResource extends Resource
 {
     protected static ?string $model = AssetMaintenance::class;
+    //protected static ?string $navigationGroup = 'Assets';
 
-    protected static ?string $navigationGroup = 'Assets';
+    protected static ?string $cluster = Assets::class;
+
+    protected static ?string $navigationIcon = null;
 
     protected static ?int $navigationSort = 2;
 
-    protected static ?string $navigationIcon = null;
 
     public static function form(Form $form): Form
     {

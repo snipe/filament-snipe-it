@@ -3,6 +3,7 @@
 namespace App\Filament\Admin\Resources;
 
 use App\Filament\Admin\Resources\AssetResource\Pages;
+use App\Filament\Clusters\Assets;
 use App\Filament\Exports\AssetExporter;
 use App\Filament\Imports\AssetImporter;
 //use App\Tables\Columns\ModelLinkColumn;
@@ -54,9 +55,10 @@ use App\Filament\Admin\Resources\AssetResource\RelationManagers;
 class AssetResource extends Resource
 {
     protected static ?string $model = Asset::class;
+    protected static ?string $cluster = Assets::class;
+    //protected static ?string $navigationGroup = 'Assets';
     protected static ?int $navigationSort = 1;
-
-    protected static ?string $navigationIcon = 'fas-barcode';
+    protected static ?string $navigationIcon = null;
 
     public static function form(Form $form): Form
     {

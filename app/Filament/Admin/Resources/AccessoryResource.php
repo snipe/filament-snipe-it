@@ -34,7 +34,7 @@ use Illuminate\Support\HtmlString;
 class AccessoryResource extends Resource
 {
     protected static ?string $model = Accessory::class;
-    protected static ?int $navigationSort = 3;
+    protected static ?int $navigationSort = 2;
     protected static ?string $navigationIcon = 'far-keyboard';
 
     public static function form(Form $form): Form

@@ -4,6 +4,7 @@ namespace App\Filament\Admin\Resources;
 
 use App\Filament\Admin\Resources\CompanyResource\Pages;
 use App\Filament\Admin\Resources\CompanyResource\RelationManagers;
+use App\Filament\Clusters\Settings;
 use App\Models\Company;
 use Filament\Forms;
 use Filament\Forms\Components\TextInput;
@@ -18,7 +19,8 @@ class CompanyResource extends Resource
 {
     protected static ?string $model = Company::class;
 
-    protected static ?string $navigationGroup = 'Settings';
+
+    protected static ?string $cluster = Settings::class;
 
     protected static ?string $navigationIcon = null;
 
@@ -68,5 +70,10 @@ class CompanyResource extends Resource
             'view' => Pages\ViewCompany::route('/{record}'),
             'edit' => Pages\EditCompany::route('/{record}/edit'),
         ];
+    }
+
+    public static function getNavigationBadge(): ?string
+    {
+        return static::getModel()::count();
     }
 }

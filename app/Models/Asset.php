@@ -7,10 +7,12 @@ use Illuminate\Database\Eloquent\Model;
 use App\Models\StatusLabel;
 use App\Models\AssetModel;
 use App\Models\Company;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Asset extends Model
 {
     use HasFactory;
+    use SoftDeletes;
 
     protected $table = 'assets';
 

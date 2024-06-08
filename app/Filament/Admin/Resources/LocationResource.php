@@ -22,11 +22,13 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use App\Filament\Exports\LocationExporter;
 use App\Filament\Imports\LocationImporter;
+use App\Filament\Clusters\Settings;
 
 class LocationResource extends Resource
 {
     protected static ?string $model = Location::class;
-    protected static ?string $navigationGroup = 'Settings';
+
+    protected static ?string $cluster = Settings::class;
 
     protected static ?string $navigationIcon = null;
 

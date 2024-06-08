@@ -4,6 +4,7 @@ namespace App\Filament\Admin\Resources;
 
 use App\Filament\Admin\Resources\DepartmentResource\Pages;
 use App\Filament\Admin\Resources\DepartmentResource\RelationManagers;
+use App\Filament\Clusters\Settings;
 use App\Models\Department;
 use Filament\Actions\Exports\Models\Export;
 use Filament\Forms;
@@ -26,7 +27,7 @@ use App\Filament\Imports\DepartmentImporter;
 class DepartmentResource extends Resource
 {
     protected static ?string $model = Department::class;
-    protected static ?string $navigationGroup = 'Settings';
+    protected static ?string $cluster = Settings::class;
 
     protected static ?string $navigationIcon = null;
 

@@ -4,6 +4,7 @@ namespace App\Filament\Admin\Resources;
 
 use App\Filament\Admin\Resources\ManufacturerResource\Pages;
 use App\Filament\Admin\Resources\ManufacturerResource\RelationManagers;
+use App\Filament\Clusters\Settings;
 use App\Filament\Exports\ManufacturerExporter;
 use App\Filament\Imports\ManufacturerImporter;
 use App\Models\Manufacturer;
@@ -26,7 +27,7 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 class ManufacturerResource extends Resource
 {
     protected static ?string $model = Manufacturer::class;
-    protected static ?string $navigationGroup = 'Settings';
+    protected static ?string $cluster = Settings::class;
 
     protected static ?string $navigationIcon = null;
 

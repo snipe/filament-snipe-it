@@ -4,6 +4,7 @@ namespace App\Filament\Admin\Resources;
 
 use App\Filament\Admin\Resources\AssetModelResource\Pages;
 use App\Filament\Admin\Resources\AssetModelResource\RelationManagers;
+use App\Filament\Clusters\Settings;
 use App\Filament\Exports\AssetModelExporter;
 use App\Filament\Imports\AssetModelImporter;
 use App\Models\AssetModel;
@@ -28,7 +29,7 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 class AssetModelResource extends Resource
 {
     protected static ?string $model = AssetModel::class;
-    protected static ?string $navigationGroup = 'Settings';
+    protected static ?string $cluster = Settings::class;
 
     protected static ?string $navigationIcon = null;
 
