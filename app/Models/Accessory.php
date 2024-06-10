@@ -19,6 +19,42 @@ class Accessory extends Model
     protected $table = 'accessories';
 
     /**
+     * The attributes that are mass assignable.
+     *
+     * @var array
+     */
+    protected $fillable = [
+        'category_id',
+        'company_id',
+        'location_id',
+        'name',
+        'order_number',
+        'purchase_cost',
+        'purchase_date',
+        'model_number',
+        'manufacturer_id',
+        'supplier_id',
+        'image',
+        'qty',
+        'min_amt',
+        'requestable',
+        'notes',
+    ];
+
+    /**
+     * Accessory validation rules
+     */
+    public $rules = [
+        'name'              => 'required|min:3|max:255',
+        'qty'               => 'required|integer|min:1',
+        'category_id'       => 'required|integer|exists:categories,id',
+        'company_id'        => 'integer|nullable',
+        'min_amt'           => 'integer|min:0|nullable',
+        'purchase_cost'     => 'numeric|nullable|gte:0',
+        'purchase_date'   => 'date_format:Y-m-d|nullable',
+    ];
+
+    /**
      * Establishes the accessory -> category relationship
      *
      * @author [A. Gianotto] [<snipe@snipe.net>]
