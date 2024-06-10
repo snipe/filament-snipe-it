@@ -4,6 +4,7 @@ namespace App\Filament\Admin\Resources;
 
 use App\Filament\Admin\Resources\AccessoryResource\Pages;
 use App\Filament\Admin\Resources\AccessoryResource\RelationManagers;
+use App\Forms\Components\ViewImage;
 use App\Models\Accessory;
 use Filament\Forms;
 use Filament\Forms\Components\TextInput;
@@ -64,7 +65,11 @@ class AccessoryResource extends Resource
                     ->maxLength(255),
                 TextInput::make('jobtitle')
                     ->maxLength(255),
-                FileUpload::make('image'),
+                FileUpload::make('image')
+                    ->directory('accessories')
+                    ->imageEditor()
+                    ->image(),
+                ViewImage::make('image')->label(''),
                 Textarea::make('notes'),
                 Checkbox::make('requestable')->inline()
             ]);

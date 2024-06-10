@@ -7,6 +7,7 @@ use App\Models\User;
 use App\Models\Location;
 use App\Models\Department;
 use Filament\Forms\Components\Checkbox;
+use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables\Actions\BulkActionGroup;
@@ -129,7 +130,11 @@ class UserResource extends Resource
                     TextInput::make('country')
                         ->maxLength(255),
                     TextInput::make('phone')
-                        ->maxLength(255)
+                        ->maxLength(255),
+                    FileUpload::make('avatar')
+                        ->directory('assets')
+                        ->imageEditor()
+                        ->image(),
                     ])
                     ->collapsed()
                     ->persistCollapsed()

@@ -7,6 +7,7 @@ use App\Filament\Admin\Resources\CompanyResource\RelationManagers;
 use App\Filament\Clusters\Settings;
 use App\Models\Company;
 use Filament\Forms;
+use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -38,6 +39,10 @@ class CompanyResource extends Resource
                     ->autofocus()
                     ->maxLength(255)
                     ->unique(ignoreRecord: true),
+                FileUpload::make('image')
+                    ->directory('companies')
+                    ->imageEditor()
+                    ->image(),
             ]);
     }
 
