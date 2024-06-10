@@ -19,6 +19,26 @@ class AssetModel extends Model
     protected $table = 'models';
 
     /**
+     * The attributes that are mass assignable.
+     *
+     * @var array
+     */
+    protected $fillable = [
+        'category_id',
+        'depreciation_id',
+        'eol',
+        'fieldset_id',
+        'image',
+        'manufacturer_id',
+        'min_amt',
+        'model_number',
+        'name',
+        'notes',
+        'user_id',
+    ];
+
+
+    /**
      * Establishes the model -> assets relationship
      *
      * @return \Illuminate\Database\Eloquent\Relations\Relation
