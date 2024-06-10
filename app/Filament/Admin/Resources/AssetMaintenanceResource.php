@@ -16,10 +16,13 @@ use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Filters\Filter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use App\Filament\Clusters\Assets;
+use App\Filament\Exports\AssetMaintenanceExporter;
+use Filament\Tables\Actions\ExportAction;
 
 class AssetMaintenanceResource extends Resource
 {
@@ -81,12 +84,26 @@ class AssetMaintenanceResource extends Resource
         return $table
             ->recordTitleAttribute('title')
             ->columns([
-                TextColumn::make('title'),
-                TextColumn::make('asset_maintenance_type')->sortable(),
-                TextColumn::make('notes')->sortable(),
-                TextColumn::make('start_date')->dateTime($format = 'F j, Y')->sortable(),
-                TextColumn::make('end_date')->dateTime($format = 'F j, Y')->sortable(),
-                TextColumn::make('completion_date')->dateTime($format = 'F j, Y')->sortable(),
+                TextColumn::make('title')
+                    ->toggleable(),
+                TextColumn::make('asset_maintenance_type')
+                    ->toggleable()
+                    ->sortable(),
+                TextColumn::make('notes')
+                    ->toggleable()
+                    ->sortable(),
+                TextColumn::make('start_date')
+                    ->toggleable()
+                    ->dateTime($format = 'F j, Y')
+                    ->sortable(),
+                TextColumn::make('end_date')
+                    ->toggleable()
+                    ->dateTime($format = 'F j, Y')
+                    ->sortable(),
+                TextColumn::make('completion_date')
+                    ->toggleable()
+                    ->dateTime($format = 'F j, Y')
+                    ->sortable(),
                 IconColumn::make('is_warranty')
                     ->toggleable()
                     ->boolean()
@@ -98,13 +115,55 @@ class AssetMaintenanceResource extends Resource
                     ->sortable(),
             ])
 
-//            ->filters([
-//                //
-//            ])
+            ->filters([
+                Filter::make('is_warranty')
+                    ->query(fn (Builder $query): Builder => $query->where('is_warranty', true))
+                    ->toggle(),
 
+                Filter::make('created_at')
+                    ->form([
+                        DatePicker::make('created_at'),
+                        DatePicker::make('created_until')->default(now())
+                    ])
+                    ->query(function (Builder $query, array $data): Builder {
+                        return $query
+                            ->when(
+                                $data['created_at'],
+                                fn (Builder $query, $date): Builder => $query->whereDate('created_at', '>=', $date),
+                            )
+                            ->when(
+                                $data['created_until'],
+                                fn (Builder $query, $date): Builder => $query->whereDate('created_at', '<=', $date),
+                            );
+                    }),
+
+                Filter::make('start_date')
+                    ->form([
+                        DatePicker::make('start_date'),
+                        DatePicker::make('completion_date')->default(now())
+                    ])
+                    ->query(function (Builder $query, array $data): Builder {
+                        return $query
+                            ->when(
+                                $data['start_date'],
+                                fn (Builder $query, $date): Builder => $query->whereDate('start_date', '>=', $date),
+                            )
+                            ->when(
+                                $data['completion_date'],
+                                fn (Builder $query, $date): Builder => $query->whereDate('completion_date', '<=', $date),
+                            );
+                    })
+
+            ])
+
+            ->headerActions([
+                ExportAction::make()
+                    ->exporter(AssetMaintenanceExporter::class)
+            ])
             ->actions([
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\DeleteAction::make(),
+
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
@@ -128,5 +187,10 @@ class AssetMaintenanceResource extends Resource
             'view' => Pages\ViewAssetMaintenance::route('/{record}'),
             'edit' => Pages\EditAssetMaintenance::route('/{record}/edit'),
         ];
+    }
+
+    public static function getNavigationBadge(): ?string
+    {
+        return static::getModel()::count();
     }
 }

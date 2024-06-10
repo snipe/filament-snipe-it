@@ -59,11 +59,8 @@ class AccessoryResource extends Resource
                     ->options(Manufacturer::all()->pluck('name', 'id'))
                     ->searchable()
                     ->native(false),
-                TextInput::make('email')
-                    ->maxLength(255),
-                TextInput::make('phone')
-                    ->maxLength(255),
-                TextInput::make('jobtitle')
+                TextInput::make('order_number')
+                    ->string()
                     ->maxLength(255),
                 FileUpload::make('image')
                     ->directory('accessories')

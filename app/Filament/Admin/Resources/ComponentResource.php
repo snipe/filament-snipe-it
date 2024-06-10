@@ -4,9 +4,18 @@ namespace App\Filament\Admin\Resources;
 
 use App\Filament\Admin\Resources\ComponentResource\Pages;
 use App\Filament\Admin\Resources\ComponentResource\RelationManagers;
+use App\Models\Category;
 use App\Models\Component;
+use App\Models\Manufacturer;
+use App\Models\Location;
+use App\Models\Supplier;
+use App\Models\Company;
 use Filament\Forms;
+use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\FileUpload;
+use Filament\Forms\Components\Section;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -34,16 +43,77 @@ class ComponentResource extends Resource
     {
         return $form
             ->schema([
-                TextInput::make('name')
-                    ->unique()
-                    ->required()
-                    ->autofocus()
-                    ->string()
-                    ->maxLength(255),
-                FileUpload::make('image')
-                    ->directory('components')
-                    ->imageEditor()
-                    ->image(),
+                Section::make('Component Details')->schema([
+                    TextInput::make('name')
+                        ->unique(ignoreRecord: true)
+                        ->required()
+                        ->autofocus()
+                        ->string()
+                        ->maxLength(255),
+                    Select::make('category_id')
+                        ->label('Category')
+                        ->options(Category::where('category_type','accessory')->pluck('name', 'id'))
+                        ->searchable()
+                        ->native(false)
+                        ->required(),
+                    TextInput::make('qty')
+                        ->numeric()
+                        ->required()
+                        ->maxLength(10),
+                    TextInput::make('serial')
+                        ->string()
+                        ->maxLength(255),
+                    TextInput::make('model_number')
+                        ->string()
+                        ->maxLength(255),
+                    TextInput::make('min_amt')
+                        ->numeric()
+                        ->maxLength(255)
+                        ->helperText('This is the minimum amount of this component that should be kept in stock.'),
+                    Select::make('company_id')
+                        ->label('Company')
+                        ->options(Company::all()->pluck('name', 'id'))
+                        ->searchable()
+                        ->native(false),
+                    ])
+                    ->id('component-details')
+                    ->columns(2),
+                Section::make('Order Details')->schema([
+
+                    TextInput::make('order_number')
+                        ->string()
+                        ->maxLength(255),
+                    TextInput::make('purchase_cost'),
+                    DatePicker::make('purchase_date')
+                        ->suffixIcon('fas-calendar')
+                        ->native(false)
+                        ->displayFormat('Y-m-d'),
+                    Select::make('manufacturer_id')
+                        ->label('Manufacturer')
+                        ->options(Manufacturer::all()->pluck('name', 'id'))
+                        ->searchable()
+                        ->native(false),
+                    Select::make('location_id')
+                        ->label('Location')
+                        ->options(Location::all()->pluck('name', 'id'))
+                        ->searchable()
+                        ->native(false),
+                    Select::make('supplier_id')
+                        ->label('Supplier')
+                        ->options(Supplier::all()->pluck('name', 'id'))
+                        ->searchable()
+                        ->native(false),
+                    Textarea::make('notes')
+                        ->string(),
+                    FileUpload::make('image')
+                        ->directory('components')
+                        ->imageEditor()
+                        ->image()
+                    ])
+                    ->collapsed()
+                    ->persistCollapsed()
+                    ->id('optional-details')
+                    ->columns(2)
             ]);
     }
 
@@ -55,7 +125,9 @@ class ComponentResource extends Resource
                 ImageColumn::make('image')
                     ->toggleable()
                     ->sortable(),
-                TextColumn::make('name')->toggleable()->sortable(),
+                TextColumn::make('name')
+                    ->toggleable()
+                    ->sortable(),
                 TextColumn::make('admin.username')->label('Created by')
                     ->toggleable()
                     ->sortable(),
