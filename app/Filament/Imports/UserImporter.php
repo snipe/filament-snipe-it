@@ -32,14 +32,11 @@ class UserImporter extends Importer
             ImportColumn::make('password')
                 ->requiredMapping()
                 ->rules(['required', 'max:191']),
-            ImportColumn::make('activated')
-                ->requiredMapping()
-                ->boolean()
-                ->rules(['required', 'boolean']),
-            ImportColumn::make('activation_code')
-                ->rules(['max:191']),
-            ImportColumn::make('activated_at')
-                ->rules(['datetime']),
+//            ImportColumn::make('activated')
+//                ->requiredMapping()
+//                ->boolean()
+//                ->rules(['required', 'boolean']),
+
             ImportColumn::make('website')
                 ->rules(['max:191']),
             ImportColumn::make('country')
@@ -64,15 +61,10 @@ class UserImporter extends Importer
                 ->numeric()
                 ->rules(['integer']),
             ImportColumn::make('ldap_import')
-                ->requiredMapping()
                 ->boolean()
-                ->rules(['required', 'boolean']),
+                ->rules(['boolean']),
             ImportColumn::make('locale')
                 ->rules(['max:10']),
-            ImportColumn::make('show_in_list')
-                ->requiredMapping()
-                ->boolean()
-                ->rules(['required', 'boolean']),
             ImportColumn::make('department_id')
                 ->numeric()
                 ->rules(['integer']),
@@ -80,30 +72,30 @@ class UserImporter extends Importer
                 ->rules(['max:191']),
             ImportColumn::make('address2')
                 ->rules(['max:191']),
-            ImportColumn::make('city')
-                ->rules(['max:191']),
-            ImportColumn::make('state')
-                ->rules(['max:191']),
-            ImportColumn::make('zip')
-                ->rules(['max:10']),
-            ImportColumn::make('remote')
-                ->boolean()
-                ->rules(['boolean']),
-            ImportColumn::make('start_date')
-                ->rules(['date']),
-            ImportColumn::make('end_date')
-                ->rules(['date']),
-            ImportColumn::make('autoassign_licenses')
-                ->requiredMapping()
-                ->boolean()
-                ->rules(['required', 'boolean']),
-            ImportColumn::make('vip')
-                ->boolean()
-                ->rules(['boolean']),
-            ImportColumn::make('theme')
-                ->rules(['max:255']),
-            ImportColumn::make('theme_color')
-                ->rules(['max:255']),
+//            ImportColumn::make('city')
+//                ->rules(['max:191']),
+//            ImportColumn::make('state')
+//                ->rules(['max:191']),
+//            ImportColumn::make('zip')
+//                ->rules(['max:10']),
+//            ImportColumn::make('remote')
+//                ->boolean()
+//                ->rules(['boolean']),
+//            ImportColumn::make('start_date')
+//                ->rules(['date']),
+//            ImportColumn::make('end_date')
+//                ->rules(['date']),
+//            ImportColumn::make('autoassign_licenses')
+//                ->requiredMapping()
+//                ->boolean()
+//                ->rules(['required', 'boolean']),
+//            ImportColumn::make('vip')
+//                ->boolean()
+//                ->rules(['boolean']),
+//            ImportColumn::make('theme')
+//                ->rules(['max:255']),
+//            ImportColumn::make('theme_color')
+//                ->rules(['max:255']),
         ];
     }
 
