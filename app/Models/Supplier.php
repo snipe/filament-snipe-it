@@ -13,7 +13,7 @@ class Supplier extends Model
     use SoftDeletes;
 
     protected $rules = [
-        'name'               => 'required|min:1|max:255|unique_undeleted',
+      //  'name'               => 'required|min:1|max:255|unique_undeleted',
         'fax'               => 'min:7|max:35|nullable',
         'phone'             => 'min:7|max:35|nullable',
         'contact'           => 'max:100|nullable',
