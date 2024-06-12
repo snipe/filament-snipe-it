@@ -48,6 +48,9 @@ use Filament\Forms\Components\Section;
 use Filament\Forms\Components\DatePicker;
 use Filament\Support\Enums\MaxWidth;
 use Filament\Tables\Enums\FiltersLayout;
+use Filament\Infolists;
+use Filament\Infolists\Infolist;
+use Filament\Infolists\Components\ImageEntry;
 
 class UserResource extends Resource
 {
@@ -56,6 +59,21 @@ class UserResource extends Resource
     protected static ?string $navigationIcon = 'heroicon-o-users';
     protected static ?string $recordTitleAttribute = 'first_name';
     protected static int $globalSearchResultsLimit = 10;
+
+
+    public static function infolist(Infolist $infolist): Infolist
+    {
+        return $infolist
+            ->schema([
+                Infolists\Components\TextEntry::make('name'),
+                Infolists\Components\TextEntry::make('email')->icon('heroicon-m-envelope'),
+                Infolists\Components\TextEntry::make('phone')->icon('heroicon-m-phone'),
+                Infolists\Components\TextEntry::make('url'),
+                Infolists\Components\TextEntry::make('notes')
+                    ->columnSpanFull(),
+                ImageEntry::make('avatar'),
+            ])->columns(2);
+    }
 
     public static function form(Form $form): Form
     {
