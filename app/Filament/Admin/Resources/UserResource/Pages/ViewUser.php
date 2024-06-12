@@ -18,7 +18,9 @@ class ViewUser extends ViewRecord
     protected static ?string $cluster = Users::class;
 
     // protected static string $view = 'filament.resources.users.pages.view-user';
-    use HasTabs;
+    //use HasTabs;
+
+    
 
     protected function getHeaderActions(): array
     {
