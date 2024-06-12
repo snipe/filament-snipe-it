@@ -32,7 +32,6 @@ use Filament\Forms\Components\TextInput;
 use Filament\Tables\Columns\ToggleColumn;
 use Illuminate\Support\HtmlString;
 use Illuminate\Support\Facades\Blade;
-use Filament\Forms\Components\Tabs;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Filament\Tables\Actions\ExportAction;
@@ -49,6 +48,7 @@ use Filament\Forms\Components\DatePicker;
 use Filament\Support\Enums\MaxWidth;
 use Filament\Tables\Enums\FiltersLayout;
 use Filament\Infolists;
+use Filament\Infolists\Components\Tabs;
 use Filament\Infolists\Infolist;
 use Filament\Infolists\Components\ImageEntry;
 use Filament\Support\Enums\IconPosition;
@@ -74,20 +74,55 @@ class UserResource extends Resource
             ->schema([
                 Tabs::make('Tabs')
                     ->tabs([
-                        Tabs\Tab::make('Tab 1')
+                        Tabs\Tab::make('Details')
+                            ->schema([
+                                TextEntry::make('name'),
+                                TextEntry::make('username'),
+                                TextEntry::make('email'),
+                                TextEntry::make('jobtitle'),
+                                TextEntry::make('phone'),
+                                TextEntry::make('url'),
+                                TextEntry::make('manager.name'),
+                                TextEntry::make('notes')
+                            ])->columns(3),
+                        Tabs\Tab::make('Assets')
                             ->schema([
                                 // ...
                             ]),
-                        Tabs\Tab::make('Tab 2')
+                        Tabs\Tab::make('Accessories')
                             ->schema([
                                 // ...
                             ]),
-                        Tabs\Tab::make('Tab 3')
+                        Tabs\Tab::make('Licenses')
+                            ->schema([
+                                // ...
+                            ]),
+                        Tabs\Tab::make('Consumables')
+                            ->schema([
+                                // ...
+                            ]),
+                        Tabs\Tab::make('Uploads')
+                            ->schema([
+                                // ...
+                            ]),
+                        Tabs\Tab::make('History')
+                            ->schema([
+                                // ...
+                            ]),
+                        Tabs\Tab::make('Managed Locations')
+                            ->schema([
+                                // ...
+                            ]),
+                        Tabs\Tab::make('Managed Users')
                             ->schema([
                                 // ...
                             ]),
                     ])
-            ]);
+                    ->persistTab()
+                    ->persistTabInQueryString()
+
+            ])
+            ->columns(1);
 
     }
 
