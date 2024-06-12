@@ -12,6 +12,7 @@ use App\Models\User;
 use App\Filament\Clusters\Users;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
+
 class ViewUser extends ViewRecord
 {
     protected static string $resource = UserResource::class;
@@ -20,7 +21,8 @@ class ViewUser extends ViewRecord
     // protected static string $view = 'filament.resources.users.pages.view-user';
     //use HasTabs;
 
-    
+
+
 
     protected function getHeaderActions(): array
     {
