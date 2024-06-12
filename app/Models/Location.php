@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Watson\Validating\ValidatingTrait;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use App\Rules\NonCircular;
 
 class Location extends Model
 {
@@ -36,7 +37,7 @@ class Location extends Model
     ];
 
     protected $rules = [
-        'name'          => 'required|min:2|max:255|unique_undeleted',
+        'name'          => 'required|min:2|max:255',
         'address'       => 'max:191|nullable',
         'address2'      => 'max:191|nullable',
         'city'          => 'max:191|nullable',
@@ -44,8 +45,8 @@ class Location extends Model
         'country'       => 'min:2|max:191|nullable',
         'zip'           => 'max:10|nullable',
         'manager_id'    => 'exists:users,id|nullable',
-        'parent_id'     => 'different:id' // Temp fix for non-circular validation
-        // 'parent_id'     => 'non_circular:locations,id',
+        //'parent_id'     => 'non_circular:locations,id',
+        'parent_id'     => 'required','string','NonCircular' // I don't know if this works
     ];
 
     /**
