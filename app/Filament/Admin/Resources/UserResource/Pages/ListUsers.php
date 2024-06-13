@@ -33,4 +33,9 @@ class ListUsers extends ListRecords
                 ->modifyQueryUsing(fn (Builder $query) => $query->onlyTrashed()),
         ];
     }
+
+    protected function getTableRecordsPerPageSelectOptions(): array
+    {
+        return [10, 25, 50, 100, 200];
+    }
 }
