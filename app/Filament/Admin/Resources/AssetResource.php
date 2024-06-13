@@ -7,6 +7,7 @@ use App\Filament\Clusters\Assets;
 use App\Filament\Exports\AssetExporter;
 use App\Filament\Imports\AssetImporter;
 //use App\Tables\Columns\ModelLinkColumn;
+use App\Models\User;
 use Filament\Tables\Actions\ImportAction;
 use Filament\Tables\Actions\ReplicateAction;
 use App\Models\Asset;
@@ -213,6 +214,8 @@ class AssetResource extends Resource
                     ->toggleable(isToggledHiddenByDefault: true)
                     ->sortable(),
                 TextColumn::make('asset_tag')
+                    //->url(fn (Asset $record): string => route('filament.admin.assets.resources.assets.edit', ['record' => $record]))
+                    //->searchable(isIndividual: true)
                     ->sortable(),
                 TextColumn::make('name')
                     ->toggleable(isToggledHiddenByDefault: true)
@@ -229,7 +232,6 @@ class AssetResource extends Resource
                     ->label('Assigned To')
                     ->toggleable()
                     ->sortable(),
-                // ModelLinkColumn::make('model.manufacturer.name')->label('Manufacturer'),
                 TextColumn::make('assetmodel.name')
                     ->label('Model Name')
                     ->toggleable()
@@ -349,6 +351,9 @@ class AssetResource extends Resource
             ->checkIfRecordIsSelectableUsing(
                 fn (Model $record): bool => $record->assigned_to == null
             )
+            ->defaultPaginationPageOption(25)
+            ->extremePaginationLinks()
+            ->paginated([10, 25, 50, 100, 200])
             ->deferLoading()
             ->persistSortInSession()
             ->striped();
