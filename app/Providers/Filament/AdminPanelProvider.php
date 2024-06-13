@@ -2,7 +2,7 @@
 
 namespace App\Providers\Filament;
 
-use App\Http\Middleware\loadSettings;
+
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\DisableBladeIconComponents;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
@@ -24,6 +24,19 @@ use Filament\Facades\Filament;
 use Filament\Navigation\NavigationItem;
 use Leandrocfe\FilamentApexCharts\FilamentApexChartsPlugin;
 use Filament\Navigation\NavigationGroup;
+use Filament\Support\Enums\MaxWidth;
+use Filament\Support\Facades\FilamentView;
+use Filament\View\PanelsRenderHook;
+use Illuminate\Contracts\View\View;
+use Illuminate\Support\Facades\Blade;
+use App\Http\Middleware\CheckForDebug;
+use Filament\Support\Assets\Css;
+use Filament\Support\Assets\Js;
+use Filament\Support\Facades\FilamentAsset;
+use Filament\Support\Facades\FilamentColor;
+use \Hasnayeen\Themes\Http\Middleware\SetTheme;
+use \Hasnayeen\Themes\ThemesPlugin;
+
 
 class AdminPanelProvider extends PanelProvider
 {
@@ -60,8 +73,8 @@ class AdminPanelProvider extends PanelProvider
                 SubstituteBindings::class,
                 DisableBladeIconComponents::class,
                 DispatchServingFilamentEvent::class,
-                \Hasnayeen\Themes\Http\Middleware\SetTheme::class,
-                loadSettings::class,
+                CheckForDebug::class,
+                SetTheme::class,
             ])
             ->authMiddleware([
                 Authenticate::class,
@@ -72,33 +85,9 @@ class AdminPanelProvider extends PanelProvider
             ])
             ->plugins([
                 FilamentApexChartsPlugin::make(),
-                \Hasnayeen\Themes\ThemesPlugin::make()
+                ThemesPlugin::make()
             ])
-//            ->navigationGroups([
-//                NavigationGroup::make()
-//                    ->label('Assets')
-//                    ->icon('fas-barcode'),
-//                NavigationGroup::make()
-//                    ->label('Accessories')
-//                    ->icon('heroicon-o-cog-6-tooth')
-//                    ->collapsed(),
-//                NavigationGroup::make()
-//                    ->label('Licenses')
-//                    ->icon('heroicon-o-cog-6-tooth')
-//                    ->collapsed(),
-//                NavigationGroup::make()
-//                    ->label('Components')
-//                    ->icon('heroicon-o-cog-6-tooth')
-//                    ->collapsed(),
-//                NavigationGroup::make()
-//                    ->label('Consumables')
-//                    ->icon('heroicon-o-cog-6-tooth')
-//                    ->collapsed(),
-//                NavigationGroup::make()
-//                    ->label('Settings')
-//                    ->icon('heroicon-o-cog-6-tooth')
-//                    ->collapsed(),
-//            ])
+
             ->navigationItems([
                 NavigationItem::make('Analytics')
                     ->url('https://filament.pirsch.io', shouldOpenInNewTab: true)
@@ -111,7 +100,10 @@ class AdminPanelProvider extends PanelProvider
             ->databaseNotifications()
             ->databaseNotificationsPolling('5s')
             //->topNavigation()
-            ->brandLogo(asset('img/logo.png'));
+            ->brandLogo(asset('img/logo.png'))
+            ->maxContentWidth(MaxWidth::Full)
+            ->unsavedChangesAlerts();
+
     }
 
 
