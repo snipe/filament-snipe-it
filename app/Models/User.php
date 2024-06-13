@@ -12,8 +12,10 @@ use App\Models\Asset;
 use App\Models\Accessory;
 use App\Models\Consumable;
 use Illuminate\Support\Facades\Gate;
+use Filament\Models\Contracts\FilamentUser;
+use Filament\Panel;
 
-class User extends Authenticatable
+class User extends Authenticatable implements FilamentUser
 {
     use HasFactory;
     use Notifiable;
@@ -102,6 +104,11 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    public function canAccessPanel(Panel $panel): bool
+    {
+        return true;
     }
 
     /**
