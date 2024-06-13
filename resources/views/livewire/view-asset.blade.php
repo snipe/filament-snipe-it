@@ -1,3 +1,3 @@
 <div>
-    @livewire('list-assets')
+    <livewire:list-assets :record="$getRecord()"/>
 </div>
