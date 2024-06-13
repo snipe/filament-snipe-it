@@ -267,7 +267,8 @@ class AssetResource extends Resource
                 IconColumn::make('assigned_to')
                     ->toggleable()
                     ->boolean()
-                    ->label('Checked Out')->sortable(),
+                    ->label('Checked Out')
+                    ->sortable(),
                 TextColumn::make('last_audit_date')
                     ->toggleable()
                     ->dateTime($format = 'F j, Y H:i:s')
@@ -276,7 +277,8 @@ class AssetResource extends Resource
                     ->toggleable(isToggledHiddenByDefault: true)
                     ->dateTime($format = 'F j, Y')
                     ->sortable(),
-                TextColumn::make('admin.username')->label('Created by')
+                TextColumn::make('admin.username')
+                    ->label('Created by')
                     ->toggleable(isToggledHiddenByDefault: true)
                     ->sortable(),
                 TextColumn::make('created_at')
