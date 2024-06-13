@@ -77,6 +77,8 @@ class UserResource extends Resource
             ->schema([
                 Tabs::make('Tabs')
                     ->tabs([
+
+                        // Set schema for infolist tab
                         Tabs\Tab::make('Details')
                             ->schema([
                                 TextEntry::make('name'),
