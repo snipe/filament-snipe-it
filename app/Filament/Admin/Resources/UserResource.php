@@ -80,12 +80,12 @@ class UserResource extends Resource
                             ->schema([
                                 TextEntry::make('name'),
                                 TextEntry::make('username'),
-                                ImageEntry::make('avatar')
-                                    ->label('')
-                                    ->circular(),
                                 TextEntry::make('email')
                                     ->icon('heroicon-m-envelope')
                                     ->url(fn (User $record): string => 'mailto:'.$record->email),
+                                ImageEntry::make('avatar')
+                                    ->label('')
+                                    ->circular(),
                                 TextEntry::make('location.name')
                                     ->label('Location')
                                     ->icon('fas-location-dot')
@@ -101,7 +101,7 @@ class UserResource extends Resource
                                     ->icon('fas-user-tie'),
                                 TextEntry::make('notes'),
 
-                            ])->columns(3)
+                            ])->columns(4)
                             ->icon('fas-address-card'),
                         Tabs\Tab::make('Assets')
                             ->schema([
