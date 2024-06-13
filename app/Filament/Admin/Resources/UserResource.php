@@ -56,6 +56,7 @@ use Filament\Support\Enums\IconPosition;
 use Filament\Resources\Concerns\HasTabs;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Forms\Components\Toggle;
+use Filament\Infolists\Components\ViewEntry;
 
 
 class UserResource extends Resource
@@ -105,7 +106,7 @@ class UserResource extends Resource
                             ->icon('fas-address-card'),
                         Tabs\Tab::make('Assets')
                             ->schema([
-                                // ...
+                                ViewEntry::make('assets')->view('livewire.view-asset')
                             ])
                             ->icon('fas-barcode')
                             ->badge(fn ($record) => $record->assets->count()),
@@ -495,6 +496,15 @@ class UserResource extends Resource
     public static function getGlobalSearchResultTitle(Model $record): string | Htmlable
     {
         return $record->first_name.' '.$record->last_name;
+    }
+
+    public function assetInfolist(Infolist $infolist): Infolist
+    {
+        return $infolist
+            ->record($this->asset)
+            ->schema([
+                // ...
+            ]);
     }
 
 }

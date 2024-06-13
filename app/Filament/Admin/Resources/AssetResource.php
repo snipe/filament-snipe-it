@@ -206,20 +206,49 @@ class AssetResource extends Resource
     {
         return $table
             ->columns([
-                TextColumn::make('id')->toggleable()->sortable(),
-                ImageColumn::make('image')->sortable(),
-                TextColumn::make('asset_tag')->sortable(),
-                TextColumn::make('name')->toggleable()->sortable(),
-                TextColumn::make('serial')->toggleable()->copyable()->sortable(),
-                TextColumn::make('company.name')->toggleable()->sortable(),
-                TextColumn::make('assigned_to')->toggleable()->sortable(),
+                TextColumn::make('id')
+                    ->toggleable(isToggledHiddenByDefault: true)
+                    ->sortable(),
+                ImageColumn::make('image')
+                    ->sortable(),
+                TextColumn::make('asset_tag')
+                    ->sortable(),
+                TextColumn::make('name')
+                    ->toggleable(isToggledHiddenByDefault: true)
+                    ->sortable(),
+                TextColumn::make('serial')
+                    ->icon('fas-copy')
+                    ->toggleable()
+                    ->copyable()
+                    ->sortable(),
+                TextColumn::make('company.name')
+                    ->toggleable(isToggledHiddenByDefault: true)
+                    ->sortable(),
+                TextColumn::make('assigned_to')
+                    ->toggleable()
+                    ->sortable(),
                 // ModelLinkColumn::make('model.manufacturer.name')->label('Manufacturer'),
-                TextColumn::make('assetmodel.name')->label('Model Name')->toggleable()->sortable(),
-                TextColumn::make('assetmodel.model_number')->label('Model No.')->toggleable()->sortable(),
-                TextColumn::make('assetmodel.manufacturer.name')->toggleable()->sortable(),
-                TextColumn::make('order_number')->toggleable()->sortable(),
-                TextColumn::make('assetmodel.category.name')->toggleable()->sortable(),
-                TextColumn::make('purchase_cost')->toggleable()->money('EUR', locale: 'pt')->sortable(),
+                TextColumn::make('assetmodel.name')
+                    ->label('Model Name')
+                    ->toggleable()
+                    ->sortable(),
+                TextColumn::make('assetmodel.model_number')
+                    ->label('Model No.')
+                    ->toggleable()
+                    ->sortable(),
+                TextColumn::make('assetmodel.manufacturer.name')
+                    ->toggleable(isToggledHiddenByDefault: true)
+                    ->sortable(),
+                TextColumn::make('order_number')
+                    ->toggleable(isToggledHiddenByDefault: true)
+                    ->sortable(),
+                TextColumn::make('assetmodel.category.name')
+                    ->toggleable()
+                    ->sortable(),
+                TextColumn::make('purchase_cost')
+                    ->toggleable()
+                    ->money('EUR', locale: 'pt')
+                    ->sortable(),
                 IconColumn::make('requestable')
                     ->toggleable()
                     ->boolean()
@@ -242,19 +271,19 @@ class AssetResource extends Resource
                     ->dateTime($format = 'F j, Y H:i:s')
                     ->sortable(),
                 TextColumn::make('expected_checkin')
-                    ->toggleable()
+                    ->toggleable(isToggledHiddenByDefault: true)
                     ->dateTime($format = 'F j, Y')
                     ->sortable(),
                 TextColumn::make('admin.username')->label('Created by')
-                    ->toggleable()
+                    ->toggleable(isToggledHiddenByDefault: true)
                     ->sortable(),
                 TextColumn::make('created_at')
-                    ->toggleable()
+                    ->toggleable(isToggledHiddenByDefault: true)
                     ->toggleable(isToggledHiddenByDefault: true)
                     ->dateTime($format = 'F j, Y H:i:s')
                     ->sortable(),
                 TextColumn::make('updated_at')
-                    ->toggleable()
+                    ->toggleable(isToggledHiddenByDefault: true)
                     ->dateTime($format = 'F j, Y H:i:s')
                     ->sortable(),
                 TextColumn::make('purchase_cost')
