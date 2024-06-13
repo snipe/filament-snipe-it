@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 use App\Models\Setting;
 
-class LoadSettings
+class CheckForDebug
 {
     /**
      * Handle an incoming request.
