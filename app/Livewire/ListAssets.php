@@ -12,9 +12,9 @@ use Filament\Tables\Concerns\InteractsWithTable;
 use Filament\Tables\Contracts\HasTable;
 use Filament\Tables\Table;
 use Illuminate\Contracts\View\View;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Livewire\Component;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Model;
 
 class ListAssets extends Component implements HasForms, HasTable
@@ -23,12 +23,24 @@ class ListAssets extends Component implements HasForms, HasTable
     use InteractsWithForms;
 
     protected static ?string $model = User::class;
-    public Model $record;
 
-    public function table(Table $table): Table
+
+    public User $record;
+
+    public function mount(User $record): void
     {
-        return AssetResource::table($table)
-            ->relationship(fn (): morphMany => $this->record->assets());
+        $this->record = $record;
+    }
+
+
+
+    public function table(Table $table)
+    {
+          return AssetResource::table($table)
+                    ->relationship(fn (): morphMany => $this->record->assets());
+
+//        return AssetResource::table($table)
+//            ->query(Asset::query()->where('assigned_to', auth()->user()->id));
     }
 
 
