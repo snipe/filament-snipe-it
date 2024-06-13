@@ -14,6 +14,7 @@ use Filament\Tables\Table;
 use Illuminate\Contracts\View\View;
 use Livewire\Component;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Model;
 
 class ListAssets extends Component implements HasForms, HasTable
@@ -21,15 +22,13 @@ class ListAssets extends Component implements HasForms, HasTable
     use InteractsWithTable;
     use InteractsWithForms;
 
-    protected static ?string $model = Asset::class;
+    protected static ?string $model = User::class;
+    public Model $record;
 
     public function table(Table $table): Table
     {
         return AssetResource::table($table)
-            ->query(Asset::query())
-            ->inverseRelationship('user');
-//            ->relationship(fn (): HasMany => $this->assets)
-//            ->inverseRelationship('categories');
+            ->relationship(fn (): morphMany => $this->record->assets());
     }
 
 
