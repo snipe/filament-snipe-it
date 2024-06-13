@@ -31,7 +31,7 @@ class UserListing extends BaseWidget
                 TextColumn::make('last_name')->toggleable()->sortable(),
                 TextColumn::make('username')->sortable(),
                 ViewColumn::make('email')->toggleable()->sortable()->view('tables.columns.email-link'),
-                TextColumn::make('phone')->toggleable()->sortable()->icon('heroicon-m-phone'),
+                TextColumn::make('phone')->toggleable()->sortable()->icon('fas-square-phone'),
                 IconColumn::make('activated')->toggleable()->boolean()->sortable(),
                 TextColumn::make('created_at')->toggleable()->dateTime($format = 'F j, Y H:i:s')->sortable(),
             ])

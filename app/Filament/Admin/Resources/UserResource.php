@@ -8,6 +8,7 @@ use App\Models\Location;
 use App\Models\Department;
 use Filament\Forms\Components\Checkbox;
 use Filament\Forms\Components\FileUpload;
+use Filament\Forms\Components\Textarea;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables\Actions\BulkActionGroup;
@@ -54,6 +55,7 @@ use Filament\Infolists\Components\ImageEntry;
 use Filament\Support\Enums\IconPosition;
 use Filament\Resources\Concerns\HasTabs;
 use Filament\Infolists\Components\TextEntry;
+use Filament\Forms\Components\Toggle;
 
 
 class UserResource extends Resource
@@ -78,34 +80,53 @@ class UserResource extends Resource
                             ->schema([
                                 TextEntry::make('name'),
                                 TextEntry::make('username'),
-                                TextEntry::make('email'),
+                                ImageEntry::make('avatar')
+                                    ->label('')
+                                    ->circular(),
+                                TextEntry::make('email')
+                                    ->icon('heroicon-m-envelope')
+                                    ->url(fn (User $record): string => 'mailto:'.$record->email),
+                                TextEntry::make('location.name')
+                                    ->label('Location')
+                                    ->icon('fas-location-dot')
+                                    ->url(fn (User $record): string => route('filament.admin.settings.resources.locations.edit', ['record' => $record])),
                                 TextEntry::make('jobtitle'),
-                                TextEntry::make('phone'),
-                                TextEntry::make('url'),
-                                TextEntry::make('manager.name'),
-                                TextEntry::make('notes')
+                                TextEntry::make('phone')
+                                    ->icon('fas-square-phone')
+                                    ->url(fn (User $record): string => 'tel:'.$record->phone),
+                                TextEntry::make('website')
+                                    ->icon('fas-square-arrow-up-right')
+                                    ->url(fn (User $record): string => $record->website),
+                                TextEntry::make('manager.name')
+                                    ->icon('fas-user-tie'),
+                                TextEntry::make('notes'),
+
                             ])->columns(3)
                             ->icon('fas-address-card'),
                         Tabs\Tab::make('Assets')
                             ->schema([
                                 // ...
                             ])
-                            ->icon('fas-barcode'),
+                            ->icon('fas-barcode')
+                            ->badge(fn ($record) => $record->assets->count()),
                         Tabs\Tab::make('Accessories')
                             ->schema([
                                 // ...
                             ])
-                            ->icon('fas-keyboard'),
+                            ->icon('fas-keyboard')
+                            ->badge(fn ($record) => $record->accessories->count()),
                         Tabs\Tab::make('Licenses')
                             ->schema([
                                 // ...
                             ])
-                            ->icon('fas-save'),
+                            ->icon('fas-save')
+                            ->badge(fn ($record) => $record->licenses->count()),
                         Tabs\Tab::make('Consumables')
                             ->schema([
                                 // ...
                             ])
-                            ->icon('fas-tint'),
+                            ->icon('fas-tint')
+                            ->badge(fn ($record) => $record->consumables->count()),
                         Tabs\Tab::make('Uploads')
                             ->schema([
                                 // ...
@@ -116,12 +137,12 @@ class UserResource extends Resource
                                 // ...
                             ])
                             ->icon('far-clock'),
-                        Tabs\Tab::make('Managed Locations')
+                        Tabs\Tab::make('Locations')
                             ->schema([
                                 // ...
                             ])
                             ->icon('fas-location-dot'),
-                        Tabs\Tab::make('Managed Users')
+                        Tabs\Tab::make('Users')
                             ->schema([
                                 // ...
                             ])
@@ -151,24 +172,38 @@ class UserResource extends Resource
                     TextInput::make('username')
                         ->string()
                         ->required()
-                        ->autofocus()
                         ->maxLength(255)
                         ->unique(ignoreRecord: true),
                     TextInput::make('password')
                         ->password()
+                        ->revealable()
                         ->dehydrateStateUsing(fn ($state) => Hash::make($state))
                         ->dehydrated(fn ($state) => filled($state))
                         ->required(fn (string $context): bool => $context === 'create'),
-                    Checkbox::make('activated')->label('This user can login')->inline()
+                    Toggle::make('activated')->label('This user can login'),
                 ])
                 ->columns(2),
 
                 Section::make('Work Information')->schema([
                     TextInput::make('jobtitle')
                         ->maxLength(255),
+                    TextInput::make('employee_num')
+                        ->maxLength(255),
                     TextInput::make('email')
                         ->email()
                         ->maxLength(255),
+
+                    Select::make('manager_id')
+                        ->relationship(name: 'manager', titleAttribute: 'username')
+                        ->searchable()
+                        ->preload()
+                        ->native(false)
+                        ->createOptionForm(fn(Form $form) => UserResource::form($form))
+                        ->createOptionAction(fn ($action) => $action->mutateFormDataUsing(function ($data) {
+                            $data['user_id'] = auth()->user()->id;
+                            return $data;
+                    })),
+
                     Select::make('location_id')
                         ->relationship(name: 'location', titleAttribute: 'name')
                         ->searchable()
@@ -188,6 +223,15 @@ class UserResource extends Resource
                             $data['user_id'] = auth()->user()->id;
                             return $data;
                         })),
+                    DatePicker::make('start_date')
+                        ->suffixIcon('fas-calendar')
+                        ->native(false)
+                        ->displayFormat('Y-m-d'),
+
+                    DatePicker::make('end_date')
+                        ->suffixIcon('fas-calendar')
+                        ->native(false)
+                        ->displayFormat('Y-m-d'),
                     ])
                     ->collapsible()
                     ->persistCollapsed()
@@ -207,12 +251,17 @@ class UserResource extends Resource
                         ->maxLength(14),
                     TextInput::make('country')
                         ->maxLength(255),
+                    TextInput::make('website')
+                            ->maxLength(255),
                     TextInput::make('phone')
                         ->maxLength(255),
                     FileUpload::make('avatar')
                         ->directory('assets')
                         ->imageEditor()
                         ->image(),
+                    Textarea::make('notes')
+                            ->string(),
+                    Toggle::make('vip'),
                     ])
                     ->collapsed()
                     ->persistCollapsed()
@@ -252,7 +301,7 @@ class UserResource extends Resource
                     ->toggleable(isToggledHiddenByDefault: true)
                     ->url(fn ($record) => 'tel:'.$record->phone, true)
                     ->sortable()
-                    ->icon('heroicon-m-phone'),
+                    ->icon('fas-square-phone'),
                 TextColumn::make('website')
                     ->toggleable(isToggledHiddenByDefault: true)
                     ->url(fn ($record) => $record->website, true)

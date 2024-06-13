@@ -298,6 +298,18 @@ class User extends Authenticatable
     }
 
     /**
+     * Establishes the user -> manager relationship
+     *
+     * @author A. Gianotto <snipe@snipe.net>
+     * @since [v4.0]
+     * @return \Illuminate\Database\Eloquent\Relations\Relation
+     */
+    public function manager()
+    {
+        return $this->belongsTo(self::class, 'manager_id')->withTrashed();
+    }
+
+    /**
      * Query builder scope to order on admin user
      *
      * @param  \Illuminate\Database\Query\Builder  $query  Query builder instance
@@ -312,6 +324,7 @@ class User extends Authenticatable
             ->orderBy('admin_user.first_name', $order)
             ->orderBy('admin_user.last_name', $order);
     }
+
 
 
 }
