@@ -4,8 +4,11 @@ namespace App\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Blade;
 use Symfony\Component\HttpFoundation\Response;
-use App\Models\Setting;
+use Filament\Support\Facades\FilamentView;
+use Filament\View\PanelsRenderHook;
+
 
 class CheckForDebug
 {
@@ -16,8 +19,15 @@ class CheckForDebug
      */
     public function handle(Request $request, Closure $next): Response
     {
-        $settings = Setting::first();
-        view()->share('settings',$settings);
+
+        if (((auth()->check() && (auth()->user()->isSuperUser()))) && (app()->environment() == 'production') && (config('app.warn_debug') === true) && (config('app.debug') === true)) {
+
+            FilamentView::registerRenderHook(
+                PanelsRenderHook::CONTENT_START,
+                fn (): string => Blade::render('debugmode-warning'),
+            );
+        }
+
         return $next($request);
     }
 }
