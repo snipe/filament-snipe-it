@@ -99,52 +99,68 @@ class UserResource extends Resource
                                     ->url(fn (User $record): string => 'tel:'.$record->phone),
                                 TextEntry::make('website')
                                     ->icon('fas-square-arrow-up-right')
-                                    ->url(fn (User $record): string => $record->website),
+                                    ->url(fn (User $record): string => ($record->website ?? '')),
                                 TextEntry::make('manager.name')
                                     ->icon('fas-user-tie'),
                                 TextEntry::make('notes'),
-
                             ])->columns(4)
                             ->icon('fas-address-card'),
+
+                        // Set assets table tab
                         Tabs\Tab::make('Assets')
                             ->schema([
-                                ViewEntry::make('assets')->view('livewire.view-asset')
+                                ViewEntry::make('assets')
+                                    ->view('livewire.view-asset')
                             ])
                             ->icon('fas-barcode')
                             ->badge(fn ($record) => $record->assets->count()),
+
+                        // Set accessories table tab
                         Tabs\Tab::make('Accessories')
                             ->schema([
                                 // ...
                             ])
                             ->icon('fas-keyboard')
                             ->badge(fn ($record) => $record->accessories->count()),
+
+                        // Set licenses table tab
                         Tabs\Tab::make('Licenses')
                             ->schema([
                                 // ...
                             ])
                             ->icon('fas-save')
                             ->badge(fn ($record) => $record->licenses->count()),
+
+                        // Set consumables table tab
                         Tabs\Tab::make('Consumables')
                             ->schema([
                                 // ...
                             ])
                             ->icon('fas-tint')
                             ->badge(fn ($record) => $record->consumables->count()),
+
+                        // Set uploads tab
                         Tabs\Tab::make('Uploads')
                             ->schema([
                                 // ...
                             ])
                             ->icon('fas-paperclip'),
+
+                        // Set history tab
                         Tabs\Tab::make('History')
                             ->schema([
                                 // ...
                             ])
                             ->icon('far-clock'),
+
+                        // Set managed locations tab
                         Tabs\Tab::make('Locations')
                             ->schema([
                                 // ...
                             ])
                             ->icon('fas-location-dot'),
+
+                        // Set managed users tab
                         Tabs\Tab::make('Users')
                             ->schema([
                                 // ...
