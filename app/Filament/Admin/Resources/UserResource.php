@@ -509,6 +509,8 @@ class UserResource extends Resource
         return [
             'Username' => $record->username,
             'Email' => $record->email,
+            'First Name' => $record->first_name,
+            'Last Name' => $record->last_name,
         ];
     }
     public static function getGlobalSearchResultTitle(Model $record): string | Htmlable
@@ -516,13 +518,6 @@ class UserResource extends Resource
         return $record->first_name.' '.$record->last_name;
     }
 
-    public function assetInfolist(Infolist $infolist): Infolist
-    {
-        return $infolist
-            ->record($this->asset)
-            ->schema([
-                // ...
-            ]);
-    }
+
 
 }
