@@ -96,7 +96,7 @@ class UserResource extends Resource
                                 TextEntry::make('jobtitle'),
                                 TextEntry::make('phone')
                                     ->icon('fas-square-phone')
-                                    ->url(fn (User $record): string => 'tel:'.$record->phone),
+                                    ->url(fn (User $record): string => ($record->phone ? 'tel://'.$record->phone: '')),
                                 TextEntry::make('website')
                                     ->icon('fas-square-arrow-up-right')
                                     ->url(fn (User $record): string => ($record->website ?? '')),
