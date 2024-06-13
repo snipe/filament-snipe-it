@@ -23,27 +23,32 @@ class ListAssets extends Component implements HasForms, HasTable
     use InteractsWithForms;
 
     protected static ?string $model = User::class;
-
-
     public User $record;
 
-    public function mount(User $record): void
-    {
-        $this->record = $record;
-    }
 
-
-
+    /**
+     * This gets the definition for assets, using the AssetResource::table().
+     * Using the public variable $record, we can get the assets for just the selected user.
+     *
+     * We get the assets for the user by user relationship from User->assets().
+     *
+     * @see App/Filament/Admin/Resources/AssetResource::table()
+     *
+     * @param Table $table
+     * @return Table
+     */
     public function table(Table $table)
     {
-          return AssetResource::table($table)
-                    ->relationship(fn (): morphMany => $this->record->assets());
+          return AssetResource::table($table)->relationship(fn (): morphMany => $this->record->assets());
 
-//        return AssetResource::table($table)
-//            ->query(Asset::query()->where('assigned_to', auth()->user()->id));
     }
 
 
+    /**
+     * This renders the view for the assets list.
+     *
+     * @return View
+     */
     public function render(): View
     {
         return view('livewire.list-assets');
