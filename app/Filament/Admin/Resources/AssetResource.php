@@ -210,6 +210,7 @@ class AssetResource extends Resource
                     ->toggleable(isToggledHiddenByDefault: true)
                     ->sortable(),
                 ImageColumn::make('image')
+                    ->toggleable(isToggledHiddenByDefault: true)
                     ->sortable(),
                 TextColumn::make('asset_tag')
                     ->sortable(),
@@ -224,7 +225,8 @@ class AssetResource extends Resource
                 TextColumn::make('company.name')
                     ->toggleable(isToggledHiddenByDefault: true)
                     ->sortable(),
-                TextColumn::make('assigned_to')
+                TextColumn::make('user.username')
+                    ->label('Assigned To')
                     ->toggleable()
                     ->sortable(),
                 // ModelLinkColumn::make('model.manufacturer.name')->label('Manufacturer'),
