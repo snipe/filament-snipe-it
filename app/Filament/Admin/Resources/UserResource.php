@@ -84,39 +84,48 @@ class UserResource extends Resource
                                 TextEntry::make('url'),
                                 TextEntry::make('manager.name'),
                                 TextEntry::make('notes')
-                            ])->columns(3),
+                            ])->columns(3)
+                            ->icon('fas-address-card'),
                         Tabs\Tab::make('Assets')
                             ->schema([
                                 // ...
-                            ]),
+                            ])
+                            ->icon('fas-barcode'),
                         Tabs\Tab::make('Accessories')
                             ->schema([
                                 // ...
-                            ]),
+                            ])
+                            ->icon('fas-keyboard'),
                         Tabs\Tab::make('Licenses')
                             ->schema([
                                 // ...
-                            ]),
+                            ])
+                            ->icon('fas-save'),
                         Tabs\Tab::make('Consumables')
                             ->schema([
                                 // ...
-                            ]),
+                            ])
+                            ->icon('fas-tint'),
                         Tabs\Tab::make('Uploads')
                             ->schema([
                                 // ...
-                            ]),
+                            ])
+                            ->icon('fas-paperclip'),
                         Tabs\Tab::make('History')
                             ->schema([
                                 // ...
-                            ]),
+                            ])
+                            ->icon('far-clock'),
                         Tabs\Tab::make('Managed Locations')
                             ->schema([
                                 // ...
-                            ]),
+                            ])
+                            ->icon('fas-location-dot'),
                         Tabs\Tab::make('Managed Users')
                             ->schema([
                                 // ...
-                            ]),
+                            ])
+                            ->icon('fas-people-roof'),
                     ])
                     ->persistTab()
                     ->persistTabInQueryString()
