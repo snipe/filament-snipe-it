@@ -124,5 +124,29 @@ class Asset extends Model
             ->orderBy('created_at', 'desc');
     }
 
+    /**
+     * Get the target this asset is checked out to
+     *
+     * @author [A. Gianotto] [<snipe@snipe.net>]
+     * @since [v4.0]
+     * @return \Illuminate\Database\Eloquent\Relations\Relation
+     */
+    public function assignedTo()
+    {
+        return $this->morphTo('assigned', 'assigned_type', 'assigned_to')->withTrashed();
+    }
+
+    /**
+     * Establishes the user -> assets relationship
+     *
+     * @author A. Gianotto <snipe@snipe.net>
+     * @since [v1.0]
+     * @return \Illuminate\Database\Eloquent\Relations\Relation
+     */
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'assigned_to', 'id');
+    }
+
 
 }
