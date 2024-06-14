@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Watson\Validating\ValidatingTrait;
+use App\Models\Manufacturer;
 
 class Component extends Model
 {
@@ -44,7 +45,172 @@ class Component extends Model
         'notes',
     ];
 
-    public function admin() {
-        return $this->belongsTo(User::class, 'user_id');
+    /**
+     * Establishes the components -> action logs -> uploads relationship
+     *
+     * @author A. Gianotto <snipe@snipe.net>
+     * @since [v6.1.13]
+     * @return \Illuminate\Database\Eloquent\Relations\Relation
+     */
+    public function uploads()
+    {
+        return $this->hasMany(\App\Models\Actionlog::class, 'item_id')
+            ->where('item_type', '=', self::class)
+            ->where('action_type', '=', 'uploaded')
+            ->whereNotNull('filename')
+            ->orderBy('created_at', 'desc');
     }
+
+
+    /**
+     * Establishes the component -> location relationship
+     *
+     * @author [A. Gianotto] [<snipe@snipe.net>]
+     * @since [v3.0]
+     * @return \Illuminate\Database\Eloquent\Relations\Relation
+     */
+    public function location()
+    {
+        return $this->belongsTo(\App\Models\Location::class, 'location_id');
+    }
+
+    /**
+     * Establishes the component -> assets relationship
+     *
+     * @author [A. Gianotto] [<snipe@snipe.net>]
+     * @since [v3.0]
+     * @return \Illuminate\Database\Eloquent\Relations\Relation
+     */
+    public function assets()
+    {
+        return $this->belongsToMany(\App\Models\Asset::class, 'components_assets')->withPivot('id', 'assigned_qty', 'created_at', 'user_id', 'note');
+    }
+
+    /**
+     * Establishes the component -> admin user relationship
+     *
+     * @todo this is probably not needed - refactor
+     *
+     * @author [A. Gianotto] [<snipe@snipe.net>]
+     * @since [v3.0]
+     * @return \Illuminate\Database\Eloquent\Relations\Relation
+     */
+    public function admin()
+    {
+        return $this->belongsTo(\App\Models\User::class, 'user_id');
+    }
+
+    /**
+     * Establishes the component -> company relationship
+     *
+     * @author [A. Gianotto] [<snipe@snipe.net>]
+     * @since [v3.0]
+     * @return \Illuminate\Database\Eloquent\Relations\Relation
+     */
+    public function company()
+    {
+        return $this->belongsTo(\App\Models\Company::class, 'company_id');
+    }
+
+    /**
+     * Establishes the component -> category relationship
+     *
+     * @author [A. Gianotto] [<snipe@snipe.net>]
+     * @since [v3.0]
+     * @return \Illuminate\Database\Eloquent\Relations\Relation
+     */
+    public function category()
+    {
+        return $this->belongsTo(\App\Models\Category::class, 'category_id');
+    }
+
+    /**
+     * Establishes the item -> supplier relationship
+     *
+     * @author [A. Gianotto] [<snipe@snipe.net>]
+     * @since [v6.1.1]
+     * @return \Illuminate\Database\Eloquent\Relations\Relation
+     */
+    public function supplier()
+    {
+        return $this->belongsTo(\App\Models\Supplier::class, 'supplier_id');
+    }
+
+    /**
+     * Establishes the item -> manufacturer relationship
+     *
+     * @author [A. Gianotto] [<snipe@snipe.net>]
+     * @since [v8.0.0]
+     * @return \Illuminate\Database\Eloquent\Relations\Relation
+     */
+    public function manufacturer()
+    {
+        return $this->belongsTo(Manufacturer::class, 'manufacturer_id');
+    }
+
+    /**
+     * Establishes the component -> action logs relationship
+     *
+     * @author [A. Gianotto] [<snipe@snipe.net>]
+     * @since [v3.0]
+     * @return \Illuminate\Database\Eloquent\Relations\Relation
+     */
+    public function assetlog()
+    {
+        return $this->hasMany(\App\Models\Actionlog::class, 'item_id')->where('item_type', self::class)->orderBy('created_at', 'desc')->withTrashed();
+    }
+
+    /**
+     * Check how many items within a component are checked out
+     *
+     * @author [A. Gianotto] [<snipe@snipe.net>]
+     * @since [v5.0]
+     * @return int
+     */
+    public function numCheckedOut()
+    {
+        $checkedout = 0;
+        foreach ($this->assets as $checkout) {
+            $checkedout += $checkout->pivot->assigned_qty;
+        }
+
+        return $checkedout;
+    }
+
+    /**
+     * Check how many items within a component are remaining
+     *
+     * @author [A. Gianotto] [<snipe@snipe.net>]
+     * @since [v3.0]
+     * @return int
+     */
+    public function numRemaining()
+    {
+        return $this->qty - $this->numCheckedOut();
+    }
+
+
+    /**
+     * -----------------------------------------------
+     * BEGIN MUTATORS
+     * -----------------------------------------------
+     **/
+
+    /**
+     * This sets a value for qty if no value is given. The database does not allow this
+     * field to be null, and in the other areas of the code, we set a default, but the importer
+     * does not.
+     *
+     * This simply checks that there is a value for quantity, and if there isn't, set it to 0.
+     *
+     * @author A. Gianotto <snipe@snipe.net>
+     * @since v6.3.4
+     * @param $value
+     * @return void
+     */
+    public function setQtyAttribute($value)
+    {
+        $this->attributes['qty'] = (!$value) ? 0 : intval($value);
+    }
+
 }
