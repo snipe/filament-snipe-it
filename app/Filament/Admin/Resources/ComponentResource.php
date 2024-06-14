@@ -172,6 +172,14 @@ class ComponentResource extends Resource
                     ->toggleable()
                     ->searchable()
                     ->sortable(),
+                TextColumn::make('supplier.name')
+                    ->toggleable()
+                    ->searchable()
+                    ->sortable(),
+                TextColumn::make('manufacturer.name')
+                    ->toggleable()
+                    ->searchable()
+                    ->sortable(),
                 TextColumn::make('location.name')
                     ->toggleable()
                     ->searchable()
