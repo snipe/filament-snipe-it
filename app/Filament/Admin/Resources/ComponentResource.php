@@ -17,6 +17,7 @@ use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\ToggleButtons;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
@@ -50,6 +51,7 @@ class ComponentResource extends Resource
                         ->autofocus()
                         ->string()
                         ->maxLength(255),
+
                     Select::make('category_id')
                         ->options(Category::where('category_type','component')->pluck('name', 'id'))
                         ->searchable()
@@ -61,6 +63,7 @@ class ComponentResource extends Resource
                             $data['user_id'] = auth()->user()->id;
                             return $data;
                         })),
+
                     TextInput::make('qty')
                         ->numeric()
                         ->required()
