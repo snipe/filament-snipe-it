@@ -203,7 +203,12 @@ class UserResource extends Resource
                         ->dehydrateStateUsing(fn ($state) => Hash::make($state))
                         ->dehydrated(fn ($state) => filled($state))
                         ->required(fn (string $context): bool => $context === 'create'),
-                    Toggle::make('activated')->label('This user can login'),
+                    Toggle::make('activated')
+                        ->label('This user can login')
+                        ->onIcon('fas-check-circle')
+                        ->offIcon('fas-times-circle')
+                        ->onColor('success')
+                        ->offColor('gray')
                 ])
                 ->columns(2),
 
@@ -284,7 +289,11 @@ class UserResource extends Resource
                         ->image(),
                     Textarea::make('notes')
                             ->string(),
-                    Toggle::make('vip'),
+                        Toggle::make('vip')
+                            ->onIcon('fas-check-circle')
+                            ->offIcon('fas-times-circle')
+                            ->onColor('success')
+                            ->offColor('gray'),
                     ])
                     ->collapsed()
                     ->persistCollapsed()

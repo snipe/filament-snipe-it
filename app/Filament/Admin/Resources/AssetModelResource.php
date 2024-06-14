@@ -13,6 +13,7 @@ use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Toggle;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
@@ -80,10 +81,14 @@ class AssetModelResource extends Resource
                 Textarea::make('notes')
                     ->string(),
                 FileUpload::make('image')
-                    ->directory('categories')
+                    ->directory('models')
                     ->imageEditor()
                     ->image(),
-                ViewImage::make('image')
+                Toggle::make('requestable')
+                    ->onIcon('fas-check-circle')
+                    ->offIcon('fas-times-circle')
+                    ->onColor('success')
+                    ->offColor('gray'),
 
             ]);
     }

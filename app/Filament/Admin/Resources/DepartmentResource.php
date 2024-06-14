@@ -5,11 +5,14 @@ namespace App\Filament\Admin\Resources;
 use App\Filament\Admin\Resources\DepartmentResource\Pages;
 use App\Filament\Admin\Resources\DepartmentResource\RelationManagers;
 use App\Filament\Clusters\Settings;
+use App\Models\Company;
 use App\Models\Department;
 use Filament\Actions\Exports\Models\Export;
 use Filament\Forms;
 use Filament\Forms\Components\FileUpload;
+use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -26,6 +29,9 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use App\Filament\Exports\DepartmentExporter;
 use App\Filament\Imports\DepartmentImporter;
+use Ysfkaya\FilamentPhoneInput\Forms\PhoneInput;
+use Ysfkaya\FilamentPhoneInput\PhoneInputNumberType;
+use Ysfkaya\FilamentPhoneInput\Tables\PhoneColumn;
 
 class DepartmentResource extends Resource
 {
@@ -38,26 +44,57 @@ class DepartmentResource extends Resource
     {
         return $form
             ->schema([
-                TextInput::make('name')
-                    ->string()
-                    ->required()
-                    ->autofocus()
-                    ->maxLength(255)
-                    ->unique(ignoreRecord: true),
-                Select::make('manager_id')
-                    ->relationship(name: 'manager', titleAttribute: 'first_name')
-                    ->searchable()
-                    ->preload()
-                    ->native(false)
-                    ->createOptionForm(fn(Form $form) => UserResource::form($form))
-                    ->createOptionAction(fn ($action) => $action->mutateFormDataUsing(function ($data) {
-                        $data['user_id'] = auth()->user()->id;
-                        return $data;
-                    })),
-                FileUpload::make('image')
-                    ->directory('departments')
-                    ->imageEditor()
-                    ->image(),
+                Section::make('Component Details')->schema([
+                    TextInput::make('name')
+                        ->string()
+                        ->required()
+                        ->autofocus()
+                        ->maxLength(255)
+                        ->unique(ignoreRecord: true),
+                    PhoneInput::make('phone')
+                        ->showSelectedDialCode(true),
+                    PhoneInput::make('fax')
+                        ->showSelectedDialCode(true),
+                    Select::make('company_id')
+                        ->relationship(name: 'company', titleAttribute: 'name')
+                        ->searchable()
+                        ->preload()
+                        ->native(false)
+                        ->createOptionForm(fn(Form $form) => CompanyResource::form($form))
+                        ->createOptionAction(fn ($action) => $action->mutateFormDataUsing(function ($data) {
+                            $data['user_id'] = auth()->user()->id;
+                            return $data;
+                        })),
+                    Select::make('manager_id')
+                        ->relationship(name: 'manager', titleAttribute: 'first_name')
+                        ->searchable()
+                        ->preload()
+                        ->native(false)
+                        ->createOptionForm(fn(Form $form) => UserResource::form($form))
+                        ->createOptionAction(fn ($action) => $action->mutateFormDataUsing(function ($data) {
+                            $data['user_id'] = auth()->user()->id;
+                            return $data;
+                        })),
+                    Select::make('location_id')
+                        ->relationship(name: 'location', titleAttribute: 'name')
+                        ->searchable()
+                        ->preload()
+                        ->native(false)
+                        ->createOptionForm(fn(Form $form) => LocationResource::form($form))
+                        ->createOptionAction(fn ($action) => $action->mutateFormDataUsing(function ($data) {
+                            $data['user_id'] = auth()->user()->id;
+                            return $data;
+                        })),
+                    Textarea::make('notes')
+                        ->string()
+                        ->nullable(),
+                    FileUpload::make('image')
+                        ->directory('departments')
+                        ->imageEditor()
+                        ->image(),
+                  ])
+                ->id('optional-details')
+                ->columns(2)
 
             ]);
     }
@@ -74,6 +111,18 @@ class DepartmentResource extends Resource
                     ->sortable(),
                 TextColumn::make('name')
                     ->toggleable()
+                    ->sortable(),
+                PhoneColumn::make('phone')
+                    ->displayFormat(PhoneInputNumberType::NATIONAL)
+                    ->toggleable(isToggledHiddenByDefault: true)
+                    ->icon('fas-square-phone')
+                    ->url(fn ($record) => 'tel:'.$record->phone, true)
+                    ->sortable(),
+                PhoneColumn::make('fax')
+                    ->displayFormat(PhoneInputNumberType::NATIONAL)
+                    ->toggleable(isToggledHiddenByDefault: true)
+                    ->url(fn ($record) => 'tel:'.$record->fax, true)
+                    ->icon('fas-fax')
                     ->sortable(),
                 TextColumn::make('admin.username')
                     ->label('Created by')

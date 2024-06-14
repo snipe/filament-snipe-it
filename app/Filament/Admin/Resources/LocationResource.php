@@ -87,8 +87,10 @@ class LocationResource extends Resource
                         ->maxLength(2),
                     TextInput::make('zip')
                         ->maxLength(14),
-                    PhoneInput::make('phone')->showSelectedDialCode(true),
-                    PhoneInput::make('fax')->showSelectedDialCode(true),
+                    PhoneInput::make('phone')
+                        ->showSelectedDialCode(true),
+                    PhoneInput::make('fax')
+                        ->showSelectedDialCode(true),
                     FileUpload::make('image')
                         ->directory('locations')
                         ->imageEditor()
@@ -110,11 +112,17 @@ class LocationResource extends Resource
                 TextColumn::make('name')
                     ->toggleable()
                     ->sortable(),
-                PhoneColumn::make('phone')->displayFormat(PhoneInputNumberType::NATIONAL)
-                    ->toggleable()
+                PhoneColumn::make('phone')
+                    ->displayFormat(PhoneInputNumberType::NATIONAL)
+                    ->toggleable(isToggledHiddenByDefault: true)
+                    ->icon('fas-square-phone')
+                    ->url(fn ($record) => 'tel:'.$record->phone, true)
                     ->sortable(),
                 PhoneColumn::make('fax')
-                    ->toggleable()
+                    ->displayFormat(PhoneInputNumberType::NATIONAL)
+                    ->toggleable(isToggledHiddenByDefault: true)
+                    ->url(fn ($record) => 'tel:'.$record->fax, true)
+                    ->icon('fas-fax')
                     ->sortable(),
                 TextColumn::make('admin.username')
                     ->label('Created by')

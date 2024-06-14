@@ -11,6 +11,8 @@ use App\Models\Manufacturer;
 use Filament\Actions\Exports\Models\Export;
 use Filament\Forms;
 use Filament\Forms\Components\FileUpload;
+use Filament\Forms\Components\Section;
+use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -25,6 +27,8 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Ysfkaya\FilamentPhoneInput\Forms\PhoneInput;
+use Illuminate\Support\HtmlString;
 
 class ManufacturerResource extends Resource
 {
@@ -37,16 +41,42 @@ class ManufacturerResource extends Resource
     {
         return $form
             ->schema([
-                TextInput::make('name')
-                    ->string()
-                    ->required()
-                    ->autofocus()
-                    ->maxLength(255)
-                    ->unique(ignoreRecord: true),
-                FileUpload::make('image')
-                    ->directory('manufacturers')
-                    ->imageEditor()
-                    ->image(),
+                Section::make('')->schema([
+                    TextInput::make('name')
+                        ->string()
+                        ->required()
+                        ->autofocus()
+                        ->maxLength(255)
+                        ->unique(ignoreRecord: true),
+                    TextInput::make('url')
+                        ->url()
+                        ->suffixIcon('heroicon-m-globe-alt')
+                        ->maxLength(255),
+                    TextInput::make('support_url')
+                        ->url()
+                        ->suffixIcon('heroicon-m-globe-alt')
+                        ->maxLength(255),
+                    TextInput::make('warranty_lookup_url')
+                        ->url()
+                        ->suffixIcon('heroicon-m-globe-alt')
+                        ->helperText(str('Variables `{LOCALE}`, `{SERIAL}`, `{MODEL_NUMBER}`, and `{MODEL_NAME}` may be used in your URL to have those values auto-populate when viewing assets - for example https://checkcoverage.apple.com/{LOCALE}/`{SERIAL}`.')->inlineMarkdown()->toHtmlString())
+                        ->maxLength(255),
+                    TextInput::make('support_email')
+                        ->email()
+                        ->suffixIcon('fas-envelope')
+                        ->maxLength(255),
+                    PhoneInput::make('support_phone')
+                        ->showSelectedDialCode(true),
+                    FileUpload::make('image')
+                        ->directory('manufacturers')
+                        ->imageEditor()
+                        ->image(),
+                    Textarea::make('notes')
+                        ->string(),
+                ])
+                ->id('manufacturer-basic')
+                ->columns(2)
+
             ]);
     }
 

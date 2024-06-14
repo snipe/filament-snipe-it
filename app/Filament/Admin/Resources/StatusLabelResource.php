@@ -11,6 +11,7 @@ use Filament\Forms\Components\Checkbox;
 use Filament\Forms\Components\ColorPicker;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Toggle;
 use Filament\Forms\Components\ToggleButtons;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -67,8 +68,11 @@ class StatusLabelResource extends Resource
                     ->inline(),
                 Textarea::make('notes')
                     ->columnSpan(2),
-                Checkbox::make('default_label')
-                    ->inline()->columnSpan(2)
+                Toggle::make('default_label')
+                    ->onIcon('fas-check-circle')
+                    ->offIcon('fas-times-circle')
+                    ->onColor('success')
+                    ->offColor('gray')->columnSpan(2)
             ])->columns(2);
     }
 

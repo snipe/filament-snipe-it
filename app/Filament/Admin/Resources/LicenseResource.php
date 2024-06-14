@@ -107,9 +107,7 @@ class LicenseResource extends Resource
                     DatePicker::make('purchase_date')
                         ->suffixIcon('fas-calendar')
                         ->native(false)
-                        ->displayFormat('Y-m-d'),
-
-                    Checkbox::make('requestable')->inline()
+                        ->displayFormat('Y-m-d')
                     ])
                     ->collapsed()
                     ->persistCollapsed()

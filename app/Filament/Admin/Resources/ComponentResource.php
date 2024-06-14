@@ -51,11 +51,16 @@ class ComponentResource extends Resource
                         ->string()
                         ->maxLength(255),
                     Select::make('category_id')
-                        ->label('Category')
-                        ->options(Category::where('category_type','accessory')->pluck('name', 'id'))
+                        ->relationship(name: 'category', titleAttribute: 'name')
                         ->searchable()
+                        ->preload()
+                        ->required()
                         ->native(false)
-                        ->required(),
+                        ->createOptionForm(fn(Form $form) => CategoryResource::form($form))
+                        ->createOptionAction(fn ($action) => $action->mutateFormDataUsing(function ($data) {
+                            $data['user_id'] = auth()->user()->id;
+                            return $data;
+                        })),
                     TextInput::make('qty')
                         ->numeric()
                         ->required()
@@ -89,20 +94,35 @@ class ComponentResource extends Resource
                         ->native(false)
                         ->displayFormat('Y-m-d'),
                     Select::make('manufacturer_id')
-                        ->label('Manufacturer')
-                        ->options(Manufacturer::all()->pluck('name', 'id'))
+                        ->relationship(name: 'manufacturer', titleAttribute: 'name')
                         ->searchable()
-                        ->native(false),
+                        ->preload()
+                        ->native(false)
+                        ->createOptionForm(fn(Form $form) => ManufacturerResource::form($form))
+                        ->createOptionAction(fn ($action) => $action->mutateFormDataUsing(function ($data) {
+                            $data['user_id'] = auth()->user()->id;
+                            return $data;
+                        })),
                     Select::make('location_id')
-                        ->label('Location')
-                        ->options(Location::all()->pluck('name', 'id'))
+                        ->relationship(name: 'location', titleAttribute: 'name')
                         ->searchable()
-                        ->native(false),
+                        ->preload()
+                        ->native(false)
+                        ->createOptionForm(fn(Form $form) => LocationResource::form($form))
+                        ->createOptionAction(fn ($action) => $action->mutateFormDataUsing(function ($data) {
+                            $data['user_id'] = auth()->user()->id;
+                            return $data;
+                        })),
                     Select::make('supplier_id')
-                        ->label('Supplier')
-                        ->options(Supplier::all()->pluck('name', 'id'))
+                        ->relationship(name: 'supplier', titleAttribute: 'name')
                         ->searchable()
-                        ->native(false),
+                        ->preload()
+                        ->native(false)
+                        ->createOptionForm(fn(Form $form) => SupplierResource::form($form))
+                        ->createOptionAction(fn ($action) => $action->mutateFormDataUsing(function ($data) {
+                            $data['user_id'] = auth()->user()->id;
+                            return $data;
+                        })),
                     Textarea::make('notes')
                         ->string(),
                     FileUpload::make('image')

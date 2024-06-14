@@ -8,6 +8,7 @@ use App\Filament\Exports\AssetExporter;
 use App\Filament\Imports\AssetImporter;
 //use App\Tables\Columns\ModelLinkColumn;
 use App\Models\User;
+use Filament\Forms\Components\Toggle;
 use Filament\Tables\Actions\ImportAction;
 use Filament\Tables\Actions\ReplicateAction;
 use App\Models\Asset;
@@ -114,8 +115,16 @@ class AssetResource extends Resource
                         ->image(),
                     Textarea::make('notes')
                         ->string(),
-                    Checkbox::make('requestable')->inline(),
-                    Checkbox::make('byod')->inline()
+                    Toggle::make('requestable')
+                        ->onIcon('fas-check-circle')
+                        ->offIcon('fas-times-circle')
+                        ->onColor('success')
+                        ->offColor('gray'),
+                    Toggle::make('byod')
+                        ->onIcon('fas-check-circle')
+                        ->offIcon('fas-times-circle')
+                        ->onColor('success')
+                        ->offColor('gray'),
                 ])
                 ->id('asset-baseinfo')
                 ->columns(2),

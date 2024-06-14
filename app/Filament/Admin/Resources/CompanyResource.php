@@ -8,6 +8,7 @@ use App\Filament\Clusters\Settings;
 use App\Models\Company;
 use Filament\Forms;
 use Filament\Forms\Components\FileUpload;
+use Filament\Forms\Components\Section;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -33,16 +34,20 @@ class CompanyResource extends Resource
     {
         return $form
             ->schema([
-                TextInput::make('name')
-                    ->string()
-                    ->required()
-                    ->autofocus()
-                    ->maxLength(255)
-                    ->unique(ignoreRecord: true),
-                FileUpload::make('image')
-                    ->directory('companies')
-                    ->imageEditor()
-                    ->image(),
+                Section::make('Component Details')->schema([
+                    TextInput::make('name')
+                        ->string()
+                        ->required()
+                        ->autofocus()
+                        ->maxLength(255)
+                        ->unique(ignoreRecord: true),
+                    FileUpload::make('image')
+                        ->directory('companies')
+                        ->imageEditor()
+                        ->image(),
+                ])
+                ->id('details')
+                ->columns(2)
             ]);
     }
 
@@ -56,11 +61,15 @@ class CompanyResource extends Resource
                 TextColumn::make('name')
                     ->toggleable()
                     ->sortable(),
-                PhoneColumn::make('phone')->displayFormat(PhoneInputNumberType::NATIONAL)
-                    ->toggleable()
+                PhoneColumn::make('phone')
+                    ->displayFormat(PhoneInputNumberType::NATIONAL)
+                    ->toggleable(isToggledHiddenByDefault: true)
+                    ->icon('fas-square-phone')
                     ->sortable(),
                 PhoneColumn::make('fax')
-                    ->toggleable()
+                    ->displayFormat(PhoneInputNumberType::NATIONAL)
+                    ->toggleable(isToggledHiddenByDefault: true)
+                    ->icon('fas-fax')
                     ->sortable(),
                 TextColumn::make('admin.username')
                     ->label('Created by')

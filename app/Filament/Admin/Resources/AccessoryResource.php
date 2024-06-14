@@ -126,7 +126,11 @@ class AccessoryResource extends Resource
                         ->native(false),
 
                     Textarea::make('notes'),
-                    Toggle::make('requestable')->label('Requestable'),
+                    Toggle::make('requestable')
+                        ->onIcon('fas-check-circle')
+                        ->offIcon('fas-times-circle')
+                        ->onColor('success')
+                        ->offColor('gray'),
                 ])
                 ->collapsible()
                 ->persistCollapsed()
