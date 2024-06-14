@@ -320,26 +320,32 @@ class UserResource extends Resource
                     ->defaultImageUrl(url('/img/default-sm.png')),
                 TextColumn::make('first_name')
                     ->toggleable()
+                    ->searchable()
                     ->sortable(),
                 TextColumn::make('last_name')
                     ->toggleable()
+                    ->searchable()
                     ->sortable(),
                 TextColumn::make('username')
                     ->sortable()
+                    ->searchable()
                     ->icon(fn ($record) => $record->isSuperUser()=='1' ? 'fas-crown' : '')
                     ->iconColor(fn ($record) => $record->isSuperUser()=='1' ? 'warning' : ''),
                 TextColumn::make('email')
                     ->toggleable()
+                    ->searchable()
                     ->url(fn ($record) => 'mailto:'.$record->email, true)
                     ->sortable()
                     ->icon('heroicon-m-envelope'),
                 TextColumn::make('phone')
                     ->toggleable(isToggledHiddenByDefault: true)
                     ->url(fn ($record) => 'tel:'.$record->phone, true)
+                    ->searchable()
                     ->sortable()
                     ->icon('fas-square-phone'),
                 TextColumn::make('company.name')
                     ->toggleable(isToggledHiddenByDefault: true)
+                    ->searchable()
                     ->sortable(),
                 TextColumn::make('manager.username')
                     ->label('Manager')
@@ -348,10 +354,12 @@ class UserResource extends Resource
                 TextColumn::make('location.name')
                     ->label('Location')
                     ->toggleable(isToggledHiddenByDefault: true)
+                    ->searchable()
                     ->sortable(),
                 TextColumn::make('department.name')
                     ->label('Department')
                     ->toggleable(isToggledHiddenByDefault: true)
+                    ->searchable()
                     ->sortable(),
                 TextColumn::make('website')
                     ->toggleable(isToggledHiddenByDefault: true)
