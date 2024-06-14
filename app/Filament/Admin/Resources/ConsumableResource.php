@@ -135,13 +135,16 @@ class ConsumableResource extends Resource
             ->columns([
                 TextColumn::make('id')
                     ->toggleable(isToggledHiddenByDefault: true)
+                    ->searchable()
                     ->sortable(),
                 TextColumn::make('name')
                     ->toggleable()
+                    ->searchable()
                     ->sortable(),
                 TextColumn::make('admin.username')
                     ->label('Created by')
                     ->toggleable()
+                    ->searchable()
                     ->sortable(),
                 TextColumn::make('created_at')
                     ->toggleable()
