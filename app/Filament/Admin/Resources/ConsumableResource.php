@@ -10,6 +10,7 @@ use App\Models\Manufacturer;
 use App\Models\Supplier;
 use Filament\Forms;
 use Filament\Forms\Components\DatePicker;
+use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
@@ -21,6 +22,7 @@ use Filament\Tables;
 use Filament\Tables\Actions\DeleteAction;
 use Filament\Tables\Actions\EditAction;
 use Filament\Tables\Actions\ReplicateAction;
+use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
@@ -120,6 +122,10 @@ class ConsumableResource extends Resource
                         })),
 
                     Textarea::make('notes'),
+                    FileUpload::make('image')
+                        ->directory('consumables')
+                        ->imageEditor()
+                        ->image(),
 
                 ])
                     ->collapsible()
@@ -137,7 +143,42 @@ class ConsumableResource extends Resource
                     ->toggleable(isToggledHiddenByDefault: true)
                     ->searchable()
                     ->sortable(),
+                ImageColumn::make('image')
+                    ->toggleable(isToggledHiddenByDefault: true)
+                    ->sortable(),
                 TextColumn::make('name')
+                    ->toggleable()
+                    ->searchable()
+                    ->sortable(),
+                TextColumn::make('qty')
+                    ->toggleable()
+                    ->sortable(),
+                TextColumn::make('min_amt')
+                    ->toggleable()
+                    ->sortable(),
+                TextColumn::make('model_number')
+                    ->toggleable()
+                    ->searchable()
+                    ->sortable(),
+                TextColumn::make('manufacturer.name')
+                    ->toggleable()
+                    ->searchable()
+                    ->sortable(),
+                TextColumn::make('item_number')
+                    ->toggleable()
+                    ->searchable()
+                    ->sortable(),
+                TextColumn::make('purchase_cost')
+                    ->toggleable()->money('EUR', locale: 'pt')
+                    ->sortable(),
+                TextColumn::make('purchase_date')
+                    ->toggleable()
+                    ->dateTime($format = 'F j, Y')
+                    ->sortable(),
+                TextColumn::make('order_number')
+                    ->toggleable()
+                    ->sortable(),
+                TextColumn::make('company.name')
                     ->toggleable()
                     ->searchable()
                     ->sortable(),
