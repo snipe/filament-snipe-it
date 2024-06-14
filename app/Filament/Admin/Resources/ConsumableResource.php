@@ -4,9 +4,17 @@ namespace App\Filament\Admin\Resources;
 
 use App\Filament\Admin\Resources\ConsumableResource\Pages;
 use App\Filament\Admin\Resources\ConsumableResource\RelationManagers;
+use App\Models\Company;
 use App\Models\Consumable;
+use App\Models\Manufacturer;
+use App\Models\Supplier;
 use Filament\Forms;
+use Filament\Forms\Components\DatePicker;
+use Filament\Forms\Components\Section;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Toggle;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
@@ -32,12 +40,64 @@ class ConsumableResource extends Resource
     {
         return $form
             ->schema([
-                TextInput::make('name')
-                    ->required()
-                    ->autofocus()
-                    ->string()
-                    ->maxLength(255),
-            ]);
+                Section::make('Details')->schema([
+                    TextInput::make('name')
+                        ->required()
+                        ->autofocus()
+                        ->string()
+                        ->maxLength(255),
+                    TextInput::make('qty')
+                        ->required()
+                        ->numeric()
+                        ->maxLength(10),
+                ])
+                ->id('consumable-details')
+                ->columns(2),
+
+                Section::make('Order Info')->schema([
+                    Select::make('company_id')
+                        ->label('Company')
+                        ->options(Company::pluck('name', 'id'))
+                        ->searchable()
+                        ->native(false),
+
+                    Select::make('supplier_id')
+                        ->label('Supplier')
+                        ->options(Supplier::pluck('name', 'id'))
+                        ->searchable()
+                        ->native(false),
+
+                    TextInput::make('order_number')
+                        ->string()
+                        ->maxLength(255),
+
+                    TextInput::make('item_number')
+                        ->string()
+                        ->maxLength(255),
+
+                    DatePicker::make('purchase_date')
+                        ->suffixIcon('fas-calendar')
+                        ->native(false)
+                        ->displayFormat('Y-m-d'),
+
+                    TextInput::make('purchase_cost')
+                        ->string()
+                        ->maxLength(255),
+
+                    Select::make('manufacturer_id')
+                        ->label('Manufacturer')
+                        ->options(Manufacturer::all()->pluck('name', 'id'))
+                        ->searchable()
+                        ->native(false),
+
+                    Textarea::make('notes'),
+                    Toggle::make('requestable')->label('Requestable'),
+                ])
+                    ->collapsible()
+                    ->persistCollapsed()
+                    ->id('accessory-order')
+                    ->columns(2)
+                ]);
     }
 
     public static function table(Table $table): Table
@@ -71,7 +131,16 @@ class ConsumableResource extends Resource
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
                 ]),
-            ]);
+            ])
+            ->persistFiltersInSession()
+            ->filtersFormColumns(4)
+            ->defaultPaginationPageOption(25)
+            ->searchable()
+            ->extremePaginationLinks()
+            ->paginated([10, 25, 50, 100, 200])
+            ->deferLoading()
+            ->persistSortInSession()
+            ->striped();
     }
 
     public static function getRelations(): array
