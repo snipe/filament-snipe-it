@@ -92,8 +92,9 @@ class CategoryResource extends Resource
                         ->imageEditor()
                         ->image(),
                 ])
+                 //->columns(2)
                  ->compact()
-                
+
             ]);
     }
 
