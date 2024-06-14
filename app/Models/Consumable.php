@@ -26,6 +26,7 @@ class Consumable extends Model
         'min_amt',
         'requestable',
         'notes',
+        'image',
     ];
 
     public function admin() {
