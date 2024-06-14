@@ -30,8 +30,10 @@ class MaintenancesRelationManager extends RelationManager
     public function table(Table $table): Table
     {
         return AssetMaintenanceResource::table($table)
+            //->modifyQueryUsing(fn (Builder $query) => $query->where('is_active', true))
             ->headerActions([
                 Tables\Actions\CreateAction::make()
             ]);
     }
+
 }

@@ -93,6 +93,9 @@ class AssetMaintenanceResource extends Resource
                 TextColumn::make('asset_maintenance_type')
                     ->toggleable()
                     ->sortable(),
+                TextColumn::make('asset.asset_tag')
+                    ->toggleable()
+                    ->sortable(),
                 TextColumn::make('notes')
                     ->toggleable()
                     ->sortable(),
@@ -124,39 +127,39 @@ class AssetMaintenanceResource extends Resource
                     ->query(fn (Builder $query): Builder => $query->where('is_warranty', true))
                     ->toggle(),
 
-                Filter::make('created_at')
-                    ->form([
-                        DatePicker::make('created_at'),
-                        DatePicker::make('created_until')->default(now())
-                    ])
-                    ->query(function (Builder $query, array $data): Builder {
-                        return $query
-                            ->when(
-                                $data['created_at'],
-                                fn (Builder $query, $date): Builder => $query->whereDate('created_at', '>=', $date),
-                            )
-                            ->when(
-                                $data['created_until'],
-                                fn (Builder $query, $date): Builder => $query->whereDate('created_at', '<=', $date),
-                            );
-                    }),
-
-                Filter::make('start_date')
-                    ->form([
-                        DatePicker::make('start_date'),
-                        DatePicker::make('completion_date')->default(now())
-                    ])
-                    ->query(function (Builder $query, array $data): Builder {
-                        return $query
-                            ->when(
-                                $data['start_date'],
-                                fn (Builder $query, $date): Builder => $query->whereDate('start_date', '>=', $date),
-                            )
-                            ->when(
-                                $data['completion_date'],
-                                fn (Builder $query, $date): Builder => $query->whereDate('completion_date', '<=', $date),
-                            );
-                    })
+//                Filter::make('created_at')
+//                    ->form([
+//                        DatePicker::make('created_at'),
+//                        DatePicker::make('created_until')->default(now())
+//                    ])
+//                    ->query(function (Builder $query, array $data): Builder {
+//                        return $query
+//                            ->when(
+//                                $data['created_at'],
+//                                fn (Builder $query, $date): Builder => $query->whereDate('created_at', '>=', $date),
+//                            )
+//                            ->when(
+//                                $data['created_until'],
+//                                fn (Builder $query, $date): Builder => $query->whereDate('created_at', '<=', $date),
+//                            );
+//                    }),
+//
+//                Filter::make('start_date')
+//                    ->form([
+//                        DatePicker::make('start_date'),
+//                        DatePicker::make('completion_date')->default(now())
+//                    ])
+//                    ->query(function (Builder $query, array $data): Builder {
+//                        return $query
+//                            ->when(
+//                                $data['start_date'],
+//                                fn (Builder $query, $date): Builder => $query->whereDate('start_date', '>=', $date),
+//                            )
+//                            ->when(
+//                                $data['completion_date'],
+//                                fn (Builder $query, $date): Builder => $query->whereDate('completion_date', '<=', $date),
+//                            );
+//                    })
 
             ])
 

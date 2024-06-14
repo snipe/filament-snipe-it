@@ -7,6 +7,8 @@ use Illuminate\Database\Eloquent\Model;
 use App\Models\Asset;
 use App\Models\Supplier;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use \Illuminate\Database\Eloquent\Relations\HasMany;
+use \Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class AssetMaintenance extends Model
 {
@@ -30,12 +32,12 @@ class AssetMaintenance extends Model
         'cost',
     ];
 
-    public function asset()
+    public function asset() : HasMany
     {
-        return $this->belongsTo(Asset::class, 'asset_id');
+        return $this->hasMany(Asset::class, 'id', 'asset_id');
     }
 
-    public function supplier()
+    public function supplier() : BelongsTo
     {
         return $this->belongsTo(Supplier::class, 'supplier_id');
     }
