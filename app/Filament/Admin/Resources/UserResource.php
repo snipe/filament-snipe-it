@@ -211,6 +211,7 @@ class UserResource extends Resource
                         ->offIcon('fas-times-circle')
                         ->onColor('success')
                         ->offColor('gray')
+                        ->default('on')
                 ])
                 ->columns(2),
 
