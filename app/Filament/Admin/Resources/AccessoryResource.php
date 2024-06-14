@@ -162,6 +162,10 @@ class AccessoryResource extends Resource
                     ->toggleable()
                     ->searchable()
                     ->sortable(),
+                TextColumn::make('company.name')
+                    ->toggleable(isToggledHiddenByDefault: true)
+                    ->searchable()
+                    ->sortable(),
                 TextColumn::make('qty')
                     ->toggleable()
                     ->sortable(),
