@@ -51,7 +51,7 @@ class ComponentResource extends Resource
                         ->string()
                         ->maxLength(255),
                     Select::make('category_id')
-                        ->relationship(name: 'category', titleAttribute: 'name')
+                        ->options(Category::where('category_type','component')->pluck('name', 'id'))
                         ->searchable()
                         ->preload()
                         ->required()

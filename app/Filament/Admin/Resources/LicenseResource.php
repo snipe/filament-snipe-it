@@ -46,17 +46,16 @@ class LicenseResource extends Resource
                         ->unique(ignoreRecord: true),
 
                     Select::make('category_id')
-                        ->label('Category')
-                        ->relationship(name: 'category', titleAttribute: 'name')
+                        ->options(Category::where('category_type','license')->pluck('name', 'id'))
                         ->searchable()
                         ->preload()
+                        ->required()
                         ->native(false)
                         ->createOptionForm(fn(Form $form) => CategoryResource::form($form))
                         ->createOptionAction(fn ($action) => $action->mutateFormDataUsing(function ($data) {
                             $data['user_id'] = auth()->user()->id;
                             return $data;
-                        }))
-                        ->required(),
+                        })),
 
                     TextInput::make('qty')
                         ->label('Seats')

@@ -7,6 +7,7 @@ use App\Filament\Clusters\Settings;
 use App\Filament\Exports\AssetModelExporter;
 use App\Filament\Imports\AssetModelImporter;
 use App\Models\AssetModel;
+use App\Models\Category;
 use Filament\Actions\Exports\Models\Export;
 use Filament\Forms;
 use Filament\Forms\Components\FileUpload;
@@ -55,11 +56,10 @@ class AssetModelResource extends Resource
                     ->string()
                     ->maxLength(255),
                 Select::make('category_id')
-                    ->label('Category')
-                    ->required()
-                    ->relationship(name: 'category', titleAttribute: 'name')
+                    ->options(Category::where('category_type','asset')->pluck('name', 'id'))
                     ->searchable()
                     ->preload()
+                    ->required()
                     ->native(false)
                     ->createOptionForm(fn(Form $form) => CategoryResource::form($form))
                     ->createOptionAction(fn ($action) => $action->mutateFormDataUsing(function ($data) {
