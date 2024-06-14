@@ -99,6 +99,15 @@ class AssetMaintenanceResource extends Resource
                 TextColumn::make('notes')
                     ->toggleable()
                     ->sortable(),
+                IconColumn::make('is_warranty')
+                    ->toggleable()
+                    ->boolean()
+                    ->icon(fn (string $state): string => match ($state) {
+                        '0' => 'fas-times',
+                        '1' => 'fas-check',
+                    })
+                    ->size(IconColumn\IconColumnSize::Small)
+                    ->sortable(),
                 TextColumn::make('start_date')
                     ->toggleable()
                     ->dateTime($format = 'F j, Y')
@@ -111,15 +120,11 @@ class AssetMaintenanceResource extends Resource
                     ->toggleable()
                     ->dateTime($format = 'F j, Y')
                     ->sortable(),
-                IconColumn::make('is_warranty')
+                TextColumn::make('created_at')
                     ->toggleable()
-                    ->boolean()
-                    ->icon(fn (string $state): string => match ($state) {
-                        '0' => 'fas-times',
-                        '1' => 'fas-check',
-                    })
-                    ->size(IconColumn\IconColumnSize::Small)
+                    ->dateTime($format = 'F j, Y')
                     ->sortable(),
+
             ])
 
             ->filters([
