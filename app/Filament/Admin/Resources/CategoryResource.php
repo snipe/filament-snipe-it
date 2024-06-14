@@ -49,11 +49,6 @@ class CategoryResource extends Resource
                         ->autofocus()
                         ->maxLength(255)
                         ->unique(ignoreRecord: true),
-                    MarkdownEditor::make('eula_text')
-                        ->disableToolbarButtons([
-                            'attachFiles',
-                            'strike',
-                        ]),
                     ToggleButtons::make('category_type')
                         ->options([
                             'asset' => 'Asset',
@@ -79,17 +74,26 @@ class CategoryResource extends Resource
                         ->offColor('gray'),
                     Toggle::make('require_acceptance')
                         ->onIcon('fas-check-circle')
-                        ->offIcon('fas-times-circle'),
+                        ->offIcon('fas-times-circle')
+                        ->onColor('success')
+                        ->offColor('gray'),
                     Toggle::make('checkin_email')
                         ->onIcon('fas-envelope-circle-check')
                         ->offIcon('fas-envelope')
                         ->onColor('success')
                         ->offColor('gray'),
+                    MarkdownEditor::make('eula_text')
+                        ->disableToolbarButtons([
+                            'attachFiles',
+                            'strike',
+                        ]),
                     FileUpload::make('image')
                         ->directory('categories')
                         ->imageEditor()
                         ->image(),
                 ])
+                 ->compact()
+                
             ]);
     }
 
