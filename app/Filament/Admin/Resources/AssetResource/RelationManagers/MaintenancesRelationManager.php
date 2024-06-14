@@ -27,10 +27,17 @@ class MaintenancesRelationManager extends RelationManager
         return AssetMaintenanceResource::form($form);
     }
 
+    /**
+     * This pulls in the AssetMaintenanceResource table that is scoped to that asset.
+     * When this is invoked, it will show the table of maintenances for that asset,
+     * and any new maintenances made from a page will be associated with that asset.
+     *
+     * @param Table $table
+     * @return Table
+     */
     public function table(Table $table): Table
     {
         return AssetMaintenanceResource::table($table)
-            //->modifyQueryUsing(fn (Builder $query) => $query->where('is_active', true))
             ->headerActions([
                 Tables\Actions\CreateAction::make()
             ]);
