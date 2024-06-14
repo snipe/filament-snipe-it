@@ -127,6 +127,10 @@ class LicenseResource extends Resource
                     ->toggleable()->sortable(),
                 TextColumn::make('serial')
                     ->toggleable()->sortable(),
+                TextColumn::make('notes')
+                    ->toggleable(isToggledHiddenByDefault: true)
+                    ->searchable()
+                    ->sortable(),
                 TextColumn::make('admin.username')
                     ->label('Created by')
                     ->toggleable()

@@ -10,6 +10,7 @@ use Filament\Forms;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -91,6 +92,8 @@ class LocationResource extends Resource
                         ->showSelectedDialCode(true),
                     PhoneInput::make('fax')
                         ->showSelectedDialCode(true),
+                    Textarea::make('notes')
+                        ->string(),
                     FileUpload::make('image')
                         ->directory('locations')
                         ->imageEditor()
@@ -123,6 +126,10 @@ class LocationResource extends Resource
                     ->toggleable(isToggledHiddenByDefault: true)
                     ->url(fn ($record) => 'tel:'.$record->fax, true)
                     ->icon('fas-fax')
+                    ->sortable(),
+                TextColumn::make('notes')
+                    ->toggleable(isToggledHiddenByDefault: true)
+                    ->searchable()
                     ->sortable(),
                 TextColumn::make('admin.username')
                     ->label('Created by')

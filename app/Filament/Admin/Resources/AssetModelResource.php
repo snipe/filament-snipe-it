@@ -125,6 +125,10 @@ class AssetModelResource extends Resource
                     })
                     ->size(IconColumn\IconColumnSize::Small)
                     ->sortable(),
+                TextColumn::make('notes')
+                    ->toggleable(isToggledHiddenByDefault: true)
+                    ->searchable()
+                    ->sortable(),
                 TextColumn::make('admin.username')
                     ->label('Created by')
                     ->toggleable()

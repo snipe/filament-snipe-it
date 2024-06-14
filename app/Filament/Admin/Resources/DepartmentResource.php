@@ -124,6 +124,10 @@ class DepartmentResource extends Resource
                     ->url(fn ($record) => 'tel:'.$record->fax, true)
                     ->icon('fas-fax')
                     ->sortable(),
+                TextColumn::make('notes')
+                    ->toggleable(isToggledHiddenByDefault: true)
+                    ->searchable()
+                    ->sortable(),
                 TextColumn::make('admin.username')
                     ->label('Created by')
                     ->toggleable()

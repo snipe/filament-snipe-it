@@ -104,7 +104,10 @@ class UserResource extends Resource
                                     ->url(fn (User $record): string => ($record->website ?? '')),
                                 TextEntry::make('manager.name')
                                     ->icon('fas-user-tie'),
-                                TextEntry::make('notes'),
+                                TextEntry::make('notes')
+                                    ->toggleable(isToggledHiddenByDefault: true)
+                                    ->searchable()
+                                    ->sortable(),
                             ])->columns(4)
                             ->icon('fas-address-card'),
 
@@ -391,6 +394,10 @@ class UserResource extends Resource
                 TextColumn::make('last_login')
                     ->toggleable(isToggledHiddenByDefault: true)
                     ->dateTime($format = 'F j, Y H:i:s')
+                    ->sortable(),
+                TextColumn::make('notes')
+                    ->toggleable(isToggledHiddenByDefault: true)
+                    ->searchable()
                     ->sortable(),
                 TextColumn::make('admin.username')->label('Created by')
                     ->toggleable(isToggledHiddenByDefault: true)

@@ -192,6 +192,10 @@ class ComponentResource extends Resource
                     ->toggleable()
                     ->searchable()
                     ->sortable(),
+                TextColumn::make('notes')
+                    ->toggleable(isToggledHiddenByDefault: true)
+                    ->searchable()
+                    ->sortable(),
                 TextColumn::make('admin.username')
                     ->label('Created by')
                     ->searchable()

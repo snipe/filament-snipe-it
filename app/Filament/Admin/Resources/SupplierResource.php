@@ -92,7 +92,13 @@ class SupplierResource extends Resource
                 ImageColumn::make('image')
                     ->toggleable()
                     ->sortable(),
-                TextColumn::make('name')->toggleable()->sortable(),
+                TextColumn::make('name')
+                    ->toggleable()
+                    ->sortable(),
+                TextColumn::make('notes')
+                    ->toggleable(isToggledHiddenByDefault: true)
+                    ->searchable()
+                    ->sortable(),
                 TextColumn::make('admin.username')->label('Created by')
                     ->toggleable()
                     ->sortable(),

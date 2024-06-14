@@ -182,6 +182,10 @@ class AccessoryResource extends Resource
                 TextColumn::make('order_number')
                     ->toggleable()
                     ->sortable(),
+                TextColumn::make('notes')
+                    ->toggleable(isToggledHiddenByDefault: true)
+                    ->searchable()
+                    ->sortable(),
                 TextColumn::make('admin.username')
                     ->toggleable(isToggledHiddenByDefault: true)
                     ->toggleable()

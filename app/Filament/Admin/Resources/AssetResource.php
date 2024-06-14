@@ -288,6 +288,10 @@ class AssetResource extends Resource
                     ->toggleable(isToggledHiddenByDefault: true)
                     ->dateTime($format = 'F j, Y')
                     ->sortable(),
+                TextColumn::make('notes')
+                    ->toggleable(isToggledHiddenByDefault: true)
+                    ->searchable()
+                    ->sortable(),
                 TextColumn::make('admin.username')
                     ->label('Created by')
                     ->toggleable(isToggledHiddenByDefault: true)
