@@ -161,7 +161,34 @@ class ComponentResource extends Resource
                     ->toggleable()
                     ->searchable()
                     ->sortable(),
+                TextColumn::make('qty')
+                    ->toggleable()
+                    ->sortable(),
                 TextColumn::make('serial')
+                    ->toggleable()
+                    ->searchable()
+                    ->sortable(),
+                TextColumn::make('category.name')
+                    ->toggleable()
+                    ->searchable()
+                    ->sortable(),
+                TextColumn::make('location.name')
+                    ->toggleable()
+                    ->searchable()
+                    ->sortable(),
+                TextColumn::make('company.name')
+                    ->toggleable()
+                    ->searchable()
+                    ->sortable(),
+                TextColumn::make('purchase_cost')
+                    ->toggleable()
+                    ->money('EUR', locale: 'pt')
+                    ->sortable(),
+                TextColumn::make('purchase_date')
+                    ->toggleable()
+                    ->dateTime($format = 'F j, Y')
+                    ->sortable(),
+                TextColumn::make('order_number')
                     ->toggleable()
                     ->searchable()
                     ->sortable(),

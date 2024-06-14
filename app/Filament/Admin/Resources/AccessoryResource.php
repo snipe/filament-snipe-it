@@ -125,7 +125,8 @@ class AccessoryResource extends Resource
                         ->searchable()
                         ->native(false),
 
-                    Textarea::make('notes'),
+                    Textarea::make('notes')
+                        ->string(),
                     Toggle::make('requestable')
                         ->onIcon('fas-check-circle')
                         ->offIcon('fas-times-circle')
@@ -149,17 +150,38 @@ class AccessoryResource extends Resource
                 ImageColumn::make('image')
                     ->toggleable()
                     ->sortable(),
-                TextColumn::make('name')->toggleable()->sortable(),
-                TextColumn::make('model_number')->toggleable()->sortable(),
-                TextColumn::make('category.name')->toggleable()->sortable(),
-                TextColumn::make('qty')->toggleable()->sortable(),
-                TextColumn::make('min_amt')->toggleable()->sortable(),
-                TextColumn::make('admin.username')->toggleable()->sortable(),
-                TextColumn::make('purchase_cost')->toggleable()->money('EUR', locale: 'pt')->sortable(),
-                TextColumn::make('purchase_date')->toggleable()->dateTime($format = 'F j, Y')->sortable(),
-                TextColumn::make('order_number')->toggleable()->sortable(),
-                TextColumn::make('admin.username')->label('Created by')
+                TextColumn::make('name')
                     ->toggleable()
+                    ->searchable()
+                    ->sortable(),
+                TextColumn::make('model_number')
+                    ->toggleable()
+                    ->searchable()
+                    ->sortable(),
+                TextColumn::make('category.name')
+                    ->toggleable()
+                    ->searchable()
+                    ->sortable(),
+                TextColumn::make('qty')
+                    ->toggleable()
+                    ->sortable(),
+                TextColumn::make('min_amt')
+                    ->toggleable()
+                    ->sortable(),
+                TextColumn::make('purchase_cost')
+                    ->toggleable()->money('EUR', locale: 'pt')
+                    ->sortable(),
+                TextColumn::make('purchase_date')
+                    ->toggleable()
+                    ->dateTime($format = 'F j, Y')
+                    ->sortable(),
+                TextColumn::make('order_number')
+                    ->toggleable()
+                    ->sortable(),
+                TextColumn::make('admin.username')
+                    ->toggleable(isToggledHiddenByDefault: true)
+                    ->toggleable()
+                    ->searchable()
                     ->sortable(),
                 TextColumn::make('created_at')
                     ->toggleable()
@@ -167,7 +189,7 @@ class AccessoryResource extends Resource
                     ->dateTime($format = 'F j, Y H:i:s')
                     ->sortable(),
                 TextColumn::make('updated_at')
-                    ->toggleable()
+                    ->toggleable(isToggledHiddenByDefault: true)
                     ->dateTime($format = 'F j, Y H:i:s')
                     ->sortable(),
             ])
