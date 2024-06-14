@@ -106,6 +106,7 @@ class UserResource extends Resource
                             ])->columns(4)
                             ->icon('fas-address-card'),
 
+
                         // Set assets table tab
                         Tabs\Tab::make('Assets')
                             ->schema([
@@ -118,7 +119,8 @@ class UserResource extends Resource
                         // Set accessories table tab
                         Tabs\Tab::make('Accessories')
                             ->schema([
-                                // ...
+                                ViewEntry::make('accessories')
+                                    ->view('livewire.view-accessory')
                             ])
                             ->icon('fas-keyboard')
                             ->badge(fn ($record) => $record->accessories->count()),
@@ -126,7 +128,8 @@ class UserResource extends Resource
                         // Set licenses table tab
                         Tabs\Tab::make('Licenses')
                             ->schema([
-                                // ...
+                                ViewEntry::make('licenses')
+                                    ->view('livewire.view-license')
                             ])
                             ->icon('fas-save')
                             ->badge(fn ($record) => $record->licenses->count()),
@@ -134,7 +137,8 @@ class UserResource extends Resource
                         // Set consumables table tab
                         Tabs\Tab::make('Consumables')
                             ->schema([
-                                // ...
+                                ViewEntry::make('consumables')
+                                    ->view('livewire.view-consumable')
                             ])
                             ->icon('fas-tint')
                             ->badge(fn ($record) => $record->consumables->count()),
