@@ -43,6 +43,7 @@ class Component extends Model
         'qty',
         'serial',
         'notes',
+        'image',
     ];
 
     /**
