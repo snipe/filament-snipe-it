@@ -154,7 +154,16 @@ class LocationResource extends Resource
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
                 ]),
-            ]);
+            ])
+            ->persistFiltersInSession()
+            ->filtersFormColumns(4)
+            ->defaultPaginationPageOption(25)
+            ->searchable()
+            ->extremePaginationLinks()
+            ->paginated([10, 25, 50, 100, 200])
+            ->deferLoading()
+            ->persistSortInSession()
+            ->striped();
     }
 
     public static function getRelations(): array

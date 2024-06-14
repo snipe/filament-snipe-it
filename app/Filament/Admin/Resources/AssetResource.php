@@ -351,7 +351,10 @@ class AssetResource extends Resource
             ->checkIfRecordIsSelectableUsing(
                 fn (Model $record): bool => $record->assigned_to == null
             )
+            ->persistFiltersInSession()
+            ->filtersFormColumns(4)
             ->defaultPaginationPageOption(25)
+            ->searchable()
             ->extremePaginationLinks()
             ->paginated([10, 25, 50, 100, 200])
             ->deferLoading()

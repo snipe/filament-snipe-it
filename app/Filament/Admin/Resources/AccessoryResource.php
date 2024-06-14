@@ -127,12 +127,12 @@ class AccessoryResource extends Resource
 
                     Textarea::make('notes'),
                     Toggle::make('requestable')->label('Requestable'),
-                    ])
-                    ->collapsible()
-                    ->persistCollapsed()
-                    ->id('accessory-order')
-                    ->columns(2)
-                ]);
+                ])
+                ->collapsible()
+                ->persistCollapsed()
+                ->id('accessory-order')
+                ->columns(2)
+            ]);
     }
 
     public static function table(Table $table): Table
@@ -201,7 +201,14 @@ class AccessoryResource extends Resource
                     DeleteBulkAction::make(),
                 ]),
             ])
+            ->persistFiltersInSession()
+            ->filtersFormColumns(4)
+            ->defaultPaginationPageOption(25)
+            ->searchable()
+            ->extremePaginationLinks()
+            ->paginated([10, 25, 50, 100, 200])
             ->deferLoading()
+            ->persistSortInSession()
             ->striped();
     }
 
