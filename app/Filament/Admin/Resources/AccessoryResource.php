@@ -6,8 +6,14 @@ use App\Filament\Admin\Resources\AccessoryResource\Pages;
 use App\Filament\Admin\Resources\AccessoryResource\RelationManagers;
 use App\Forms\Components\ViewImage;
 use App\Models\Accessory;
+use App\Models\Location;
+use App\Models\Company;
+use App\Models\Supplier;
 use Filament\Forms;
+use Filament\Forms\Components\DatePicker;
+use Filament\Forms\Components\Section;
 use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Toggle;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
@@ -43,33 +49,90 @@ class AccessoryResource extends Resource
     {
         return $form
             ->schema([
-                TextInput::make('name')
-                    ->string()
-                    ->required()
-                    ->autofocus()
-                    ->maxLength(255)
-                    ->unique(ignoreRecord: true),
-                Select::make('category_id')
-                    ->label('Category')
-                    ->options(Category::where('category_type','accessory')->pluck('name', 'id'))
-                    ->searchable()
-                    ->native(false),
-                Select::make('manufacturer_id')
-                    ->label('Manufacturer')
-                    ->options(Manufacturer::all()->pluck('name', 'id'))
-                    ->searchable()
-                    ->native(false),
-                TextInput::make('order_number')
-                    ->string()
-                    ->maxLength(255),
-                FileUpload::make('image')
-                    ->directory('accessories')
-                    ->imageEditor()
-                    ->image(),
-                ViewImage::make('image')->label(''),
-                Textarea::make('notes'),
-                Checkbox::make('requestable')->inline()
-            ]);
+                Section::make('Details')->schema([
+                    TextInput::make('name')
+                        ->string()
+                        ->required()
+                        ->autofocus()
+                        ->maxLength(255)
+                        ->unique(ignoreRecord: true),
+
+                    Select::make('category_id')
+                        ->label('Category')
+                        ->options(Category::where('category_type','accessory')->pluck('name', 'id'))
+                        ->searchable()
+                        ->required()
+                        ->native(false),
+
+                    TextInput::make('qty')
+                        ->numeric()
+                        ->required()
+                        ->autofocus()
+                        ->maxLength(10),
+
+                    TextInput::make('min_amt')
+                        ->numeric()
+                        ->maxLength(10),
+
+                    Select::make('location_id')
+                        ->label('Location')
+                        ->options(Location::pluck('name', 'id'))
+                        ->searchable()
+                        ->native(false),
+
+                    FileUpload::make('image')
+                        ->directory('accessories')
+                        ->imageEditor()
+                        ->image(),
+                ])
+                ->id('accessory-details')
+                ->columns(2),
+
+                Section::make('Order Info')->schema([
+
+                    Select::make('company_id')
+                        ->label('Company')
+                        ->options(Company::pluck('name', 'id'))
+                        ->searchable()
+                        ->native(false),
+
+                    Select::make('supplier_id')
+                        ->label('Supplier')
+                        ->options(Supplier::pluck('name', 'id'))
+                        ->searchable()
+                        ->native(false),
+
+                    TextInput::make('order_number')
+                        ->string()
+                        ->maxLength(255),
+
+                    TextInput::make('model_number')
+                        ->string()
+                        ->maxLength(255),
+
+                    DatePicker::make('purchase_date')
+                        ->suffixIcon('fas-calendar')
+                        ->native(false)
+                        ->displayFormat('Y-m-d'),
+
+                    TextInput::make('purchase_cost')
+                        ->string()
+                        ->maxLength(255),
+
+                    Select::make('manufacturer_id')
+                        ->label('Manufacturer')
+                        ->options(Manufacturer::all()->pluck('name', 'id'))
+                        ->searchable()
+                        ->native(false),
+
+                    Textarea::make('notes'),
+                    Toggle::make('requestable')->label('Requestable'),
+                    ])
+                    ->collapsible()
+                    ->persistCollapsed()
+                    ->id('accessory-order')
+                    ->columns(2)
+                ]);
     }
 
     public static function table(Table $table): Table
