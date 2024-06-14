@@ -4,6 +4,10 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use \Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Watson\Validating\ValidatingTrait;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -11,6 +15,8 @@ use Illuminate\Notifications\Notifiable;
 use App\Models\Asset;
 use App\Models\Accessory;
 use App\Models\Consumable;
+use App\Models\Department;
+use App\Models\Company;
 use Illuminate\Support\Facades\Gate;
 use Filament\Models\Contracts\FilamentUser;
 use Filament\Panel;
@@ -149,7 +155,7 @@ class User extends Authenticatable implements FilamentUser
      * @since [v1.0]
      * @return \Illuminate\Database\Eloquent\Relations\Relation
      */
-    public function groups()
+    public function groups() : BelongsToMany
     {
         return $this->belongsToMany(\App\Models\Group::class, 'users_groups');
     }
@@ -208,7 +214,7 @@ class User extends Authenticatable implements FilamentUser
      * @since [v1.0]
      * @return \Illuminate\Database\Eloquent\Relations\Relation
      */
-    public function assets()
+    public function assets() : MorphMany
     {
         return $this->morphMany(Asset::class, 'assigned', 'assigned_type', 'assigned_to')->orderBy('id');
     }
@@ -220,7 +226,7 @@ class User extends Authenticatable implements FilamentUser
      * @since [v2.0]
      * @return \Illuminate\Database\Eloquent\Relations\Relation
      */
-    public function accessories()
+    public function accessories() : BelongsToMany
     {
         return $this->belongsToMany(Accessory::class, 'accessories_users', 'assigned_to', 'accessory_id')
             ->withPivot('id', 'created_at', 'note')->orderBy('accessory_id');
@@ -233,7 +239,7 @@ class User extends Authenticatable implements FilamentUser
      * @since [v3.0]
      * @return \Illuminate\Database\Eloquent\Relations\Relation
      */
-    public function consumables()
+    public function consumables() : BelongsToMany
     {
         return $this->belongsToMany(Consumable::class, 'consumables_users', 'assigned_to', 'consumable_id')->withPivot('id','created_at','note');
     }
@@ -245,7 +251,7 @@ class User extends Authenticatable implements FilamentUser
      * @since [v1.0]
      * @return \Illuminate\Database\Eloquent\Relations\Relation
      */
-    public function licenses()
+    public function licenses() : BelongsToMany
     {
         return $this->belongsToMany(License::class, 'license_seats', 'assigned_to', 'license_id')->withPivot('id', 'created_at', 'updated_at');
     }
@@ -257,7 +263,7 @@ class User extends Authenticatable implements FilamentUser
      * @since [v6.4.1]
      * @return \Illuminate\Database\Eloquent\Relations\Relation
      */
-    public function managesUsers()
+    public function managesUsers() : HasMany
     {
         return $this->hasMany(User::class, 'manager_id');
     }
@@ -270,7 +276,7 @@ class User extends Authenticatable implements FilamentUser
      * @since [v4.0]
      * @return \Illuminate\Database\Eloquent\Relations\Relation
      */
-    public function managesLocations()
+    public function managesLocations() : HasMany
     {
         return $this->hasMany(Location::class, 'manager_id');
     }
@@ -287,9 +293,21 @@ class User extends Authenticatable implements FilamentUser
      * @since [v4.0]
      * @return \Illuminate\Database\Eloquent\Relations\Relation
      */
-    public function department()
+    public function department() : BelongsTo
     {
-        return $this->belongsTo(\App\Models\Department::class, 'department_id');
+        return $this->belongsTo(Department::class, 'department_id');
+    }
+
+    /**
+     * Establishes the user -> company relationship
+     *
+     * @author A. Gianotto <snipe@snipe.net>
+     * @since [v4.0]
+     * @return \Illuminate\Database\Eloquent\Relations\Relation
+     */
+    public function company() : BelongsTo
+    {
+        return $this->belongsTo(Company::class, 'department_id');
     }
 
     /**
@@ -299,7 +317,7 @@ class User extends Authenticatable implements FilamentUser
      * @since [v3.0]
      * @return \Illuminate\Database\Eloquent\Relations\Relation
      */
-    public function location()
+    public function location() : BelongsTo
     {
         return $this->belongsTo(\App\Models\Location::class, 'location_id');
     }
@@ -311,7 +329,7 @@ class User extends Authenticatable implements FilamentUser
      * @since [v4.0]
      * @return \Illuminate\Database\Eloquent\Relations\Relation
      */
-    public function manager()
+    public function manager() : BelongsTo
     {
         return $this->belongsTo(self::class, 'manager_id')->withTrashed();
     }
