@@ -98,7 +98,7 @@ class CategoryResource extends Resource
         return $table
             ->columns([
                 TextColumn::make('id')
-                    ->toggleable()
+                    ->toggleable(isToggledHiddenByDefault: true)
                     ->sortable(),
                 ImageColumn::make('image')
                     ->toggleable()

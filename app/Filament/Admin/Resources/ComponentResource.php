@@ -121,14 +121,17 @@ class ComponentResource extends Resource
     {
         return $table
             ->columns([
-                TextColumn::make('id')->toggleable()->sortable(),
+                TextColumn::make('id')
+                    ->toggleable(isToggledHiddenByDefault: true)
+                    ->sortable(),
                 ImageColumn::make('image')
                     ->toggleable()
                     ->sortable(),
                 TextColumn::make('name')
                     ->toggleable()
                     ->sortable(),
-                TextColumn::make('admin.username')->label('Created by')
+                TextColumn::make('admin.username')
+                    ->label('Created by')
                     ->toggleable()
                     ->sortable(),
                 TextColumn::make('created_at')

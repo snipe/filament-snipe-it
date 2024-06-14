@@ -51,7 +51,7 @@ class CompanyResource extends Resource
         return $table
             ->columns([
                 TextColumn::make('id')
-                    ->toggleable()
+                    ->toggleable(isToggledHiddenByDefault: true)
                     ->sortable(),
                 TextColumn::make('name')
                     ->toggleable()

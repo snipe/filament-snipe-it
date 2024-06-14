@@ -76,9 +76,15 @@ class StatusLabelResource extends Resource
     {
         return $table
             ->columns([
-                TextColumn::make('id')->toggleable()->sortable(),
-                TextColumn::make('name')->toggleable()->sortable(),
-                TextColumn::make('notes')->toggleable()->sortable(),
+                TextColumn::make('id')
+                    ->toggleable(isToggledHiddenByDefault: true)
+                    ->sortable(),
+                TextColumn::make('name')
+                    ->toggleable()
+                    ->sortable(),
+                TextColumn::make('notes')
+                    ->toggleable()
+                    ->sortable(),
                 TextColumn::make('created_at')
                     ->toggleable()
                     ->toggleable(isToggledHiddenByDefault: true)
@@ -89,7 +95,8 @@ class StatusLabelResource extends Resource
                     ->dateTime($format = 'F j, Y H:i:s')
                     ->sortable(),
                 ColorColumn::make('color'),
-                TextColumn::make('admin.username')->label('Created by')
+                TextColumn::make('admin.username')
+                    ->label('Created by')
                     ->toggleable()
                     ->sortable(),
             ])

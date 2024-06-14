@@ -139,7 +139,9 @@ class AccessoryResource extends Resource
     {
         return $table
             ->columns([
-                TextColumn::make('id')->toggleable()->sortable(),
+                TextColumn::make('id')
+                    ->toggleable()
+                    ->sortable(),
                 ImageColumn::make('image')
                     ->toggleable()
                     ->sortable(),

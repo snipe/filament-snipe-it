@@ -82,8 +82,12 @@ class AssetMaintenanceResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
+
             ->recordTitleAttribute('title')
             ->columns([
+                TextColumn::make('id')
+                    ->toggleable(isToggledHiddenByDefault: true)
+                    ->sortable(),
                 TextColumn::make('title')
                     ->toggleable(),
                 TextColumn::make('asset_maintenance_type')

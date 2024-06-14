@@ -92,14 +92,24 @@ class AssetModelResource extends Resource
     {
         return $table
             ->columns([
-                TextColumn::make('id')->toggleable()->sortable(),
+                TextColumn::make('id')
+                    ->toggleable(isToggledHiddenByDefault: true)
+                    ->sortable(),
                 ImageColumn::make('image')
                     ->toggleable()
                     ->sortable(),
-                TextColumn::make('name')->toggleable()->sortable(),
-                TextColumn::make('model_number')->toggleable()->sortable(),
-                TextColumn::make('category.name')->toggleable()->sortable(),
-                TextColumn::make('min_amt')->toggleable()->sortable(),
+                TextColumn::make('name')
+                    ->toggleable()
+                    ->sortable(),
+                TextColumn::make('model_number')
+                    ->toggleable()
+                    ->sortable(),
+                TextColumn::make('category.name')
+                    ->toggleable()
+                    ->sortable(),
+                TextColumn::make('min_amt')
+                    ->toggleable()
+                    ->sortable(),
                 IconColumn::make('requestable')
                     ->toggleable()
                     ->boolean()
@@ -110,7 +120,8 @@ class AssetModelResource extends Resource
                     })
                     ->size(IconColumn\IconColumnSize::Small)
                     ->sortable(),
-                TextColumn::make('admin.username')->label('Created by')
+                TextColumn::make('admin.username')
+                    ->label('Created by')
                     ->toggleable()
                     ->sortable(),
                 TextColumn::make('created_at')
