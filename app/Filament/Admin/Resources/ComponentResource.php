@@ -159,9 +159,15 @@ class ComponentResource extends Resource
                     ->sortable(),
                 TextColumn::make('name')
                     ->toggleable()
+                    ->searchable()
+                    ->sortable(),
+                TextColumn::make('serial')
+                    ->toggleable()
+                    ->searchable()
                     ->sortable(),
                 TextColumn::make('admin.username')
                     ->label('Created by')
+                    ->searchable()
                     ->toggleable()
                     ->sortable(),
                 TextColumn::make('created_at')
