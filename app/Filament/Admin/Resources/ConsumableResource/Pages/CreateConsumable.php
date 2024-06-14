@@ -9,4 +9,9 @@ use Filament\Resources\Pages\CreateRecord;
 class CreateConsumable extends CreateRecord
 {
     protected static string $resource = ConsumableResource::class;
+
+    protected function getRedirectUrl(): string
+    {
+        return $this->getResource()::getUrl('index');
+    }
 }

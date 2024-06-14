@@ -23,4 +23,9 @@ class EditCompany extends EditRecord
         $data['user_id'] = auth()->id();
         return $data;
     }
+
+    protected function getRedirectUrl(): string
+    {
+        return $this->getResource()::getUrl('index');
+    }
 }

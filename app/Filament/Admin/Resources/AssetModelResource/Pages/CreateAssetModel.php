@@ -9,4 +9,9 @@ use Filament\Resources\Pages\CreateRecord;
 class CreateAssetModel extends CreateRecord
 {
     protected static string $resource = AssetModelResource::class;
+
+    protected function getRedirectUrl(): string
+    {
+        return $this->getResource()::getUrl('index');
+    }
 }

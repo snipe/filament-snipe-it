@@ -9,4 +9,9 @@ use Filament\Resources\Pages\CreateRecord;
 class CreateStatusLabel extends CreateRecord
 {
     protected static string $resource = StatusLabelResource::class;
+
+    protected function getRedirectUrl(): string
+    {
+        return $this->getResource()::getUrl('index');
+    }
 }
