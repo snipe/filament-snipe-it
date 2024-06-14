@@ -86,16 +86,30 @@ class ConsumableResource extends Resource
 
                     Select::make('manufacturer_id')
                         ->label('Manufacturer')
-                        ->options(Manufacturer::all()->pluck('name', 'id'))
+                        ->relationship(name: 'manufacturer', titleAttribute: 'name')
                         ->searchable()
-                        ->native(false),
+                        ->preload()
+                        ->native(false)
+                        ->createOptionForm(fn(Form $form) => ManufacturerResource::form($form))
+                        ->createOptionAction(fn ($action) => $action->mutateFormDataUsing(function ($data) {
+                            $data['user_id'] = auth()->user()->id;
+                            return $data;
+                        })),
+
+                    Select::make('location_id')
+                        ->label('Location')
+                        ->relationship(name: 'location', titleAttribute: 'name')
+                        ->searchable()
+                        ->preload()
+                        ->native(false)
+                        ->createOptionForm(fn(Form $form) => LocationResource::form($form))
+                        ->createOptionAction(fn ($action) => $action->mutateFormDataUsing(function ($data) {
+                            $data['user_id'] = auth()->user()->id;
+                            return $data;
+                        })),
 
                     Textarea::make('notes'),
-                    Toggle::make('requestable')
-                        ->onIcon('fas-check-circle')
-                        ->offIcon('fas-times-circle')
-                        ->onColor('success')
-                        ->offColor('gray'),
+                    
                 ])
                     ->collapsible()
                     ->persistCollapsed()
