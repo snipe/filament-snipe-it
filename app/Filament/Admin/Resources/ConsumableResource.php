@@ -57,16 +57,27 @@ class ConsumableResource extends Resource
                 Section::make('Order Info')->schema([
                     Select::make('company_id')
                         ->label('Company')
-                        ->options(Company::pluck('name', 'id'))
+                        ->relationship(name: 'company', titleAttribute: 'name')
                         ->searchable()
-                        ->native(false),
+                        ->preload()
+                        ->native(false)
+                        ->createOptionForm(fn(Form $form) => CompanyResource::form($form))
+                        ->createOptionAction(fn ($action) => $action->mutateFormDataUsing(function ($data) {
+                            $data['user_id'] = auth()->user()->id;
+                            return $data;
+                        })),
 
                     Select::make('supplier_id')
                         ->label('Supplier')
-                        ->options(Supplier::pluck('name', 'id'))
+                        ->relationship(name: 'supplier', titleAttribute: 'name')
                         ->searchable()
-                        ->native(false),
-
+                        ->preload()
+                        ->native(false)
+                        ->createOptionForm(fn(Form $form) => SupplierResource::form($form))
+                        ->createOptionAction(fn ($action) => $action->mutateFormDataUsing(function ($data) {
+                            $data['user_id'] = auth()->user()->id;
+                            return $data;
+                        })),
                     TextInput::make('order_number')
                         ->string()
                         ->maxLength(255),
@@ -109,7 +120,7 @@ class ConsumableResource extends Resource
                         })),
 
                     Textarea::make('notes'),
-                    
+
                 ])
                     ->collapsible()
                     ->persistCollapsed()

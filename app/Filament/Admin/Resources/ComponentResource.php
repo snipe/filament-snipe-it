@@ -78,15 +78,22 @@ class ComponentResource extends Resource
                         ->numeric()
                         ->maxLength(255)
                         ->helperText('This is the minimum amount of this component that should be kept in stock.'),
-                    Select::make('company_id')
-                        ->label('Company')
-                        ->options(Company::all()->pluck('name', 'id'))
-                        ->searchable()
-                        ->native(false),
                     ])
                     ->id('component-details')
                     ->columns(2),
                 Section::make('Order Details')->schema([
+
+                    Select::make('company_id')
+                        ->label('Company')
+                        ->relationship(name: 'company', titleAttribute: 'name')
+                        ->searchable()
+                        ->preload()
+                        ->native(false)
+                        ->createOptionForm(fn(Form $form) => CompanyResource::form($form))
+                        ->createOptionAction(fn ($action) => $action->mutateFormDataUsing(function ($data) {
+                            $data['user_id'] = auth()->user()->id;
+                            return $data;
+                        })),
 
                     TextInput::make('order_number')
                         ->string()
