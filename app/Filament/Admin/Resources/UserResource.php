@@ -57,6 +57,8 @@ use Filament\Resources\Concerns\HasTabs;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Forms\Components\Toggle;
 use Filament\Infolists\Components\ViewEntry;
+use Filament\Tables\Filters\SelectFilter;
+use Filament\Tables\Filters\TrashedFilter;
 
 
 class UserResource extends Resource
@@ -237,10 +239,11 @@ class UserResource extends Resource
                         ->searchable()
                         ->preload()
                         ->native(false)
-                        ->createOptionForm([
-                            TextInput::make('name')
-                                ->required()
-                        ]),
+                        ->createOptionForm(fn(Form $form) => LocationResource::form($form))
+                        ->createOptionAction(fn ($action) => $action->mutateFormDataUsing(function ($data) {
+                            $data['user_id'] = auth()->user()->id;
+                            return $data;
+                        })),
                     Select::make('department_id')
                         ->relationship(name: 'department', titleAttribute: 'name')
                         ->searchable()
@@ -334,6 +337,21 @@ class UserResource extends Resource
                     ->url(fn ($record) => 'tel:'.$record->phone, true)
                     ->sortable()
                     ->icon('fas-square-phone'),
+                TextColumn::make('company.name')
+                    ->toggleable(isToggledHiddenByDefault: true)
+                    ->sortable(),
+                TextColumn::make('manager.username')
+                    ->label('Manager')
+                    ->toggleable(isToggledHiddenByDefault: true)
+                    ->sortable(),
+                TextColumn::make('location.name')
+                    ->label('Location')
+                    ->toggleable(isToggledHiddenByDefault: true)
+                    ->sortable(),
+                TextColumn::make('department.name')
+                    ->label('Department')
+                    ->toggleable(isToggledHiddenByDefault: true)
+                    ->sortable(),
                 TextColumn::make('website')
                     ->toggleable(isToggledHiddenByDefault: true)
                     ->url(fn ($record) => $record->website, true)
@@ -406,7 +424,8 @@ class UserResource extends Resource
             ])
             ->checkIfRecordIsSelectableUsing(
                 fn (Model $record): bool =>
-                ($record->id != Auth::user()->id && ($record->isDeletable()))
+                //($record->id != Auth::user()->id && ($record->isDeletable()))
+                ($record->id != auth()->user()->id)
 
             )
             ->bulkActions([
@@ -423,6 +442,9 @@ class UserResource extends Resource
                 Filter::make('ldap_login')
                     ->label('Managed via LDAP')
                     ->query(fn (Builder $query): Builder => $query->where('ldap_import', true))
+                    ->toggle(),
+                Filter::make('vip')
+                    ->query(fn (Builder $query): Builder => $query->where('vip', true))
                     ->toggle(),
 
                 Filter::make('one_asset')
@@ -447,33 +469,116 @@ class UserResource extends Resource
                     )
                     ->toggle(),
 
-                Filter::make('created_at')
-                    ->form([
-                        DatePicker::make('created_from'),
-                        DatePicker::make('created_until')->default(now())
-                    ])
-                    ->query(function (Builder $query, array $data): Builder {
-                        return $query
-                            ->when(
-                                $data['created_from'],
-                                fn (Builder $query, $date): Builder => $query->whereDate('created_at', '>=', $date),
-                            )
-                            ->when(
-                                $data['created_until'],
-                                fn (Builder $query, $date): Builder => $query->whereDate('created_at', '<=', $date),
-                            );
-                    })
+                SelectFilter::make('company_id')
+                    ->relationship('company', 'name')
+                    ->searchable()
+                    ->preload(),
+
+                SelectFilter::make('location_id')
+                    ->relationship('location', 'name')
+                    ->searchable()
+                    ->preload(),
+
+                SelectFilter::make('department_id')
+                    ->relationship('department', 'name')
+                    ->searchable()
+                    ->preload(),
+                SelectFilter::make('manager_id')
+                    ->relationship('manager', 'username')
+                    ->searchable()
+                    ->preload(),
+                TrashedFilter::make('deleted_at'),
+//                Filter::make('created_at')
+//                    ->form([
+//                        DatePicker::make('created_from')
+//                            ->native(false),
+//                        DatePicker::make('created_until')
+//                            ->native(false)
+//                            ->default(now())
+//                    ])
+//                    ->query(function (Builder $query, array $data): Builder {
+//                        return $query
+//                            ->when(
+//                                $data['created_from'],
+//                                fn (Builder $query, $date): Builder => $query->whereDate('created_at', '>=', $date),
+//                            )
+//                            ->when(
+//                                $data['created_until'],
+//                                fn (Builder $query, $date): Builder => $query->whereDate('created_at', '<=', $date),
+//                            );
+//                    }),
+//                Filter::make('start_date')
+//                    ->form([
+//                        DatePicker::make('start_date')
+//                            ->native(false),
+//                        DatePicker::make('start_until')
+//                            ->native(false)
+//                            ->default(now())
+//                    ])
+//                    ->query(function (Builder $query, array $data): Builder {
+//                        return $query
+//                            ->when(
+//                                $data['start_date'],
+//                                fn (Builder $query, $date): Builder => $query->whereDate('start_date', '>=', $date),
+//                            )
+//                            ->when(
+//                                $data['start_until'],
+//                                fn (Builder $query, $date): Builder => $query->whereDate('start_date', '<=', $date),
+//                            );
+//                    }),
+//                Filter::make('end_date')
+//                    ->form([
+//                        DatePicker::make('end_date')
+//                            ->native(false),
+//                        DatePicker::make('end_until')
+//                            ->native(false)
+//                            ->default(now())
+//                    ])
+//                    ->query(function (Builder $query, array $data): Builder {
+//                        return $query
+//                            ->when(
+//                                $data['end_date'],
+//                                fn (Builder $query, $date): Builder => $query->whereDate('end_date', '>=', $date),
+//                            )
+//                            ->when(
+//                                $data['end_until'],
+//                                fn (Builder $query, $date): Builder => $query->whereDate('end_date', '<=', $date),
+//                            );
+//                    })
 
             ], layout: FiltersLayout::AboveContentCollapsible)
             ->filtersFormWidth(MaxWidth::FourExtraLarge)
-            ->persistFiltersInSession()
             ->filtersFormColumns(4)
+            ->filtersFormSchema(fn (array $filters): array => [
+                Section::make('')
+                    //->description('These filters affect the visibility of the records in the table.')
+                    ->schema([
+                        $filters['can_login'],
+                        $filters['ldap_login'],
+                        $filters['vip'],
+                        $filters['one_asset'],
+                        $filters['one_license'],
+                        $filters['one_accessory'],
+                    ])->columns(4),
+
+                Section::make('')
+                    ->schema([
+                        $filters['company_id'],
+                        $filters['location_id'],
+                        $filters['department_id'],
+                        $filters['manager_id'],
+                        $filters['deleted_at'],
+                    ])->columns(3),
+
+            ])
+
             ->defaultPaginationPageOption(25)
             ->searchable()
             ->extremePaginationLinks()
             ->paginated([10, 25, 50, 100, 200])
             ->deferLoading()
-            ->persistSortInSession()
+            //->persistFiltersInSession()
+            //->persistSortInSession()
             ->striped();
     }
 
@@ -517,7 +622,7 @@ class UserResource extends Resource
 
     public static function getGloballySearchableAttributes(): array
     {
-        return ['first_name', 'last_name', 'email', 'username'];
+        return ['first_name', 'last_name', 'email', 'username', 'employee_num'];
     }
 
     public static function getGlobalSearchResultDetails(Model $record): array
