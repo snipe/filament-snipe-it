@@ -334,6 +334,28 @@ class UserResource extends Resource
                     ->searchable()
                     ->icon(fn ($record) => $record->isSuperUser()=='1' ? 'fas-crown' : '')
                     ->iconColor(fn ($record) => $record->isSuperUser()=='1' ? 'warning' : ''),
+                TextColumn::make('assets_count')->counts('assets')
+                    ->toggleable()
+                    ->sortable()
+                    ->label(new HtmlString(Blade::render('<x-fas-barcode class="w-5 h-5" />'))),
+                TextColumn::make('accessories_count')->counts('accessories')
+                    ->toggleable()
+                    ->sortable()
+                    ->label(new HtmlString(Blade::render('<x-far-keyboard class="w-6 h-6" />'))),
+                TextColumn::make('licenses_count')->counts('licenses')
+                    ->toggleable()
+                    ->sortable()
+                    ->label(new HtmlString(Blade::render('<x-far-save class="w-5 h-5" />'))),
+                TextColumn::make('consumables_count')->counts('consumables')
+                    ->toggleable()
+                    ->sortable()
+                    ->label(new HtmlString(Blade::render('<x-fas-tint class="w-5 h-5" />'))),
+                ToggleColumn::make('activated')
+                    ->toggleable()
+                    ->sortable(),
+                ToggleColumn::make('ldap_import')
+                    ->toggleable(isToggledHiddenByDefault: true)
+                    ->sortable(),
                 TextColumn::make('email')
                     ->toggleable()
                     ->searchable()
@@ -369,28 +391,6 @@ class UserResource extends Resource
                     ->url(fn ($record) => $record->website, true)
                     ->sortable()
                     ->icon('heroicon-m-arrow-up-right'),
-                TextColumn::make('assets_count')->counts('assets')
-                    ->toggleable()
-                    ->sortable()
-                    ->label(new HtmlString(Blade::render('<x-fas-barcode class="w-5 h-5" />'))),
-                TextColumn::make('accessories_count')->counts('accessories')
-                    ->toggleable()
-                    ->sortable()
-                    ->label(new HtmlString(Blade::render('<x-far-keyboard class="w-6 h-6" />'))),
-                TextColumn::make('licenses_count')->counts('licenses')
-                    ->toggleable()
-                    ->sortable()
-                    ->label(new HtmlString(Blade::render('<x-far-save class="w-5 h-5" />'))),
-                TextColumn::make('consumables_count')->counts('consumables')
-                    ->toggleable()
-                    ->sortable()
-                    ->label(new HtmlString(Blade::render('<x-fas-tint class="w-5 h-5" />'))),
-                ToggleColumn::make('activated')
-                    ->toggleable()
-                    ->sortable(),
-                ToggleColumn::make('ldap_import')
-                    ->toggleable(isToggledHiddenByDefault: true)
-                    ->sortable(),
                 TextColumn::make('last_login')
                     ->toggleable(isToggledHiddenByDefault: true)
                     ->dateTime($format = 'F j, Y H:i:s')
