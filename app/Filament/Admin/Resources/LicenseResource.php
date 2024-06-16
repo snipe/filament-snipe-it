@@ -36,7 +36,7 @@ class LicenseResource extends Resource
         return $form
             ->schema([
 
-                Section::make('Asset Details')->schema([
+                Section::make('License Details')->schema([
 
                     TextInput::make('name')
                         ->string()
